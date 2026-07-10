@@ -7,6 +7,7 @@ import { Standings } from "@/components/Standings";
 import { SeasonCalendar } from "@/components/SeasonCalendar";
 import { LastRaceRecap } from "@/components/LastRaceRecap";
 import { YourDriver } from "@/components/YourDriver";
+import { TrackTelemetry } from "@/components/TrackTelemetry";
 import { Footer, TopNav } from "@/components/Shell";
 
 export const Route = createFileRoute("/")({
