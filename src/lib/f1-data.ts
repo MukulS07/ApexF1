@@ -75,31 +75,32 @@ export const drivers: Driver[] = [
   { id: "BOT", firstName: "Valtteri", lastName: "Bottas",     number: 77, teamId: "cadillac", country: "FI", wins: 10, poles: 20, podiums: 67, championships: 0, form: [22,22,22,22,22] },
 ];
 
+// Standings after Round 11 (Austrian GP) — 2026 season mid-year snapshot
 export const driversStandings = [
-  { driverId: "NOR", points: 412 },
-  { driverId: "PIA", points: 388 },
-  { driverId: "LEC", points: 291 },
-  { driverId: "RUS", points: 264 },
-  { driverId: "HAM", points: 218 },
-  { driverId: "ANT", points: 176 },
-  { driverId: "VER", points: 152 },
-  { driverId: "ALO", points: 98 },
-  { driverId: "ALB", points: 74 },
-  { driverId: "GAS", points: 51 },
+  { driverId: "PIA", points: 234 },
+  { driverId: "NOR", points: 226 },
+  { driverId: "LEC", points: 151 },
+  { driverId: "RUS", points: 147 },
+  { driverId: "VER", points: 138 },
+  { driverId: "HAM", points: 109 },
+  { driverId: "ANT", points: 97  },
+  { driverId: "ALB", points: 54  },
+  { driverId: "ALO", points: 42  },
+  { driverId: "HAD", points: 38  },
 ];
 
 export const constructorsStandings = [
-  { teamId: "mclaren",  points: 800 },
-  { teamId: "ferrari",  points: 509 },
-  { teamId: "mercedes", points: 440 },
-  { teamId: "redbull",  points: 205 },
-  { teamId: "aston",    points: 132 },
-  { teamId: "williams", points: 102 },
-  { teamId: "alpine",   points: 68  },
-  { teamId: "rb",       points: 42  },
-  { teamId: "sauber",   points: 21  },
-  { teamId: "haas",     points: 14  },
-  { teamId: "cadillac", points: 4   },
+  { teamId: "mclaren",  points: 460 },
+  { teamId: "ferrari",  points: 260 },
+  { teamId: "mercedes", points: 244 },
+  { teamId: "redbull",  points: 172 },
+  { teamId: "williams", points: 72  },
+  { teamId: "aston",    points: 58  },
+  { teamId: "rb",       points: 52  },
+  { teamId: "alpine",   points: 27  },
+  { teamId: "haas",     points: 18  },
+  { teamId: "sauber",   points: 11  },
+  { teamId: "cadillac", points: 3   },
 ];
 
 export const calendar2026: Race[] = [
@@ -129,27 +130,27 @@ export const calendar2026: Race[] = [
   { round: 24, name: "Abu Dhabi GP",      circuit: "Yas Marina",            country: "UAE",          city: "Abu Dhabi",   dateISO: "2026-12-06T13:00:00Z", qualifyingISO: "2026-12-05T14:00:00Z", lapRecord: "1:25.637", polePrev: "1:22.595" },
 ];
 
-// "Last race" recap — a completed 2025 finale used as sample data
+// "Last race" recap — Austrian GP 2026 (Round 11), most recently completed
 export const lastRace = {
-  name: "Abu Dhabi GP",
-  circuit: "Yas Marina",
-  round: 24,
-  dateISO: "2025-12-07T13:00:00Z",
-  winnerId: "NOR",
-  fastestLapId: "PIA",
-  fastestLap: "1:26.103",
-  podium: ["NOR", "PIA", "LEC"] as string[],
+  name: "Austrian GP",
+  circuit: "Red Bull Ring",
+  round: 11,
+  dateISO: "2026-07-05T13:00:00Z",
+  winnerId: "PIA",
+  fastestLapId: "NOR",
+  fastestLap: "1:06.482",
+  podium: ["PIA", "NOR", "LEC"] as string[],
   poleId: "NOR",
-  poleTime: "1:22.418",
-  q3Best: "1:22.418",
-  top10: ["NOR","PIA","LEC","RUS","HAM","VER","ANT","ALO","ALB","GAS"] as string[],
-  conditions: { airC: 26, trackC: 32, humidity: 58, rain: false as boolean },
+  poleTime: "1:03.512",
+  q3Best: "1:03.512",
+  top10: ["PIA","NOR","LEC","RUS","VER","HAM","ANT","ALB","HAD","ALO"] as string[],
+  conditions: { airC: 24, trackC: 41, humidity: 46, rain: false as boolean },
   tireStrategy: [
-    { driverId: "NOR", stints: ["M","H","H"] as string[] },
-    { driverId: "PIA", stints: ["M","H","M"] as string[] },
+    { driverId: "PIA", stints: ["M","H","H"] as string[] },
+    { driverId: "NOR", stints: ["M","H","M"] as string[] },
     { driverId: "LEC", stints: ["S","M","H"] as string[] },
     { driverId: "RUS", stints: ["M","M","H"] as string[] },
-    { driverId: "HAM", stints: ["H","M","M"] as string[] },
+    { driverId: "VER", stints: ["H","M","M"] as string[] },
   ],
 };
 
