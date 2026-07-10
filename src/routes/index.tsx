@@ -3,9 +3,8 @@ import { useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { HeroNextRace } from "@/components/HeroNextRace";
-import { Standings } from "@/components/Standings";
+import { ChampionshipBoard } from "@/components/ChampionshipBoard";
 import { SeasonCalendar } from "@/components/SeasonCalendar";
-import { LastRaceRecap } from "@/components/LastRaceRecap";
 import { YourDriver } from "@/components/YourDriver";
 import { TrackTelemetry } from "@/components/TrackTelemetry";
 import { Footer, TopNav } from "@/components/Shell";
@@ -39,10 +38,9 @@ function Index() {
       {profile ? (
         <>
           <div id="next"><HeroNextRace profile={profile} onEditProfile={() => setEditing(true)} /></div>
-          <div id="standings"><Standings favoriteDriverId={profile.favoriteDriverId} /></div>
+          <div id="standings"><ChampionshipBoard favoriteDriverId={profile.favoriteDriverId} /></div>
           <div id="telemetry"><TrackTelemetry profile={profile} /></div>
           <div id="calendar"><SeasonCalendar /></div>
-          <div id="recap"><LastRaceRecap /></div>
           <div id="driver"><YourDriver profile={profile} /></div>
           <Footer />
         </>
