@@ -4,17 +4,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Apple-inspired design system for The Pit Wall */
+/* BMW M-inspired design system for The Pit Wall */
 
 @theme inline {
-  --font-display: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  --radius-sm: 8px;
-  --radius-md: 11px;
-  --radius-lg: 18px;
-  --radius-xl: 22px;
-  --radius-2xl: 28px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
   --radius-pill: 9999px;
 
   --color-background: var(--background);
@@ -37,166 +37,283 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-parchment: var(--parchment);
-  --color-pearl: var(--pearl);
+  --color-canvas: var(--canvas);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-hairline: var(--hairline);
-  --color-tile-dark: var(--tile-dark);
-  --color-tile-dark-2: var(--tile-dark-2);
-  --color-tile-dark-3: var(--tile-dark-3);
-  --color-action: var(--action);
-  --color-action-bright: var(--action-bright);
-  --color-team: var(--team);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-soft: var(--surface-soft);
+  --color-m-blue-light: var(--m-blue-light);
+  --color-m-blue-dark: var(--m-blue-dark);
+  --color-m-red: var(--m-red);
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0px;
 
-  /* Apple-derived tokens */
-  --canvas: oklch(1 0 0);                        /* #ffffff */
-  --parchment: oklch(0.968 0.002 264);           /* #f5f5f7 */
-  --pearl: oklch(0.985 0.002 264);               /* #fafafc */
-  --ink: oklch(0.205 0.004 285);                 /* #1d1d1f */
-  --ink-muted: oklch(0.55 0.005 285);            /* #7a7a7a */
-  --hairline: oklch(0.905 0.003 285);            /* #e0e0e0 */
-  --divider-soft: oklch(0.955 0.002 285);        /* #f0f0f0 */
-  --tile-dark: oklch(0.235 0.004 285);           /* #272729 */
-  --tile-dark-2: oklch(0.248 0.004 285);         /* #2a2a2c */
-  --tile-dark-3: oklch(0.223 0.004 285);         /* #252527 */
+  /* BMW M tokens */
+  --canvas: oklch(0 0 0);                       /* #000 */
+  --surface-soft: oklch(0.09 0 0);              /* #0d0d0d */
+  --surface-card: oklch(0.16 0 0);              /* #1a1a1a */
+  --surface-elevated: oklch(0.22 0 0);          /* #262626 */
+  --ink: oklch(1 0 0);                          /* #fff */
+  --ink-strong: oklch(0.94 0 0);                /* #e6e6e6 */
+  --body: oklch(0.79 0 0);                      /* #bbbbbb */
+  --ink-muted: oklch(0.58 0 0);                 /* #7e7e7e */
+  --hairline: oklch(0.32 0 0);                  /* #3c3c3c */
+  --hairline-strong: oklch(0.21 0 0);           /* #262626 */
 
-  --action: oklch(0.55 0.19 258);                /* #0066cc */
-  --action-bright: oklch(0.72 0.17 245);         /* #2997ff */
+  --m-blue-light: oklch(0.53 0.16 240);         /* #0066b1 */
+  --m-blue-dark:  oklch(0.55 0.20 262);         /* #1c69d4 */
+  --m-red:        oklch(0.59 0.24 27);          /* #e22718 */
 
-  /* Team accent — overridden per favorite driver at runtime */
-  --team: var(--action);
+  /* team accent set by JS from favorite driver */
+  --team-hex: #1c69d4;
 
-  /* shadcn mappings */
+  /* shadcn maps */
   --background: var(--canvas);
   --foreground: var(--ink);
-  --card: var(--canvas);
+  --card: var(--surface-card);
   --card-foreground: var(--ink);
-  --popover: var(--canvas);
+  --popover: var(--surface-card);
   --popover-foreground: var(--ink);
   --primary: var(--ink);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: var(--parchment);
+  --primary-foreground: var(--canvas);
+  --secondary: var(--surface-card);
   --secondary-foreground: var(--ink);
-  --muted: var(--parchment);
-  --muted-foreground: var(--ink-muted);
-  --accent: var(--parchment);
+  --muted: var(--surface-card);
+  --muted-foreground: var(--body);
+  --accent: var(--surface-elevated);
   --accent-foreground: var(--ink);
-  --destructive: oklch(0.6 0.22 27);
-  --destructive-foreground: oklch(1 0 0);
+  --destructive: var(--m-red);
+  --destructive-foreground: var(--ink);
   --border: var(--hairline);
   --input: var(--hairline);
-  --ring: var(--action);
-
-  --shadow-product: 3px 5px 30px 0 rgba(0, 0, 0, 0.22);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --ring: var(--m-blue-dark);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
+  * { border-color: var(--color-border); }
 
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    background: var(--canvas);
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background: var(--canvas);
+    color: var(--ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss03", "cv11";
-    letter-spacing: -0.011em;
+    font-weight: 300;
+    letter-spacing: 0;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.022em;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
   }
 }
 
+/* Type utilities — BMW M display cadence */
 @utility text-hero {
-  font-size: clamp(40px, 6vw, 72px);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  font-weight: 600;
-}
-
-@utility text-display {
-  font-size: clamp(32px, 4vw, 48px);
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  font-weight: 600;
-}
-
-@utility text-tagline {
-  font-size: 21px;
-  line-height: 1.2;
+  font-size: clamp(48px, 8vw, 96px);
+  line-height: 0.95;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  font-weight: 600;
+  text-transform: uppercase;
 }
-
+@utility text-display {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+@utility text-title {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+@utility text-eyebrow {
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
 @utility text-lead {
-  font-size: clamp(20px, 2vw, 24px);
-  font-weight: 400;
-  line-height: 1.4;
-  letter-spacing: -0.005em;
+  font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 300;
+  line-height: 1.55;
+  letter-spacing: 0;
 }
-
-@utility btn-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  padding: 10px 22px;
-  font-size: 15px;
-  font-weight: 400;
-  transition: all 0.18s ease;
-  background: var(--action);
-  color: white;
-  &:hover {
-    background: color-mix(in oklab, var(--action) 88%, black);
-  }
-}
-
-@utility btn-pill-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  padding: 10px 22px;
-  font-size: 15px;
-  color: var(--action);
-  background: transparent;
-  transition: all 0.18s ease;
-  &:hover {
-    background: color-mix(in oklab, var(--action) 8%, transparent);
-  }
-}
-
-@utility tile-dark {
-  background: var(--tile-dark);
-  color: white;
-}
-
-@utility tile-light {
-  background: var(--canvas);
-  color: var(--ink);
-}
-
-@utility tile-parchment {
-  background: var(--parchment);
-  color: var(--ink);
-}
-
 @utility tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+/* Buttons — sharp, uppercase, letterspaced */
+@utility btn-m {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 28px;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--canvas);
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  &:hover { transform: translateX(3px); }
+}
+@utility btn-m-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 28px;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--hairline);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  &:hover { border-color: var(--ink); transform: translateX(3px); }
+}
+
+/* M tricolor stripe */
+@utility m-stripe {
+  display: block;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    var(--m-blue-light) 0%,
+    var(--m-blue-light) 33.33%,
+    var(--m-blue-dark) 33.33%,
+    var(--m-blue-dark) 66.66%,
+    var(--m-red) 66.66%,
+    var(--m-red) 100%
+  );
+}
+@utility m-stripe-vertical {
+  display: block;
+  width: 4px;
+  background: linear-gradient(
+    to bottom,
+    var(--m-blue-light) 0%,
+    var(--m-blue-light) 33.33%,
+    var(--m-blue-dark) 33.33%,
+    var(--m-blue-dark) 66.66%,
+    var(--m-red) 66.66%,
+    var(--m-red) 100%
+  );
+}
+
+/* Tilt / 3D hover */
+@utility tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  &:hover { transform: perspective(1200px) rotateX(3deg) rotateY(-4deg) translateZ(6px); }
+}
+
+/* Speed line — animated bar on hover */
+@utility speed-line {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(to right, var(--team-hex), transparent);
+    transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  &:hover::after { width: 100%; }
+}
+
+/* Animated scan line */
+@keyframes m-scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@utility scan-loop {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    animation: m-scan 3.5s linear infinite;
+    pointer-events: none;
+  }
+}
+
+/* Marquee for eyebrow strips */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@utility marquee {
+  display: flex;
+  gap: 3rem;
+  white-space: nowrap;
+  animation: marquee 40s linear infinite;
+  width: max-content;
+}
+
+/* Countdown glow pulse */
+@keyframes m-pulse {
+  0%, 100% { text-shadow: 0 0 0 rgba(255,255,255,0); }
+  50%      { text-shadow: 0 0 24px color-mix(in oklab, var(--team-hex) 60%, transparent); }
+}
+@utility glow-pulse {
+  animation: m-pulse 2.4s ease-in-out infinite;
+}
+
+/* Fade / rise on scroll-in (via animate-in) */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@utility rise {
+  animation: rise-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Grid backdrop for hero */
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Rotating carbon-fibre feel radial */
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@utility slow-spin {
+  animation: slow-spin 60s linear infinite;
 }
