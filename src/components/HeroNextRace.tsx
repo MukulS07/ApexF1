@@ -1,6 +1,6 @@
 import { getDriver, getTeam, nextRace } from "@/lib/f1-data";
 import { useCountdown } from "@/hooks/useCountdown";
-import { useEffect, useRef } from "react";
+import { useRafTilt } from "@/hooks/useRafTilt";
 import type { Profile } from "@/hooks/useProfile";
 import { MStripe } from "./MStripe";
 
@@ -35,21 +35,8 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
   const fmt = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" });
   const timeFmt = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
 
-  // Parallax mouse tilt on hero
-  const heroRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      el.style.setProperty("--px", `${x * 20}px`);
-      el.style.setProperty("--py", `${y * 20}px`);
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  // rAF-throttled parallax on hero (no-op on coarse pointers / reduced motion)
+  const heroRef = useRafTilt<HTMLElement>(20, { global: true });
 
   return (
     <section ref={heroRef} className="relative overflow-hidden bg-canvas grid-bg">
