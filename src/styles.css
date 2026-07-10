@@ -161,9 +161,9 @@
   transition: all 0.18s ease;
   background: var(--action);
   color: white;
-}
-@utility btn-pill:hover {
-  background: color-mix(in oklab, var(--action) 88%, black);
+  &:hover {
+    background: color-mix(in oklab, var(--action) 88%, black);
+  }
 }
 
 @utility btn-pill-ghost {
@@ -176,9 +176,9 @@
   color: var(--action);
   background: transparent;
   transition: all 0.18s ease;
-}
-@utility btn-pill-ghost:hover {
-  background: color-mix(in oklab, var(--action) 8%, transparent);
+  &:hover {
+    background: color-mix(in oklab, var(--action) 8%, transparent);
+  }
 }
 
 @utility tile-dark {
