@@ -7,6 +7,7 @@ import { Standings } from "@/components/Standings";
 import { SeasonCalendar } from "@/components/SeasonCalendar";
 import { LastRaceRecap } from "@/components/LastRaceRecap";
 import { YourDriver } from "@/components/YourDriver";
+import { TrackTelemetry } from "@/components/TrackTelemetry";
 import { Footer, TopNav } from "@/components/Shell";
 
 export const Route = createFileRoute("/")({
@@ -39,6 +40,7 @@ function Index() {
         <>
           <div id="next"><HeroNextRace profile={profile} onEditProfile={() => setEditing(true)} /></div>
           <div id="standings"><Standings favoriteDriverId={profile.favoriteDriverId} /></div>
+          <div id="telemetry"><TrackTelemetry profile={profile} /></div>
           <div id="calendar"><SeasonCalendar /></div>
           <div id="recap"><LastRaceRecap /></div>
           <div id="driver"><YourDriver profile={profile} /></div>

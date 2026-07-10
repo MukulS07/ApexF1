@@ -67,7 +67,7 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
 
         <h1 className="text-hero text-white mb-8 rise">
           {race.name.replace(" GP", "")}<br />
-          <span className="text-white/40">Grand Prix.</span>
+          <span style={{ color: team?.color ?? "rgba(255,255,255,0.4)" }}>Grand Prix.</span>
         </h1>
 
         <p className="text-lead text-body max-w-2xl mb-16">
