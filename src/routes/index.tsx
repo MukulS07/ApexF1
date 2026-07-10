@@ -40,6 +40,7 @@ function Index() {
         <>
           <div id="next"><HeroNextRace profile={profile} onEditProfile={() => setEditing(true)} /></div>
           <div id="standings"><Standings favoriteDriverId={profile.favoriteDriverId} /></div>
+          <div id="telemetry"><TrackTelemetry profile={profile} /></div>
           <div id="calendar"><SeasonCalendar /></div>
           <div id="recap"><LastRaceRecap /></div>
           <div id="driver"><YourDriver profile={profile} /></div>

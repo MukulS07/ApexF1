@@ -16,6 +16,7 @@ export function TopNav({ onEdit }: { onEdit: () => void }) {
           <div className="hidden md:flex items-center gap-10 text-eyebrow text-ink-muted">
             <a href="#next"      className="hover:text-white transition-colors">Next race</a>
             <a href="#standings" className="hover:text-white transition-colors">Standings</a>
+            <a href="#telemetry" className="hover:text-white transition-colors" style={{ color: "var(--team-hex)" }}>Telemetry</a>
             <a href="#calendar"  className="hover:text-white transition-colors">Calendar</a>
             <a href="#recap"     className="hover:text-white transition-colors">Recap</a>
             <a href="#driver"    className="hover:text-white transition-colors">Driver</a>
