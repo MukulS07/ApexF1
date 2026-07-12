@@ -1,53 +1,130 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { getDriver, getTeam, nextRace } from "@/lib/f1-data";
 import type { Profile } from "@/hooks/useProfile";
 
-// A simulated live telemetry board — driven by rAF, painted in your team color.
-// (No live feed wired; values are a smooth pseudo-lap loop so it always feels alive.)
 export function TrackTelemetry({ profile }: { profile: Profile }) {
   const driver = getDriver(profile.favoriteDriverId);
   const team = driver ? getTeam(driver.teamId) : undefined;
   const color = team?.color ?? "#1c69d4";
   const race = nextRace();
 
-  const [t, setT] = useState(0); // 0..1 lap progress
-  const raf = useRef<number | null>(null);
-  const start = useRef<number>(0);
-  const reduced = useRef<boolean>(false);
-
-  useEffect(() => {
-    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced.current) { setT(0.42); return; }
-    const LAP_MS = 90_000; // 90s "lap"
-    const loop = (ts: number) => {
-      if (!start.current) start.current = ts;
-      const p = ((ts - start.current) % LAP_MS) / LAP_MS;
-      setT(p);
-      raf.current = requestAnimationFrame(loop);
-    };
-    raf.current = requestAnimationFrame(loop);
-    return () => { if (raf.current) cancelAnimationFrame(raf.current); };
-  }, []);
-
-  // Derived values — a stylised speed/throttle/brake curve across a lap.
-  const speed = Math.round(120 + 200 * (0.5 + 0.5 * Math.sin(t * Math.PI * 6 - 0.4)));
-  const throttle = Math.max(0, Math.min(100, Math.round(60 + 45 * Math.sin(t * Math.PI * 6))));
-  const brake = Math.max(0, Math.min(100, Math.round(30 - 60 * Math.sin(t * Math.PI * 6 - 0.6))));
-  const gear = Math.max(1, Math.min(8, 1 + Math.round(((speed - 80) / 260) * 7)));
-  const drs = throttle > 85 && brake < 5;
-  const rpm = 6000 + Math.round((speed / 340) * 6500);
-
-  // A stylised circuit path (not the real track) — dot rides along it.
   const pathRef = useRef<SVGPathElement | null>(null);
-  const [dot, setDot] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    if (!pathRef.current) return;
-    const len = pathRef.current.getTotalLength();
-    const p = pathRef.current.getPointAtLength(len * t);
-    setDot({ x: p.x, y: p.y });
-  }, [t]);
+  
+  // Refs for direct DOM updates
+  const speedRef = useRef<HTMLDivElement | null>(null);
+  const gearRef = useRef<HTMLDivElement | null>(null);
+  const rpmRef = useRef<HTMLDivElement | null>(null);
+  const drsRef = useRef<HTMLDivElement | null>(null);
+  const throttleBarRef = useRef<HTMLDivElement | null>(null);
+  const throttleValRef = useRef<HTMLDivElement | null>(null);
+  const brakeBarRef = useRef<HTMLDivElement | null>(null);
+  const brakeValRef = useRef<HTMLDivElement | null>(null);
+  
+  // Refs for car dot circles
+  const dotOutlineRef = useRef<SVGCircleElement | null>(null);
+  const dotFillRef = useRef<SVGCircleElement | null>(null);
+  const dotCoreRef = useRef<SVGCircleElement | null>(null);
 
-  const sector = t < 0.34 ? 1 : t < 0.68 ? 2 : 3;
+  // Sector elements
+  const sectorLabelRef = useRef<HTMLSpanElement | null>(null);
+  const sectorBoxesRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Tyre temperature bars
+  const tyreTempRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const tyreValRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      if (speedRef.current) speedRef.current.innerText = "234";
+      if (gearRef.current) gearRef.current.innerText = "6";
+      if (rpmRef.current) rpmRef.current.innerText = "10,230";
+      return;
+    }
+
+    const LAP_MS = 90_000; // 90s "lap"
+    let start = 0;
+    let rafId: number | null = null;
+
+    const loop = (ts: number) => {
+      if (!start) start = ts;
+      const t = ((ts - start) % LAP_MS) / LAP_MS;
+
+      // 1. Calculate derived values
+      const speedVal = Math.round(120 + 200 * (0.5 + 0.5 * Math.sin(t * Math.PI * 6 - 0.4)));
+      const throttleVal = Math.max(0, Math.min(100, Math.round(60 + 45 * Math.sin(t * Math.PI * 6))));
+      const brakeVal = Math.max(0, Math.min(100, Math.round(30 - 60 * Math.sin(t * Math.PI * 6 - 0.6))));
+      const gearVal = Math.max(1, Math.min(8, 1 + Math.round(((speedVal - 80) / 260) * 7)));
+      const drsVal = throttleVal > 85 && brakeVal < 5;
+      const rpmVal = 6000 + Math.round((speedVal / 340) * 6500);
+      const sectorVal = t < 0.34 ? 1 : t < 0.68 ? 2 : 3;
+
+      // 2. Perform Direct DOM Updates
+      if (speedRef.current) speedRef.current.innerText = speedVal.toString();
+      if (gearRef.current) gearRef.current.innerText = gearVal.toString();
+      if (rpmRef.current) rpmRef.current.innerText = rpmVal.toLocaleString();
+      if (drsRef.current) {
+        drsRef.current.innerText = drsVal ? "OPEN" : "CLOSED";
+        drsRef.current.style.color = drsVal ? color : "var(--ink-muted)";
+      }
+      if (throttleBarRef.current) throttleBarRef.current.style.width = `${throttleVal}%`;
+      if (throttleValRef.current) throttleValRef.current.innerText = `${throttleVal}%`;
+      if (brakeBarRef.current) brakeBarRef.current.style.width = `${brakeVal}%`;
+      if (brakeValRef.current) brakeValRef.current.innerText = `${brakeVal}%`;
+
+      // Update circuit dot position
+      if (pathRef.current) {
+        const len = pathRef.current.getTotalLength();
+        const pt = pathRef.current.getPointAtLength(len * t);
+        if (dotOutlineRef.current) {
+          dotOutlineRef.current.setAttribute("cx", pt.x.toString());
+          dotOutlineRef.current.setAttribute("cy", pt.y.toString());
+        }
+        if (dotFillRef.current) {
+          dotFillRef.current.setAttribute("cx", pt.x.toString());
+          dotFillRef.current.setAttribute("cy", pt.y.toString());
+        }
+        if (dotCoreRef.current) {
+          dotCoreRef.current.setAttribute("cx", pt.x.toString());
+          dotCoreRef.current.setAttribute("cy", pt.y.toString());
+        }
+      }
+
+      // Update sector label
+      if (sectorLabelRef.current) {
+        sectorLabelRef.current.innerText = `LAP · SECTOR ${sectorVal}`;
+      }
+
+      // Highlight active sector cards
+      sectorBoxesRef.current.forEach((box, i) => {
+        if (box) {
+          const active = sectorVal === i + 1;
+          box.style.opacity = active ? "1" : "0.6";
+          box.style.borderColor = active ? color : "var(--hairline)";
+        }
+      });
+
+      // Update tyre temps with slight noise animation
+      tyreTempRefs.current.forEach((tempBar, i) => {
+        if (tempBar) {
+          const noise = Math.sin(t * Math.PI * 12 + i) * 2;
+          const temp = Math.round(92 + 8 * Math.sin(i + i * 1.7) + noise);
+          if (tyreValRefs.current[i]) {
+            tyreValRefs.current[i]!.innerText = `${temp}°C`;
+          }
+          tempBar.style.background = `color-mix(in oklab, ${color} ${Math.min(100, temp)}%, #333)`;
+        }
+      });
+
+      rafId = requestAnimationFrame(loop);
+    };
+
+    rafId = requestAnimationFrame(loop);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [color]);
+
   const sectorTimes = ["23.482", "27.914", "24.106"];
 
   return (
@@ -72,7 +149,7 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
               <span className="absolute inset-0 rounded-full animate-ping" style={{ background: color, opacity: 0.7 }} />
               <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: color }} />
             </span>
-            <span className="text-eyebrow text-white">LAP · SECTOR {sector}</span>
+            <span ref={sectorLabelRef} className="text-eyebrow text-white">LAP · SECTOR 1</span>
           </div>
         </div>
 
@@ -100,22 +177,23 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
                 strokeDasharray="4 6"
                 opacity="0.6"
               />
-              {/* Sector markers */}
-              {[0.34, 0.68].map((p, i) => {
-                const el = pathRef.current;
-                if (!el) return null;
-                const pt = el.getPointAtLength(el.getTotalLength() * p);
-                return <circle key={i} cx={pt.x} cy={pt.y} r={3} fill="white" opacity={0.5} />;
-              })}
+              {/* Statically positioned sector markers */}
+              <circle cx={243} cy={68} r={3} fill="white" opacity={0.5} />
+              <circle cx={213} cy={172} r={3} fill="white" opacity={0.5} />
+              
               {/* Car dot */}
-              <circle cx={dot.x} cy={dot.y} r={10} fill={color} opacity={0.25} />
-              <circle cx={dot.x} cy={dot.y} r={5} fill={color} />
-              <circle cx={dot.x} cy={dot.y} r={2} fill="white" />
+              <circle ref={dotOutlineRef} cx={40} cy={180} r={10} fill={color} opacity={0.25} />
+              <circle ref={dotFillRef} cx={40} cy={180} r={5} fill={color} />
+              <circle ref={dotCoreRef} cx={40} cy={180} r={2} fill="white" />
             </svg>
             <div className="grid grid-cols-3 gap-4 mt-6">
               {sectorTimes.map((s, i) => (
-                <div key={i} className={`border-l pl-3 ${sector === i + 1 ? "" : "opacity-60"}`}
-                     style={{ borderColor: sector === i + 1 ? color : "var(--hairline)" }}>
+                <div
+                  key={i}
+                  ref={(el) => { sectorBoxesRef.current[i] = el; }}
+                  className="border-l pl-3 transition-all duration-150 opacity-60"
+                  style={{ borderColor: "var(--hairline)" }}
+                >
                   <div className="text-eyebrow text-ink-muted">S{i + 1}</div>
                   <div className="tabular text-lg text-white mt-1">{s}</div>
                 </div>
@@ -129,64 +207,81 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
               <div>
                 <div className="text-eyebrow text-ink-muted">Speed</div>
                 <div className="flex items-baseline gap-2 mt-2">
-                  <div className="tabular text-6xl font-bold text-white">{speed}</div>
+                  <div ref={speedRef} className="tabular text-6xl font-bold text-white">0</div>
                   <div className="text-xs text-ink-muted">KM/H</div>
                 </div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">Gear</div>
-                <div className="tabular text-6xl font-bold mt-2" style={{ color }}>{gear}</div>
+                <div ref={gearRef} className="tabular text-6xl font-bold mt-2" style={{ color }}>1</div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">RPM</div>
-                <div className="tabular text-2xl text-white mt-2">{rpm.toLocaleString()}</div>
+                <div ref={rpmRef} className="tabular text-2xl text-white mt-2">6,000</div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">DRS</div>
                 <div
+                  ref={drsRef}
                   className="tabular text-2xl mt-2 font-bold transition-colors"
-                  style={{ color: drs ? color : "var(--ink-muted)" }}
+                  style={{ color: "var(--ink-muted)" }}
                 >
-                  {drs ? "OPEN" : "CLOSED"}
+                  CLOSED
                 </div>
               </div>
             </div>
 
-            <Bar label="Throttle" value={throttle} color={color} />
-            <Bar label="Brake"    value={brake}    color="var(--m-red)" />
+            {/* Throttle Bar */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-eyebrow text-ink-muted">Throttle</div>
+                <div ref={throttleValRef} className="tabular text-xs text-white">0%</div>
+              </div>
+              <div className="h-2 bg-hairline-strong overflow-hidden">
+                <div
+                  ref={throttleBarRef}
+                  className="h-full transition-[width] duration-75 ease-out"
+                  style={{ width: "0%", background: color }}
+                />
+              </div>
+            </div>
+
+            {/* Brake Bar */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-eyebrow text-ink-muted">Brake</div>
+                <div ref={brakeValRef} className="tabular text-xs text-white">0%</div>
+              </div>
+              <div className="h-2 bg-hairline-strong overflow-hidden">
+                <div
+                  ref={brakeBarRef}
+                  className="h-full transition-[width] duration-75 ease-out"
+                  style={{ width: "0%", background: "var(--m-red)" }}
+                />
+              </div>
+            </div>
 
             <div className="grid grid-cols-4 gap-2 pt-2">
-              {(["FL", "FR", "RL", "RR"] as const).map((t, i) => {
-                const temp = 92 + Math.round(8 * Math.sin(i + i * 1.7));
-                return (
-                  <div key={t} className="border border-hairline p-2">
-                    <div className="text-[10px] uppercase tracking-widest text-ink-muted">{t} tyre</div>
-                    <div className="tabular text-sm text-white mt-1">{temp}°C</div>
-                    <div className="h-[3px] mt-2" style={{ background: `color-mix(in oklab, ${color} ${Math.min(100, temp)}%, #333)` }} />
+              {(["FL", "FR", "RL", "RR"] as const).map((t, i) => (
+                <div key={t} className="border border-hairline p-2">
+                  <div className="text-[10px] uppercase tracking-widest text-ink-muted">{t} tyre</div>
+                  <div
+                    ref={(el) => { tyreValRefs.current[i] = el; }}
+                    className="tabular text-sm text-white mt-1"
+                  >
+                    92°C
                   </div>
-                );
-              })}
+                  <div
+                    ref={(el) => { tyreTempRefs.current[i] = el; }}
+                    className="h-[3px] mt-2 transition-all duration-150"
+                    style={{ background: "#333" }}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function Bar({ label, value, color }: { label: string; value: number; color: string }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-eyebrow text-ink-muted">{label}</div>
-        <div className="tabular text-xs text-white">{value}%</div>
-      </div>
-      <div className="h-2 bg-hairline-strong overflow-hidden">
-        <div
-          className="h-full transition-[width] duration-150 ease-out"
-          style={{ width: `${value}%`, background: color }}
-        />
-      </div>
-    </div>
   );
 }
