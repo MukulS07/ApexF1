@@ -1,15 +1,18 @@
 import { useEffect, useRef } from "react";
-import { getDriver, getTeam, nextRace } from "@/lib/f1-data";
+import { getDriverOrFallback, getTeamOrFallback, nextRace } from "@/lib/f1-data";
 import type { Profile } from "@/hooks/useProfile";
+import { useLiveWeatherAndStints } from "@/hooks/useF1Data";
+import { systemLogger } from "@/lib/system-logger";
 
 export function TrackTelemetry({ profile }: { profile: Profile }) {
-  const driver = getDriver(profile.favoriteDriverId);
-  const team = driver ? getTeam(driver.teamId) : undefined;
+  const driver = getDriverOrFallback(profile.favoriteDriverId);
+  const team = driver ? getTeamOrFallback(driver.teamId) : undefined;
   const color = team?.color ?? "#1c69d4";
   const race = nextRace();
+  const { weather } = useLiveWeatherAndStints();
 
   const pathRef = useRef<SVGPathElement | null>(null);
-  
+
   // Refs for direct DOM updates
   const speedRef = useRef<HTMLDivElement | null>(null);
   const gearRef = useRef<HTMLDivElement | null>(null);
@@ -19,7 +22,7 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
   const throttleValRef = useRef<HTMLDivElement | null>(null);
   const brakeBarRef = useRef<HTMLDivElement | null>(null);
   const brakeValRef = useRef<HTMLDivElement | null>(null);
-  
+
   // Refs for car dot circles
   const dotOutlineRef = useRef<SVGCircleElement | null>(null);
   const dotFillRef = useRef<SVGCircleElement | null>(null);
@@ -32,6 +35,20 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
   // Tyre temperature bars
   const tyreTempRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tyreValRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    systemLogger.log(`Track telemetry feed initialized for ${race.name}`, "success");
+    systemLogger.log(`Starting telemetry simulation loop (90s interval)`, "info");
+  }, [race.name]);
+
+  useEffect(() => {
+    if (weather) {
+      systemLogger.log(
+        `Weather synchronized: Air ${weather.air_temperature}°C / Track ${weather.track_temperature}°C, ${weather.rainfall ? "RAIN DETECTED" : "DRY TRACK"}`,
+        "info",
+      );
+    }
+  }, [weather]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,8 +69,14 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
 
       // 1. Calculate derived values
       const speedVal = Math.round(120 + 200 * (0.5 + 0.5 * Math.sin(t * Math.PI * 6 - 0.4)));
-      const throttleVal = Math.max(0, Math.min(100, Math.round(60 + 45 * Math.sin(t * Math.PI * 6))));
-      const brakeVal = Math.max(0, Math.min(100, Math.round(30 - 60 * Math.sin(t * Math.PI * 6 - 0.6))));
+      const throttleVal = Math.max(
+        0,
+        Math.min(100, Math.round(60 + 45 * Math.sin(t * Math.PI * 6))),
+      );
+      const brakeVal = Math.max(
+        0,
+        Math.min(100, Math.round(30 - 60 * Math.sin(t * Math.PI * 6 - 0.6))),
+      );
       const gearVal = Math.max(1, Math.min(8, 1 + Math.round(((speedVal - 80) / 260) * 7)));
       const drsVal = throttleVal > 85 && brakeVal < 5;
       const rpmVal = 6000 + Math.round((speedVal / 340) * 6500);
@@ -137,8 +160,14 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
       <div className="relative mx-auto max-w-6xl px-6 sm:px-10 py-24 sm:py-32">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">
           <div>
-            <div className="text-eyebrow mb-4" style={{ color }}>// Track telemetry</div>
-            <h2 className="text-display text-white">Live from<br />the car.</h2>
+            <div className="text-eyebrow mb-4" style={{ color }}>
+              // Track telemetry
+            </div>
+            <h2 className="text-display text-white">
+              Live from
+              <br />
+              the car.
+            </h2>
             <p className="text-body text-sm mt-4 max-w-md">
               Simulated lap of {race.circuit} in {driver?.lastName ?? "your driver"}'s{" "}
               <span style={{ color }}>{team?.name}</span>.
@@ -146,10 +175,18 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
           </div>
           <div className="flex items-center gap-3">
             <span className="relative inline-flex h-2 w-2">
-              <span className="absolute inset-0 rounded-full animate-ping" style={{ background: color, opacity: 0.7 }} />
-              <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: color }} />
+              <span
+                className="absolute inset-0 rounded-full animate-ping"
+                style={{ background: color, opacity: 0.7 }}
+              />
+              <span
+                className="relative inline-flex h-2 w-2 rounded-full"
+                style={{ background: color }}
+              />
             </span>
-            <span ref={sectorLabelRef} className="text-eyebrow text-white">LAP · SECTOR 1</span>
+            <span ref={sectorLabelRef} className="text-eyebrow text-white">
+              LAP · SECTOR 1
+            </span>
           </div>
         </div>
 
@@ -158,7 +195,22 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
           <div className="bg-surface-card p-6 sm:p-8 relative">
             <div className="flex items-center justify-between mb-4">
               <div className="text-eyebrow text-ink-muted">Circuit trace</div>
-              <div className="tabular text-xs text-ink-muted">{race.circuit}</div>
+              <div className="flex items-center gap-3 text-xs font-mono">
+                {weather ? (
+                  <>
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-emerald-400">
+                      LIVE // Track {Math.round(weather.track_temperature)}°C // Air{" "}
+                      {Math.round(weather.air_temperature)}°C
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-ink-muted">{race.circuit}</span>
+                )}
+              </div>
             </div>
             <svg viewBox="0 0 400 240" className="w-full h-56">
               <path
@@ -180,7 +232,7 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
               {/* Statically positioned sector markers */}
               <circle cx={243} cy={68} r={3} fill="white" opacity={0.5} />
               <circle cx={213} cy={172} r={3} fill="white" opacity={0.5} />
-              
+
               {/* Car dot */}
               <circle ref={dotOutlineRef} cx={40} cy={180} r={10} fill={color} opacity={0.25} />
               <circle ref={dotFillRef} cx={40} cy={180} r={5} fill={color} />
@@ -190,7 +242,9 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
               {sectorTimes.map((s, i) => (
                 <div
                   key={i}
-                  ref={(el) => { sectorBoxesRef.current[i] = el; }}
+                  ref={(el) => {
+                    sectorBoxesRef.current[i] = el;
+                  }}
                   className="border-l pl-3 transition-all duration-150 opacity-60"
                   style={{ borderColor: "var(--hairline)" }}
                 >
@@ -207,17 +261,23 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
               <div>
                 <div className="text-eyebrow text-ink-muted">Speed</div>
                 <div className="flex items-baseline gap-2 mt-2">
-                  <div ref={speedRef} className="tabular text-6xl font-bold text-white">0</div>
+                  <div ref={speedRef} className="tabular text-6xl font-bold text-white">
+                    0
+                  </div>
                   <div className="text-xs text-ink-muted">KM/H</div>
                 </div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">Gear</div>
-                <div ref={gearRef} className="tabular text-6xl font-bold mt-2" style={{ color }}>1</div>
+                <div ref={gearRef} className="tabular text-6xl font-bold mt-2" style={{ color }}>
+                  1
+                </div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">RPM</div>
-                <div ref={rpmRef} className="tabular text-2xl text-white mt-2">6,000</div>
+                <div ref={rpmRef} className="tabular text-2xl text-white mt-2">
+                  6,000
+                </div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">DRS</div>
@@ -235,7 +295,9 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="text-eyebrow text-ink-muted">Throttle</div>
-                <div ref={throttleValRef} className="tabular text-xs text-white">0%</div>
+                <div ref={throttleValRef} className="tabular text-xs text-white">
+                  0%
+                </div>
               </div>
               <div className="h-2 bg-hairline-strong overflow-hidden">
                 <div
@@ -250,7 +312,9 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="text-eyebrow text-ink-muted">Brake</div>
-                <div ref={brakeValRef} className="tabular text-xs text-white">0%</div>
+                <div ref={brakeValRef} className="tabular text-xs text-white">
+                  0%
+                </div>
               </div>
               <div className="h-2 bg-hairline-strong overflow-hidden">
                 <div
@@ -264,15 +328,21 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
             <div className="grid grid-cols-4 gap-2 pt-2">
               {(["FL", "FR", "RL", "RR"] as const).map((t, i) => (
                 <div key={t} className="border border-hairline p-2">
-                  <div className="text-[10px] uppercase tracking-widest text-ink-muted">{t} tyre</div>
+                  <div className="text-[10px] uppercase tracking-widest text-ink-muted">
+                    {t} tyre
+                  </div>
                   <div
-                    ref={(el) => { tyreValRefs.current[i] = el; }}
+                    ref={(el) => {
+                      tyreValRefs.current[i] = el;
+                    }}
                     className="tabular text-sm text-white mt-1"
                   >
                     92°C
                   </div>
                   <div
-                    ref={(el) => { tyreTempRefs.current[i] = el; }}
+                    ref={(el) => {
+                      tyreTempRefs.current[i] = el;
+                    }}
                     className="h-[3px] mt-2 transition-all duration-150"
                     style={{ background: "#333" }}
                   />

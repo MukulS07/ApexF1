@@ -3,9 +3,12 @@ import {
   constructorsStandings,
   driversStandings,
   getDriver,
+  getDriverOrFallback,
   getTeam,
+  getTeamOrFallback,
   lastRace,
 } from "@/lib/f1-data";
+import { useDriverStandings, useConstructorStandings, useLastRaceResults } from "@/hooks/useF1Data";
 
 /**
  * Three-column aligned board:
@@ -15,9 +18,6 @@ import {
  * across the full width (matches the reference layout).
  */
 export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: string }) {
-  const driverLeader = driversStandings[0].points;
-  const teamLeader = constructorsStandings[0].points;
-
   // Highlight flash when the favorite driver changes.
   const [flash, setFlash] = useState(0);
   const prev = useRef<string | undefined>(favoriteDriverId);
@@ -28,20 +28,44 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
     }
   }, [favoriteDriverId]);
 
-  const winner = getDriver(lastRace.winnerId)!;
-  const winnerTeam = getTeam(winner.teamId)!;
-  const fl = getDriver(lastRace.fastestLapId)!;
+  const { data: realTimeDrivers = [] } = useDriverStandings();
+  const { data: realTimeTeams = [] } = useConstructorStandings();
+  const { data: realTimeLastRace = null } = useLastRaceResults();
+
+  const currentDrivers = realTimeDrivers.length > 0 ? realTimeDrivers : driversStandings;
+  const currentTeams = realTimeTeams.length > 0 ? realTimeTeams : constructorsStandings;
+  const currentLastRace: any = realTimeLastRace || lastRace;
+
+  const driverLeader = currentDrivers[0]?.points || 1;
+  const teamLeader = currentTeams[0]?.points || 1;
+
+  const winner = getDriverOrFallback(currentLastRace.winnerId);
+  const winnerTeam = getTeamOrFallback(winner.teamId);
+  const fl = getDriverOrFallback(currentLastRace.fastestLapId);
 
   return (
     <section className="bg-canvas border-t border-hairline-strong">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 py-16 sm:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr_0.95fr] gap-px bg-hairline-strong border border-hairline-strong">
           {/* -------- § 01 Drivers -------- */}
-          <Column index="01" title="Drivers'" accent="Championship" sub={`${driversStandings.length} rounds in`}>
+          <Column
+            index="01"
+            title="Drivers'"
+            accent="Championship"
+            sub={`${currentDrivers.length} rounds in`}
+          >
             <ol>
-              {driversStandings.map((row, i) => {
-                const d = getDriver(row.driverId)!;
-                const t = getTeam(d.teamId)!;
+              {currentDrivers.map((row: any, i: number) => {
+                const d = getDriverOrFallback(
+                  row.driverId,
+                  (row as any).rawDriver
+                    ? {
+                        ...(row as any).rawDriver,
+                        constructorId: row.constructorId,
+                      }
+                    : undefined,
+                );
+                const t = getTeamOrFallback(d.teamId);
                 const mine = d.id === favoriteDriverId;
                 return (
                   <li
@@ -92,7 +116,10 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
                       <div className="h-[2px] bg-hairline-strong overflow-hidden mt-2">
                         <div
                           className="h-full transition-all duration-700"
-                          style={{ width: `${(row.points / driverLeader) * 100}%`, background: t.color }}
+                          style={{
+                            width: `${(row.points / driverLeader) * 100}%`,
+                            background: t.color,
+                          }}
                         />
                       </div>
                     </div>
@@ -107,10 +134,15 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
           </Column>
 
           {/* -------- § 02 Constructors -------- */}
-          <Column index="02" title="Constructors'" accent="Cup" sub={`All ${constructorsStandings.length} teams · 2026`}>
+          <Column
+            index="02"
+            title="Constructors'"
+            accent="Cup"
+            sub={`All ${currentTeams.length} teams · 2026`}
+          >
             <ol>
-              {constructorsStandings.map((row, i) => {
-                const t = getTeam(row.teamId)!;
+              {currentTeams.map((row: any, i: number) => {
+                const t = getTeamOrFallback(row.teamId, (row as any).teamName);
                 return (
                   <li
                     key={row.teamId}
@@ -129,7 +161,10 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
                       <div className="h-[2px] bg-hairline-strong overflow-hidden mt-2">
                         <div
                           className="h-full transition-all duration-700"
-                          style={{ width: `${(row.points / teamLeader) * 100}%`, background: t.color }}
+                          style={{
+                            width: `${(row.points / teamLeader) * 100}%`,
+                            background: t.color,
+                          }}
                         />
                       </div>
                     </div>
@@ -152,19 +187,27 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
             aside={
               <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-ink-muted">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                updated 16 min ago
+                Live Data
               </span>
             }
           >
             <div className="px-4 py-3 border-b border-hairline text-[11px] uppercase tracking-wider text-ink-muted">
-              {lastRace.name} · {lastRace.circuit} · Result
+              {currentLastRace.name} · {currentLastRace.circuit} · Result
             </div>
-            {lastRace.podium.map((id, i) => {
-              const d = getDriver(id)!;
-              const t = getTeam(d.teamId)!;
-              const label = i === 0 ? lastRace.fastestLap.replace(/^0?/, "1:27:11.") : `+${(0.4 + i * 0.35).toFixed(3)}`;
+            {currentLastRace.podium.map((id: string, i: number) => {
+              const d = getDriverOrFallback(id);
+              const t = getTeamOrFallback(d.teamId);
+              const label =
+                i === 0
+                  ? currentLastRace.results?.[0]?.time || currentLastRace.fastestLap
+                  : currentLastRace.results?.[i]
+                    ? currentLastRace.results[i].time
+                    : `+${(0.4 + i * 0.35).toFixed(3)}`;
               return (
-                <div key={id} className="flex items-center gap-3 py-4 px-4 border-b border-hairline">
+                <div
+                  key={id}
+                  className="flex items-center gap-3 py-4 px-4 border-b border-hairline"
+                >
                   <span
                     className="text-[10px] font-bold px-2 py-1 tabular"
                     style={{ background: t.color, color: "white" }}
@@ -187,20 +230,20 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
             <Story
               tag="Last race"
               index="01"
-              headline={`${winner.firstName} ${winner.lastName} wins ${lastRace.name}`}
-              body={`${winner.firstName} ${winner.lastName} (${winnerTeam.name}) took the flag ahead of the field at ${lastRace.circuit}.`}
+              headline={`${winner.firstName} ${winner.lastName} wins ${currentLastRace.name}`}
+              body={`${winner.firstName} ${winner.lastName} (${winnerTeam.name}) took the flag ahead of the field at ${currentLastRace.circuit}.`}
             />
             <Story
               tag="Fastest lap"
               index="02"
-              headline={`${fl.lastName[0]}. ${fl.lastName} sets ${lastRace.fastestLap} at ${lastRace.name}`}
+              headline={`${fl.lastName[0]}. ${fl.lastName} sets ${currentLastRace.fastestLap} at ${currentLastRace.name}`}
               body={`Fastest tour of the race on the closing stint — a bonus point if it stays in the top ten.`}
             />
             <Story
               tag="Championship"
               index="03"
-              headline={`${getDriver(driversStandings[0].driverId)!.lastName} leads ${getDriver(driversStandings[1].driverId)!.lastName} by ${driversStandings[0].points - driversStandings[1].points} points`}
-              body={`${getTeam(getDriver(driversStandings[0].driverId)!.teamId)!.name} versus ${getTeam(getDriver(driversStandings[1].driverId)!.teamId)!.name} at the front — who wins this year?`}
+              headline={`${getDriverOrFallback(currentDrivers[0]?.driverId).lastName} leads ${getDriverOrFallback(currentDrivers[1]?.driverId).lastName} by ${(currentDrivers[0]?.points || 0) - (currentDrivers[1]?.points || 0)} points`}
+              body={`${getTeamOrFallback(getDriverOrFallback(currentDrivers[0]?.driverId).teamId).name} versus ${getTeamOrFallback(getDriverOrFallback(currentDrivers[1]?.driverId).teamId).name} at the front — who wins this year?`}
             />
           </Column>
         </div>
@@ -231,7 +274,10 @@ function Column({
           <div className="text-eyebrow text-ink-muted mb-2">§ {index}</div>
           <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-none">
             {title}{" "}
-            <span className="italic font-serif normal-case tracking-normal" style={{ color: "var(--team-hex, #ff2a2a)" }}>
+            <span
+              className="italic font-serif normal-case tracking-normal"
+              style={{ color: "var(--team-hex, #ff2a2a)" }}
+            >
               {accent}
             </span>
           </h2>
@@ -244,7 +290,17 @@ function Column({
   );
 }
 
-function Story({ tag, index, headline, body }: { tag: string; index: string; headline: string; body: string }) {
+function Story({
+  tag,
+  index,
+  headline,
+  body,
+}: {
+  tag: string;
+  index: string;
+  headline: string;
+  body: string;
+}) {
   return (
     <div className="px-4 py-5 border-b border-hairline">
       <div className="flex items-center justify-between mb-2">

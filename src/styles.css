@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* BMW M-inspired design system for The Pit Wall */
+/* BMW M-inspired design system for ApexF1 */
 
 @theme inline {
   --font-display: "Inter", system-ui, -apple-system, sans-serif;
@@ -54,20 +54,20 @@
   --radius: 0px;
 
   /* BMW M tokens */
-  --canvas: oklch(0 0 0);                       /* #000 */
-  --surface-soft: oklch(0.09 0 0);              /* #0d0d0d */
-  --surface-card: oklch(0.16 0 0);              /* #1a1a1a */
-  --surface-elevated: oklch(0.22 0 0);          /* #262626 */
-  --ink: oklch(1 0 0);                          /* #fff */
-  --ink-strong: oklch(0.94 0 0);                /* #e6e6e6 */
-  --body: oklch(0.79 0 0);                      /* #bbbbbb */
-  --ink-muted: oklch(0.58 0 0);                 /* #7e7e7e */
-  --hairline: oklch(0.32 0 0);                  /* #3c3c3c */
-  --hairline-strong: oklch(0.21 0 0);           /* #262626 */
+  --canvas: oklch(0 0 0); /* #000 */
+  --surface-soft: oklch(0.09 0 0); /* #0d0d0d */
+  --surface-card: oklch(0.16 0 0); /* #1a1a1a */
+  --surface-elevated: oklch(0.22 0 0); /* #262626 */
+  --ink: oklch(1 0 0); /* #fff */
+  --ink-strong: oklch(0.94 0 0); /* #e6e6e6 */
+  --body: oklch(0.79 0 0); /* #bbbbbb */
+  --ink-muted: oklch(0.58 0 0); /* #7e7e7e */
+  --hairline: oklch(0.32 0 0); /* #3c3c3c */
+  --hairline-strong: oklch(0.21 0 0); /* #262626 */
 
-  --m-blue-light: oklch(0.53 0.16 240);         /* #0066b1 */
-  --m-blue-dark:  oklch(0.55 0.20 262);         /* #1c69d4 */
-  --m-red:        oklch(0.59 0.24 27);          /* #e22718 */
+  --m-blue-light: oklch(0.53 0.16 240); /* #0066b1 */
+  --m-blue-dark: oklch(0.55 0.2 262); /* #1c69d4 */
+  --m-red: oklch(0.59 0.24 27); /* #e22718 */
 
   /* team accent set by JS from favorite driver */
   --team-hex: #1c69d4;
@@ -95,13 +95,16 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
 
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     background: var(--canvas);
+    scroll-behavior: smooth;
   }
 
   body {
@@ -112,7 +115,10 @@
     letter-spacing: 0;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: 0;
@@ -175,10 +181,15 @@
   text-transform: uppercase;
   background: var(--ink);
   color: var(--canvas);
-  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
   border: 1px solid var(--ink);
   cursor: pointer;
-  &:hover { transform: translateX(3px); }
+  &:hover {
+    transform: translateX(3px);
+  }
 }
 @utility btn-m-ghost {
   display: inline-flex;
@@ -197,7 +208,10 @@
   border: 1px solid var(--hairline);
   transition: all 0.25s ease;
   cursor: pointer;
-  &:hover { border-color: var(--ink); transform: translateX(3px); }
+  &:hover {
+    border-color: var(--ink);
+    transform: translateX(3px);
+  }
 }
 
 /* M tricolor stripe */
@@ -235,32 +249,52 @@
   perspective: 1200px;
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
-  &:hover { transform: perspective(1200px) rotateX(3deg) rotateY(-4deg) translateZ(6px); }
+  &:hover {
+    transform: perspective(1200px) rotateX(3deg) rotateY(-4deg) translateZ(6px);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tilt-card { transition: none; }
-  .tilt-card:hover { transform: none; }
+  .tilt-card {
+    transition: none;
+  }
+  .tilt-card:hover {
+    transform: none;
+  }
 }
 
 /* Standings row highlight when the favorite driver changes */
 @keyframes row-flash {
-  0%   { background: color-mix(in oklab, var(--team-hex) 22%, transparent); }
-  100% { background: transparent; }
+  0% {
+    background: color-mix(in oklab, var(--team-hex) 22%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
 }
 @utility row-flash {
   animation: row-flash 1.6s ease-out both;
 }
 @keyframes mine-bar-in {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
 }
 @utility mine-bar {
   transform-origin: top;
   animation: mine-bar-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 @keyframes mine-badge-in {
-  from { opacity: 0; transform: translateX(-4px) scale(0.9); }
-  to   { opacity: 1; transform: translateX(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 @utility mine-badge {
   animation: mine-badge-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -272,19 +306,26 @@
   &::after {
     content: "";
     position: absolute;
-    left: 0; bottom: 0;
+    left: 0;
+    bottom: 0;
     height: 2px;
     width: 0;
     background: linear-gradient(to right, var(--team-hex), transparent);
     transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  &:hover::after { width: 100%; }
+  &:hover::after {
+    width: 100%;
+  }
 }
 
 /* Animated scan line */
 @keyframes m-scan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 @utility scan-loop {
   position: relative;
@@ -293,7 +334,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
     animation: m-scan 3.5s linear infinite;
     pointer-events: none;
   }
@@ -301,8 +342,12 @@
 
 /* Marquee for eyebrow strips */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 @utility marquee {
   display: flex;
@@ -315,13 +360,20 @@
   backface-visibility: hidden;
 }
 @media (prefers-reduced-motion: reduce) {
-  .marquee { animation: none; }
+  .marquee {
+    animation: none;
+  }
 }
 
 /* Countdown glow pulse */
 @keyframes m-pulse {
-  0%, 100% { text-shadow: 0 0 0 rgba(255,255,255,0); }
-  50%      { text-shadow: 0 0 24px color-mix(in oklab, var(--team-hex) 60%, transparent); }
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    text-shadow: 0 0 24px color-mix(in oklab, var(--team-hex) 60%, transparent);
+  }
 }
 @utility glow-pulse {
   animation: m-pulse 2.4s ease-in-out infinite;
@@ -329,8 +381,14 @@
 
 /* Fade / rise on scroll-in (via animate-in) */
 @keyframes rise-in {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @utility rise {
   animation: rise-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -339,15 +397,19 @@
 /* Grid backdrop for hero */
 @utility grid-bg {
   background-image:
-    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 
 /* Rotating carbon-fibre feel radial */
 @keyframes slow-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @utility slow-spin {
   animation: slow-spin 60s linear infinite;

@@ -7,15 +7,28 @@ import { ChampionshipBoard } from "@/components/ChampionshipBoard";
 import { SeasonCalendar } from "@/components/SeasonCalendar";
 import { YourDriver } from "@/components/YourDriver";
 import { TrackTelemetry } from "@/components/TrackTelemetry";
+import { LastRaceRecap } from "@/components/LastRaceRecap";
+import { StatsRow } from "@/components/StatsRow";
+import { PaddockLapsRow } from "@/components/PaddockLapsRow";
 import { Footer, TopNav } from "@/components/Shell";
+import { SystemLogBar } from "@/components/SystemLogBar";
+import { MiniChatbot } from "@/components/MiniChatbot";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "The Pit Wall — Your F1 2026 Dashboard" },
-      { name: "description", content: "A quiet, always-on Formula 1 2026 dashboard. Countdown to lights-out, live standings, calendar, and paddock intel — in your driver's team colors." },
-      { property: "og:title", content: "The Pit Wall — Your F1 2026 Dashboard" },
-      { property: "og:description", content: "Countdown, standings, calendar, and recap for the 2026 F1 season — personalised to your driver." },
+      { title: "ApexF1 — Your F1 2026 Dashboard" },
+      {
+        name: "description",
+        content:
+          "A quiet, always-on Formula 1 2026 dashboard. Countdown to lights-out, live standings, calendar, and paddock intel — in your driver's team colors.",
+      },
+      { property: "og:title", content: "ApexF1 — Your F1 2026 Dashboard" },
+      {
+        property: "og:description",
+        content:
+          "Countdown, standings, calendar, and recap for the 2026 F1 season — personalised to your driver.",
+      },
     ],
   }),
   component: Index,
@@ -37,20 +50,33 @@ function Index() {
 
       {profile ? (
         <>
-          <div id="next"><HeroNextRace profile={profile} onEditProfile={() => setEditing(true)} /></div>
-          <div id="standings"><ChampionshipBoard favoriteDriverId={profile.favoriteDriverId} /></div>
-          <div id="telemetry"><TrackTelemetry profile={profile} /></div>
-          <div id="calendar"><SeasonCalendar /></div>
-          <div id="driver"><YourDriver profile={profile} /></div>
+          <div id="next">
+            <HeroNextRace profile={profile} onEditProfile={() => setEditing(true)} />
+          </div>
+          <StatsRow favoriteDriverId={profile.favoriteDriverId} />
+          <PaddockLapsRow profile={profile} />
+          <div id="standings">
+            <ChampionshipBoard favoriteDriverId={profile.favoriteDriverId} />
+          </div>
+          <div id="recap">
+            <LastRaceRecap />
+          </div>
+          <div id="telemetry">
+            <TrackTelemetry profile={profile} />
+          </div>
+          <div id="calendar">
+            <SeasonCalendar />
+          </div>
+          <div id="driver">
+            <YourDriver profile={profile} />
+          </div>
           <Footer />
         </>
       ) : (
         <div className="min-h-[80vh] tile-dark flex items-center justify-center px-6">
           <div className="text-center max-w-xl">
-            <h1 className="text-hero text-white">The Pit Wall.</h1>
-            <p className="text-lead text-white/60 mt-4">
-              Your quiet, always-on F1 2026 dashboard.
-            </p>
+            <h1 className="text-hero text-white">ApexF1.</h1>
+            <p className="text-lead text-white/60 mt-4">Your quiet, always-on F1 2026 dashboard.</p>
           </div>
         </div>
       )}
@@ -64,6 +90,9 @@ function Index() {
           setEditing(false);
         }}
       />
+
+      <SystemLogBar />
+      <MiniChatbot profile={profile} />
     </div>
   );
 }

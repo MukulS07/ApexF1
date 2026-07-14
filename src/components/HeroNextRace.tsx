@@ -1,4 +1,4 @@
-import { getDriver, getTeam, nextRace } from "@/lib/f1-data";
+import { getDriverOrFallback, getTeamOrFallback, nextRace } from "@/lib/f1-data";
 import { useCountdown } from "@/hooks/useCountdown";
 import { useRafTilt } from "@/hooks/useRafTilt";
 import type { Profile } from "@/hooks/useProfile";
@@ -7,6 +7,7 @@ import { ThreeCarCanvas } from "./ThreeCarCanvas";
 import { useState } from "react";
 import { LiveryConceptBoard } from "./LiveryConceptBoard";
 import { Eye } from "lucide-react";
+import { useF1Schedule } from "@/hooks/useF1Data";
 
 function greet() {
   const h = new Date().getHours();
@@ -30,14 +31,36 @@ function TimeBlock({ label, value, glow }: { label: string; value: number; glow?
   );
 }
 
-export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onEditProfile: () => void }) {
-  const race = nextRace();
+export function HeroNextRace({
+  profile,
+  onEditProfile,
+}: {
+  profile: Profile;
+  onEditProfile: () => void;
+}) {
+  const { data: realTimeSchedule = [] } = useF1Schedule();
+
+  const now = new Date();
+  const upcoming =
+    realTimeSchedule.length > 0
+      ? realTimeSchedule.find((r) => new Date(r.dateISO).getTime() > now.getTime())
+      : undefined;
+  const race = upcoming || nextRace();
+
   const cd = useCountdown(race.dateISO);
-  const driver = getDriver(profile.favoriteDriverId);
-  const team = driver ? getTeam(driver.teamId) : undefined;
+  const driver = getDriverOrFallback(profile.favoriteDriverId);
+  const team = driver ? getTeamOrFallback(driver.teamId) : undefined;
   const raceDate = new Date(race.dateISO);
-  const fmt = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" });
-  const timeFmt = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" });
+  const fmt = new Intl.DateTimeFormat(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+  const timeFmt = new Intl.DateTimeFormat(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
 
   const [liveryMode, setLiveryMode] = useState<"dark" | "black" | "teal" | "white">("dark");
   const [boardOpen, setBoardOpen] = useState(false);
@@ -49,9 +72,11 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
     <section ref={heroRef} className="relative overflow-hidden bg-canvas grid-bg">
       {/* Ambient team-color glow */}
       <div
-        className="pointer-events-none absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full blur-3xl opacity-30 slow-spin"
-        style={{ background: `radial-gradient(circle, ${team?.color ?? "#1c69d4"}, transparent 60%)`,
-                 transform: "translate(var(--px, 0), var(--py, 0))" }}
+        className="pointer-events-none absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full blur-3xl opacity-30"
+        style={{
+          background: `radial-gradient(circle, ${team?.color ?? "#1c69d4"}, transparent 60%)`,
+          transform: "translate(var(--px, 0), var(--py, 0))",
+        }}
       />
       <div
         className="pointer-events-none absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full blur-3xl opacity-20"
@@ -62,28 +87,37 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
 
       <div className="mx-auto max-w-6xl px-6 sm:px-10 pt-6 sm:pt-8 pb-8 sm:pb-10 relative">
         <div className="flex items-center justify-between text-eyebrow text-ink-muted mb-8">
-          <span>{greet()}, {profile.name}.</span>
-          <button onClick={onEditProfile} className="hover:text-white transition-colors">Edit profile →</button>
+          <span>
+            {greet()}, {profile.name}.
+          </span>
+          <button onClick={onEditProfile} className="hover:text-white transition-colors">
+            Edit profile →
+          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-stretch">
-          
           {/* Main Info Column */}
           <div className="lg:col-span-2 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-4 text-eyebrow mb-4">
-                <span className="tabular text-white">Round {race.round.toString().padStart(2, "0")} / 24</span>
+                <span className="tabular text-white">
+                  Round {race.round.toString().padStart(2, "0")} / 24
+                </span>
                 <MStripe className="!w-12 !h-[3px]" />
-                <span className="text-ink-muted">{race.city} · {race.country}</span>
+                <span className="text-ink-muted">
+                  {race.city} · {race.country}
+                </span>
               </div>
 
               <h1 className="text-hero text-white mb-4 rise">
-                {race.name.replace(" GP", "")}<br />
+                {race.name.replace(" Grand Prix", "").replace(" GP", "").replace(" Grand-Prix", "")}
+                <br />
                 <span style={{ color: team?.color ?? "rgba(255,255,255,0.4)" }}>Grand Prix.</span>
               </h1>
 
               <p className="text-lead text-body max-w-2xl mb-8">
-                Lights out {fmt.format(raceDate)} · <span className="text-white">{timeFmt.format(raceDate)}</span>. Lap record{" "}
+                Lights out {fmt.format(raceDate)} ·{" "}
+                <span className="text-white">{timeFmt.format(raceDate)}</span>. Lap record{" "}
                 <span className="tabular text-white">{race.lapRecord}</span> · 2025 pole{" "}
                 <span className="tabular text-white">{race.polePrev}</span>.
               </p>
@@ -104,7 +138,9 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
               <div className="inline-flex items-stretch bg-surface-card tilt-card self-start mt-4">
                 <span className="w-1" style={{ background: team.color }} />
                 <div className="px-6 py-5 flex items-center gap-6">
-                  <span className="tabular text-4xl font-bold" style={{ color: team.color }}>{driver.number}</span>
+                  <span className="tabular text-4xl font-bold" style={{ color: team.color }}>
+                    {driver.number}
+                  </span>
                   <div>
                     <div className="text-eyebrow text-ink-muted">Your driver</div>
                     <div className="text-white text-lg font-bold uppercase tracking-tight mt-1">
@@ -127,7 +163,9 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
               <div className="p-4 border-b border-hairline-strong flex justify-between items-center bg-black/40">
                 <div>
                   <div className="text-eyebrow text-ink-muted">// LIVERY SHOWROOM</div>
-                  <div className="text-xs font-bold text-white uppercase mt-0.5">{team.short} - {driver.lastName} #{driver.number}</div>
+                  <div className="text-xs font-bold text-white uppercase mt-0.5">
+                    {team.short} - {driver.lastName} #{driver.number}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {team.id === "mclaren" && (
@@ -144,7 +182,7 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex-1 relative bg-black min-h-[180px]">
                 <ThreeCarCanvas
                   teamId={team.id}
@@ -176,7 +214,6 @@ export function HeroNextRace({ profile, onEditProfile }: { profile: Profile; onE
               )}
             </div>
           )}
-
         </div>
       </div>
 

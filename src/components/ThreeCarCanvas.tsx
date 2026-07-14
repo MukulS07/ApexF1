@@ -6,6 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { getTeam } from "@/lib/f1-data";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { systemLogger } from "@/lib/system-logger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -25,7 +26,7 @@ interface Props {
 function getTextureFileForMaterial(materialName: string, teamId: string): string | null {
   if (!materialName) return null;
   const nameLower = materialName.toLowerCase();
-  
+
   const mclFiles = [
     "cam_tbone_misc_BaseColor_sRGB_1002.png",
     "drs_puller_BaseColor_sRGB_1002.png",
@@ -46,17 +47,10 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "wheel_nut_BaseColor_sRGB_1001.png",
     "wheel_rim_BaseColor_sRGB_1001.png",
     "wheel_screw_001_BaseColor_sRGB_1001.png",
-    "wheel_screw_BaseColor_sRGB_1001.png"
+    "wheel_screw_BaseColor_sRGB_1001.png",
   ];
 
-  const merFiles = [
-    "w14_m.png",
-    "w14_2.png",
-    "rim.png",
-    "stwheel.png",
-    "tyre.png",
-    "tyrewall.png"
-  ];
+  const merFiles = ["w14_m.png", "w14_2.png", "rim.png", "stwheel.png", "tyre.png", "tyrewall.png"];
 
   const ferFiles = [
     "sf26_c.PNG.png",
@@ -67,16 +61,10 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "stwheel.PNG.png",
     "tread.PNG.png",
     "tyrewall.png",
-    "wheel.png"
+    "wheel.png",
   ];
 
-  const rbrFiles = [
-    "rb19_2.png",
-    "rim.png",
-    "stwheel.png",
-    "tyre.png",
-    "tyrewall.png"
-  ];
+  const rbrFiles = ["rb19_2.png", "rim.png", "stwheel.png", "tyre.png", "tyrewall.png"];
 
   const wilFiles = [
     "fw47_2.png",
@@ -87,7 +75,7 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "rim.png",
     "stwheel.png",
     "tyre.png",
-    "tyrewall.png"
+    "tyrewall.png",
   ];
 
   const alpFiles = [
@@ -98,7 +86,7 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "aiStandardSurface96SG_Base_color_1001.png",
     "aiStandardSurface97SG_Base_color_1001.png",
     "aiStandardSurface98SG_Base_color_1001.png",
-    "aiStandardSurface99SG_Base_color_1001.png"
+    "aiStandardSurface99SG_Base_color_1001.png",
   ];
 
   const astFiles = [
@@ -109,7 +97,7 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "_aiStandardSurface93SG_Base_color_1001.png",
     "_aiStandardSurface94SG_Base_color_1001.png",
     "_aiStandardSurface95SG_Base_color_1001.png",
-    "Steer_new.png"
+    "Steer_new.png",
   ];
 
   const haasFiles = [
@@ -119,7 +107,7 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "aiStandardSurface96_Base_color_1001.png",
     "aiStandardSurface97_Base_color_1001.png",
     "aiStandardSurface98_Base_color_1001.png",
-    "Steer_new.png"
+    "Steer_new.png",
   ];
 
   const rbFiles = [
@@ -130,7 +118,7 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
     "aiStandardSurface113SG_Base_color_1001.png",
     "aiStandardSurface115SG_Base_color_1001.png",
     "aiStandardSurface116SG_Base_color_1001.png",
-    "Steer_new.png"
+    "Steer_new.png",
   ];
 
   let filesList: string[] = [];
@@ -194,27 +182,39 @@ function getTextureFileForMaterial(materialName: string, teamId: string): string
 
   // 3. Strict Fallback Keyword Match (context aware)
   if (cleanName.includes("tyrewall")) {
-    const match = filesList.find(f => f.toLowerCase().includes("tyrewall"));
+    const match = filesList.find((f) => f.toLowerCase().includes("tyrewall"));
     if (match) return match;
   }
   if (cleanName.includes("tread") || cleanName.includes("tire") || cleanName.includes("tyre")) {
     // Match treads / tyres but exclude tyre-walls
-    const match = filesList.find(f => {
+    const match = filesList.find((f) => {
       const fLower = f.toLowerCase();
-      return (fLower.includes("tread") || fLower.includes("tyre") || fLower.includes("tire")) && !fLower.includes("wall");
+      return (
+        (fLower.includes("tread") || fLower.includes("tyre") || fLower.includes("tire")) &&
+        !fLower.includes("wall")
+      );
     });
     if (match) return match;
   }
-  if (cleanName.includes("rim") || (cleanName.includes("wheel") && !cleanName.includes("steer") && !cleanName.includes("stwheel"))) {
+  if (
+    cleanName.includes("rim") ||
+    (cleanName.includes("wheel") && !cleanName.includes("steer") && !cleanName.includes("stwheel"))
+  ) {
     // Match rims / wheels but exclude steering wheels
-    const match = filesList.find(f => {
+    const match = filesList.find((f) => {
       const fLower = f.toLowerCase();
-      return (fLower.includes("rim") || fLower.includes("wheel")) && !fLower.includes("steer") && !fLower.includes("stwheel");
+      return (
+        (fLower.includes("rim") || fLower.includes("wheel")) &&
+        !fLower.includes("steer") &&
+        !fLower.includes("stwheel")
+      );
     });
     if (match) return match;
   }
   if (cleanName.includes("steer") || cleanName.includes("stwheel")) {
-    const match = filesList.find(f => f.toLowerCase().includes("steer") || f.toLowerCase().includes("stwheel"));
+    const match = filesList.find(
+      (f) => f.toLowerCase().includes("steer") || f.toLowerCase().includes("stwheel"),
+    );
     if (match) return match;
   }
 
@@ -244,16 +244,16 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "wheel_nut_BaseColor_sRGB_1001.png",
     "wheel_rim_BaseColor_sRGB_1001.png",
     "wheel_screw_001_BaseColor_sRGB_1001.png",
-    "wheel_screw_BaseColor_sRGB_1001.png"
+    "wheel_screw_BaseColor_sRGB_1001.png",
   ];
 
   const merFiles = [
-    "w14_2.png",      // model_0
-    "stwheel.png",    // model_1
-    "w14_2.png",      // model_2
-    "w14_2.png",      // model_3
-    "w14_m.png",      // model_4
-    "w14_m.png"       // model_5
+    "w14_2.png", // model_0
+    "stwheel.png", // model_1
+    "w14_2.png", // model_2
+    "w14_2.png", // model_3
+    "w14_m.png", // model_4
+    "w14_m.png", // model_5
   ];
 
   const ferFiles = [
@@ -265,16 +265,10 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "stwheel.PNG.png", // model_5 (stwheel)
     "", // model_6
     "tread.PNG.png", // model_7 (tread)
-    "tyrewall.png" // model_8 (tyrewall)
+    "tyrewall.png", // model_8 (tyrewall)
   ];
 
-  const rbrFiles = [
-    "rb19_2.png",
-    "rim.png",
-    "stwheel.png",
-    "tyre.png",
-    "tyrewall.png"
-  ];
+  const rbrFiles = ["rb19_2.png", "rim.png", "stwheel.png", "tyre.png", "tyrewall.png"];
 
   const wilFiles = [
     "fw47_2.png",
@@ -285,7 +279,7 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "rim.png",
     "stwheel.png",
     "tyre.png",
-    "tyrewall.png"
+    "tyrewall.png",
   ];
 
   const alpFiles = [
@@ -296,7 +290,7 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "aiStandardSurface96SG_Base_color_1001.png",
     "aiStandardSurface97SG_Base_color_1001.png",
     "aiStandardSurface98SG_Base_color_1001.png",
-    "aiStandardSurface99SG_Base_color_1001.png"
+    "aiStandardSurface99SG_Base_color_1001.png",
   ];
 
   const astFiles = [
@@ -307,7 +301,7 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "_aiStandardSurface93SG_Base_color_1001.png",
     "_aiStandardSurface94SG_Base_color_1001.png",
     "_aiStandardSurface95SG_Base_color_1001.png",
-    "Steer_new.png"
+    "Steer_new.png",
   ];
 
   const haasFiles = [
@@ -317,7 +311,7 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "aiStandardSurface96_Base_color_1001.png",
     "aiStandardSurface97_Base_color_1001.png",
     "aiStandardSurface98_Base_color_1001.png",
-    "Steer_new.png"
+    "Steer_new.png",
   ];
 
   const rbFiles = [
@@ -328,7 +322,7 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
     "aiStandardSurface113SG_Base_color_1001.png",
     "aiStandardSurface115SG_Base_color_1001.png",
     "aiStandardSurface116SG_Base_color_1001.png",
-    "Steer_new.png"
+    "Steer_new.png",
   ];
 
   let filesList: string[] = [];
@@ -350,7 +344,6 @@ function getTextureByFileIndex(fileIndex: number, teamId: string): string | null
   return null;
 }
 
-
 // Configuration for team 3D models
 const TEAM_MODELS: Record<
   string,
@@ -365,6 +358,8 @@ const TEAM_MODELS: Record<
     bodyTexture: string;
     wheelsMeshIndices?: number[];
     chassisMeshIndices?: number[];
+    isGlb?: boolean;
+    glbFile?: string;
   }
 > = {
   ferrari: {
@@ -449,7 +444,15 @@ const TEAM_MODELS: Record<
   },
 };
 
-export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onLoaded, liveryMode = "dark", cameraPreset = "orbit" }: Props) {
+export function ThreeCarCanvas({
+  teamId,
+  driverNumber,
+  mode,
+  onLoadProgress,
+  onLoaded,
+  liveryMode = "dark",
+  cameraPreset = "orbit",
+}: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const speedRef = useRef<HTMLSpanElement>(null);
@@ -472,6 +475,29 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || 500;
 
+    systemLogger.log(`Initializing WebGL viewport (mode: ${mode}, team: ${teamId})`, "info");
+
+    // --- Intersection Observer for Performance Optimization ---
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasVisible = isVisible;
+        isVisible = entry.isIntersecting;
+        if (wasVisible !== isVisible) {
+          systemLogger.log(
+            `WebGL viewport ${teamId.toUpperCase()} (${mode}) ${isVisible ? "active & rendering" : "suspended (off-screen)"}`,
+            "info",
+          );
+        }
+      },
+      {
+        root: null, // viewport
+        rootMargin: "150px", // Pre-render slightly before it rolls into view
+        threshold: 0.01,
+      },
+    );
+    observer.observe(container);
+
     // --- 1. Three.js Scene Setup ---
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.015);
@@ -487,11 +513,15 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
     }
 
     // --- 3. Renderer Setup ---
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      preserveDrawingBuffer: true,
+    });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Optimized pixel ratio for smoother rendering
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
     container.appendChild(renderer.domElement);
@@ -523,7 +553,8 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           // Direct DOM updates for high performance
           const tRun = Math.max(0, (scrollProgress - 0.5) / 0.5);
           const currentSpeed = Math.round(tRun * 332);
-          const currentGear = currentSpeed === 0 ? "N" : Math.max(1, Math.round(tRun * 8)).toString();
+          const currentGear =
+            currentSpeed === 0 ? "N" : Math.max(1, Math.round(tRun * 8)).toString();
 
           if (speedRef.current) {
             speedRef.current.innerText = currentSpeed.toString();
@@ -541,7 +572,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           if (drsRef.current) {
             drsRef.current.style.opacity = currentSpeed > 280 ? "1" : "0";
           }
-        }
+        },
       });
     }
 
@@ -558,8 +589,8 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
     const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
     keyLight.position.set(10, 15, 10);
     keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 2048;
-    keyLight.shadow.mapSize.height = 2048;
+    keyLight.shadow.mapSize.width = 1024; // Optimized shadow map resolution
+    keyLight.shadow.mapSize.height = 1024;
     keyLight.shadow.bias = -0.0001;
     scene.add(keyLight);
 
@@ -567,8 +598,8 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
     const topSpotlight = new THREE.SpotLight(0xffffff, 12, 25, Math.PI / 3, 0.4, 1);
     topSpotlight.position.set(0, 8, 0);
     topSpotlight.castShadow = true;
-    topSpotlight.shadow.mapSize.width = 1024;
-    topSpotlight.shadow.mapSize.height = 1024;
+    topSpotlight.shadow.mapSize.width = 512; // Optimized shadow map resolution
+    topSpotlight.shadow.mapSize.height = 512;
     scene.add(topSpotlight);
 
     // Colored Neon Spotlights (Soft color accents from sides)
@@ -622,7 +653,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i += 3) {
       positions[i] = (Math.random() - 0.5) * 20; // x
-      positions[i + 1] = Math.random() * 8;      // y
+      positions[i + 1] = Math.random() * 8; // y
       positions[i + 2] = (Math.random() - 0.5) * 20; // z
     }
     particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -671,14 +702,15 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
     const loadTeamModel = async () => {
       try {
         setLoadingText("Initializing 3D viewport...");
-        
+        systemLogger.log(`Downloading 3D geometry from F1 assets: "${modelConfig.folder}"`, "info");
+
         // Build path base
         const folderPath = `/3d-models/${modelConfig.folder}`;
-        
+
         // 1. Preload textures
         let mainTexture: THREE.Texture | null = null;
         let tyreWallTex: THREE.Texture | null = null;
-        
+
         if (!isFallbackLivery && modelConfig.bodyTexture) {
           try {
             mainTexture = textureLoader.load(`${folderPath}/${modelConfig.bodyTexture}`);
@@ -750,37 +782,39 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           setLoadingText("Loading telemetry model...");
           const glbPath = `${folderPath}/${(modelConfig as any).glbFile}`;
           const gltfLoader = new GLTFLoader(manager);
-          
+
           const gltf = await new Promise<any>((resolve, reject) => {
             gltfLoader.load(
               glbPath,
               (data) => resolve(data),
               undefined,
-              (err) => reject(err)
+              (err) => reject(err),
             );
           });
-          
+
           // Traverse and classify meshes
           gltf.scene.traverse((node: any) => {
             if (node instanceof THREE.Mesh) {
               node.castShadow = true;
               node.receiveShadow = true;
               node.geometry.computeVertexNormals();
-              
+
               if (node.material) {
                 const mat = node.material as THREE.MeshStandardMaterial;
                 node.userData.originalMap = mat.map;
-                node.userData.originalColor = mat.color ? mat.color.clone() : new THREE.Color("#ffffff");
+                node.userData.originalColor = mat.color
+                  ? mat.color.clone()
+                  : new THREE.Color("#ffffff");
                 node.userData.originalRoughness = mat.roughness;
                 node.userData.originalMetalness = mat.metalness;
               }
             }
           });
-          
+
           gltf.scene.rotation.x = modelConfig.rotationX;
           gltf.scene.rotation.y = modelConfig.rotationY;
           gltf.scene.rotation.z = modelConfig.rotationZ || 0;
-          
+
           carGroup.add(gltf.scene);
         } else {
           // 2. Load all OBJ parts
@@ -796,9 +830,9 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
                     resolve(obj);
                   },
                   undefined,
-                  (err) => reject(err)
+                  (err) => reject(err),
                 );
-              })
+              }),
             );
           }
 
@@ -812,10 +846,11 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
               group.traverse((node) => {
                 if (node instanceof THREE.Mesh) {
                   const matName = node.material.name || "";
-                  const isWheelMaterial = matName.toLowerCase().includes("tyre") ||
-                                          matName.toLowerCase().includes("wheel") ||
-                                          matName.toLowerCase().includes("tread") ||
-                                          matName.toLowerCase().includes("rim");
+                  const isWheelMaterial =
+                    matName.toLowerCase().includes("tyre") ||
+                    matName.toLowerCase().includes("wheel") ||
+                    matName.toLowerCase().includes("tread") ||
+                    matName.toLowerCase().includes("rim");
                   if (isWheelMaterial) {
                     isWheelGroup = true;
                   }
@@ -843,7 +878,10 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         // Force matrix update so spatial bounding boxes evaluate in rotated space
         carGroup.updateMatrixWorld(true);
 
-        console.log("[ThreeCarCanvas] Loaded parts count:", (modelConfig as any).isGlb ? 1 : groups.length);
+        console.log(
+          "[ThreeCarCanvas] Loaded parts count:",
+          (modelConfig as any).isGlb ? 1 : groups.length,
+        );
         console.log("[ThreeCarCanvas] CarGroup children count:", carGroup.children.length);
 
         // 2. Traverse and classify meshes now that they are rotated
@@ -871,10 +909,8 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
 
             const absX = Math.abs(center.x);
             // Positional wheel/rim/suspension detection (generic across all F1 models)
-            const isPositionalWheel = absX > 0.5 && (
-              (size.x < 0.5 && size.z > 0.25) ||
-              (size.y > 0.3 && size.z > 0.3)
-            );
+            const isPositionalWheel =
+              absX > 0.5 && ((size.x < 0.5 && size.z > 0.25) || (size.y > 0.3 && size.z > 0.3));
             const isPositionalRim = absX > 0.5 && size.x < 0.15 && size.z < 0.4;
             const isSuspension = size.x < 0.15 && size.y < 0.15 && absX > 0.2;
 
@@ -899,13 +935,20 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
               texFile = getTextureByFileIndex(fileIndex, isFallbackLivery ? "ferrari" : teamId);
             }
 
-            console.log(`[ThreeCarCanvas Traverse] Node: "${node.name}", Mat: "${matName}", FileIndex: ${fileIndex}, Resolved Tex: "${texFile}"`);
-            
-            const isWheelMaterial = matName.toLowerCase().includes("tyre") ||
-                                    matName.toLowerCase().includes("wheel") ||
-                                    matName.toLowerCase().includes("tread") ||
-                                    matName.toLowerCase().includes("rim") ||
-                                    (texFile && (texFile.toLowerCase().includes("tyre") || texFile.toLowerCase().includes("tread") || texFile.toLowerCase().includes("tire") || texFile.toLowerCase().includes("rim")));
+            console.log(
+              `[ThreeCarCanvas Traverse] Node: "${node.name}", Mat: "${matName}", FileIndex: ${fileIndex}, Resolved Tex: "${texFile}"`,
+            );
+
+            const isWheelMaterial =
+              matName.toLowerCase().includes("tyre") ||
+              matName.toLowerCase().includes("wheel") ||
+              matName.toLowerCase().includes("tread") ||
+              matName.toLowerCase().includes("rim") ||
+              (texFile &&
+                (texFile.toLowerCase().includes("tyre") ||
+                  texFile.toLowerCase().includes("tread") ||
+                  texFile.toLowerCase().includes("tire") ||
+                  texFile.toLowerCase().includes("rim")));
 
             if (isGround) {
               // Soft transparent ground shadow overlay
@@ -919,102 +962,112 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
             } else {
               // Determine texture path
               let texPath = "";
-              let isTireTexture = false;
 
-            // McLaren: use native OBJ UVs + combined livery sheet with RepeatWrapping
-            if (teamId === "mclaren" && !isGround) {
-              // Store the fileIndex in userData for later traversal/updates
-              node.userData.fileIndex = fileIndex;
+              // McLaren: use native OBJ UVs + combined livery sheet with RepeatWrapping
+              if (teamId === "mclaren" && !isGround) {
+                // Store the fileIndex in userData for later traversal/updates
+                node.userData.fileIndex = fileIndex;
 
-              if (isWheelMaterial || isPositionalWheel || fileIndex === 3 || fileIndex === 12) {
+                if (isWheelMaterial || isPositionalWheel || fileIndex === 3 || fileIndex === 12) {
+                  node.material = tyreMaterial;
+                  node.userData.isWheel = true;
+                } else if (
+                  isPositionalRim ||
+                  fileIndex === 16 ||
+                  fileIndex === 17 ||
+                  fileIndex === 22
+                ) {
+                  node.material = chromeMaterial;
+                  node.userData.isRim = true;
+                } else if (fileIndex === 20 || fileIndex === 21 || fileIndex === 15) {
+                  node.material = carbonMaterial;
+                } else if (mainTexture) {
+                  // Use native OBJ UVs — the McLaren asset was UV-unwrapped to match this sheet
+                  mainTexture.wrapS = THREE.RepeatWrapping;
+                  mainTexture.wrapT = THREE.RepeatWrapping;
+                  mainTexture.needsUpdate = true;
+
+                  const mat = new THREE.MeshStandardMaterial({
+                    map: mainTexture,
+                    roughness: 0.28,
+                    metalness: 0.42,
+                  });
+                  node.material = mat;
+                  // Store the original texture map so we can restore it in Dark/Black modes
+                  node.userData.originalMap = mainTexture;
+                } else {
+                  node.material = mclarenOrangeMaterial;
+                }
+                return;
+              }
+
+              if (isGround) {
+                node.material = new THREE.MeshStandardMaterial({
+                  color: 0x050505,
+                  roughness: 0.8,
+                  metalness: 0.0,
+                  transparent: true,
+                  opacity: 0.6,
+                });
+              } else if (isWheelMaterial || isPositionalWheel) {
                 node.material = tyreMaterial;
                 node.userData.isWheel = true;
-              } else if (isPositionalRim || fileIndex === 16 || fileIndex === 17 || fileIndex === 22) {
+              } else if (isPositionalRim) {
                 node.material = chromeMaterial;
                 node.userData.isRim = true;
-              } else if (fileIndex === 20 || fileIndex === 21 || fileIndex === 15) {
+              } else if (isSuspension) {
                 node.material = carbonMaterial;
-              } else if (mainTexture) {
-                // Use native OBJ UVs — the McLaren asset was UV-unwrapped to match this sheet
-                mainTexture.wrapS = THREE.RepeatWrapping;
-                mainTexture.wrapT = THREE.RepeatWrapping;
-                mainTexture.needsUpdate = true;
-                
-                const mat = new THREE.MeshStandardMaterial({
-                  map: mainTexture,
-                  roughness: 0.28,
-                  metalness: 0.42,
-                });
-                node.material = mat;
-                // Store the original texture map so we can restore it in Dark/Black modes
-                node.userData.originalMap = mainTexture;
+              } else if (
+                node.name.toLowerCase().includes("glow") ||
+                node.name.toLowerCase().includes("led")
+              ) {
+                node.material = glowMaterial;
               } else {
-                node.material = mclarenOrangeMaterial;
-              }
-              return;
-            }
-
-
-            if (isGround) {
-              node.material = new THREE.MeshStandardMaterial({
-                color: 0x050505,
-                roughness: 0.8,
-                metalness: 0.0,
-                transparent: true,
-                opacity: 0.6,
-              });
-            } else if (isWheelMaterial || isPositionalWheel) {
-              node.material = tyreMaterial;
-              node.userData.isWheel = true;
-            } else if (isPositionalRim) {
-              node.material = chromeMaterial;
-              node.userData.isRim = true;
-            } else if (isSuspension) {
-              node.material = carbonMaterial;
-            } else if (node.name.toLowerCase().includes("glow") || node.name.toLowerCase().includes("led")) {
-              node.material = glowMaterial;
-            } else {
-              // Apply texture mapping
-              if (texFile && (!isFallbackLivery || isWheelMaterial)) {
-                texPath = `/3d-models/${modelConfig.folder}/${texFile}`;
-              } else if (isWheelMaterial) {
-                const nameLower = matName.toLowerCase();
-                if (nameLower.includes("tyrewall")) {
-                  texPath = "/3d-models/tyrewall.png";
-                } else if (nameLower.includes("tread") || nameLower.includes("tyre") || nameLower.includes("tire")) {
-                  texPath = "/3d-models/tyre.png";
-                } else if (nameLower.includes("rim") || nameLower.includes("wheel")) {
-                  texPath = "/3d-models/rim.png";
+                // Apply texture mapping
+                if (texFile && (!isFallbackLivery || isWheelMaterial)) {
+                  texPath = `/3d-models/${modelConfig.folder}/${texFile}`;
+                } else if (isWheelMaterial) {
+                  const nameLower = matName.toLowerCase();
+                  if (nameLower.includes("tyrewall")) {
+                    texPath = "/3d-models/tyrewall.png";
+                  } else if (
+                    nameLower.includes("tread") ||
+                    nameLower.includes("tyre") ||
+                    nameLower.includes("tire")
+                  ) {
+                    texPath = "/3d-models/tyre.png";
+                  } else if (nameLower.includes("rim") || nameLower.includes("wheel")) {
+                    texPath = "/3d-models/rim.png";
+                  }
                 }
-              }
 
-              if (texPath) {
-                try {
-                  const texture = textureLoader.load(texPath);
-                  texture.colorSpace = THREE.SRGBColorSpace;
-                  texture.wrapS = THREE.RepeatWrapping;
-                  texture.wrapT = THREE.RepeatWrapping;
-                  
-                  node.material = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    roughness: 0.45,
-                    metalness: 0.25,
-                  });
-                } catch (e) {
-                  node.material = teamPaintMaterial;
-                }
-              } else {
-                if (mainTexture && !isFallbackLivery) {
-                  node.material = new THREE.MeshStandardMaterial({
-                    map: mainTexture,
-                    roughness: 0.45,
-                    metalness: 0.15,
-                  });
+                if (texPath) {
+                  try {
+                    const texture = textureLoader.load(texPath);
+                    texture.colorSpace = THREE.SRGBColorSpace;
+                    texture.wrapS = THREE.RepeatWrapping;
+                    texture.wrapT = THREE.RepeatWrapping;
+
+                    node.material = new THREE.MeshStandardMaterial({
+                      map: texture,
+                      roughness: 0.45,
+                      metalness: 0.25,
+                    });
+                  } catch (e) {
+                    node.material = teamPaintMaterial;
+                  }
                 } else {
-                  node.material = teamPaintMaterial;
+                  if (mainTexture && !isFallbackLivery) {
+                    node.material = new THREE.MeshStandardMaterial({
+                      map: mainTexture,
+                      roughness: 0.45,
+                      metalness: 0.15,
+                    });
+                  } else {
+                    node.material = teamPaintMaterial;
+                  }
                 }
               }
-            }
             }
           }
         });
@@ -1037,16 +1090,26 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         });
 
         if (!hasValidMesh) {
-          console.warn("[ThreeCarCanvas] No valid car meshes found for bounding box, using carGroup");
+          console.warn(
+            "[ThreeCarCanvas] No valid car meshes found for bounding box, using carGroup",
+          );
           box.setFromObject(carGroup);
         }
 
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-        console.log(`[ThreeCarCanvas] Bounding box min: x=${box.min.x.toFixed(2)}, y=${box.min.y.toFixed(2)}, z=${box.min.z.toFixed(2)}`);
-        console.log(`[ThreeCarCanvas] Bounding box max: x=${box.max.x.toFixed(2)}, y=${box.max.y.toFixed(2)}, z=${box.max.z.toFixed(2)}`);
-        console.log(`[ThreeCarCanvas] Calculated car center: x=${center.x.toFixed(2)}, y=${center.y.toFixed(2)}, z=${center.z.toFixed(2)}`);
-        console.log(`[ThreeCarCanvas] Calculated car size: x=${size.x.toFixed(2)}, y=${size.y.toFixed(2)}, z=${size.z.toFixed(2)}`);
+        console.log(
+          `[ThreeCarCanvas] Bounding box min: x=${box.min.x.toFixed(2)}, y=${box.min.y.toFixed(2)}, z=${box.min.z.toFixed(2)}`,
+        );
+        console.log(
+          `[ThreeCarCanvas] Bounding box max: x=${box.max.x.toFixed(2)}, y=${box.max.y.toFixed(2)}, z=${box.max.z.toFixed(2)}`,
+        );
+        console.log(
+          `[ThreeCarCanvas] Calculated car center: x=${center.x.toFixed(2)}, y=${center.y.toFixed(2)}, z=${center.z.toFixed(2)}`,
+        );
+        console.log(
+          `[ThreeCarCanvas] Calculated car size: x=${size.x.toFixed(2)}, y=${size.y.toFixed(2)}, z=${size.z.toFixed(2)}`,
+        );
 
         // Center the carGroup contents
         carGroup.children.forEach((child) => {
@@ -1058,7 +1121,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         const targetLength = 6.5;
         const scale = targetLength / (maxDim || 1);
         console.log(`[ThreeCarCanvas] Computed scale factor: ${scale.toFixed(4)}`);
-        
+
         // 1. Set full scale first so spatial bounding boxes evaluate correctly
         carGroup.scale.setScalar(scale);
         carGroup.updateMatrixWorld(true);
@@ -1075,10 +1138,12 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
             }
           }
         });
-        
+
         if (adjustedBox.min.y !== Infinity) {
           carGroup.position.y = -adjustedBox.min.y;
-          console.log(`[ThreeCarCanvas] Adjusting Y position to: ${carGroup.position.y.toFixed(2)}`);
+          console.log(
+            `[ThreeCarCanvas] Adjusting Y position to: ${carGroup.position.y.toFixed(2)}`,
+          );
         } else {
           carGroup.position.y = 0;
         }
@@ -1114,8 +1179,15 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         setLoadingProgress(100);
         onLoadProgress?.(100);
         onLoaded?.();
-
+        systemLogger.log(
+          `WebGL showroom: ${teamId.toUpperCase()} telemetry model synced successfully`,
+          "success",
+        );
       } catch (error) {
+        systemLogger.log(
+          `WebGL showroom: Failed to load F1 ${teamId.toUpperCase()} assets, using procedural fallback`,
+          "warn",
+        );
         console.error("Failed loading OBJ files, using high-tech procedural car", error);
         buildProceduralCar();
       }
@@ -1208,7 +1280,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
       // 4 Wheels
       const tireGeo = new THREE.CylinderGeometry(0.48, 0.48, 0.45, 24);
       tireGeo.rotateZ(Math.PI / 2); // align sideways
-      
+
       const wheelsData = [
         { x: -0.85, z: 1.4, name: "wheel_fl" },
         { x: 0.85, z: 1.4, name: "wheel_fr" },
@@ -1258,20 +1330,20 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
       setLoadingProgress(100);
       onLoadProgress?.(100);
       onLoaded?.();
-    };
-
-
+    }
 
     // --- 9. Reveal Cinematic Animation Control ---
-    let animTime = 0;
     const revealDuration = 4000; // ms
     const startTime = Date.now();
 
     // --- 10. Animation Loop ---
     let frameId = 0;
-    
+
     const animate = () => {
       frameId = requestAnimationFrame(animate);
+
+      // Skip heavy WebGL render updates if component is off-screen
+      if (!isVisible) return;
 
       const elapsed = Date.now() - startTime;
 
@@ -1288,14 +1360,13 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         camera.position.lerpVectors(startPos, endPos, ease);
         camera.lookAt(0, 0.4, 0);
 
-        carGroup.rotation.y = (1 - ease) * -Math.PI / 4;
+        carGroup.rotation.y = ((1 - ease) * -Math.PI) / 4;
 
         const speed = Math.max(0, 1 - elapsed / revealDuration);
         wheels.forEach((w) => {
           w.rotation.x += speed * 0.4;
         });
-      } 
-      else if (mode === "scroll") {
+      } else if (mode === "scroll") {
         // Particles move backwards relative to velocity in Phase 3
         particles.rotation.y += 0.0002;
         particles.rotation.x += 0.0001;
@@ -1306,12 +1377,11 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           camera.position.copy(startPos);
           camera.lookAt(0, 0.4, 0);
           carGroup.rotation.y = -Math.PI / 4;
-          
+
           wheels.forEach((w) => {
             w.rotation.x += 0.002;
           });
-        } 
-        else if (scrollProgress >= 0.2 && scrollProgress < 0.5) {
+        } else if (scrollProgress >= 0.2 && scrollProgress < 0.5) {
           // Phase 2: Orbit transition
           const tOrbit = (scrollProgress - 0.2) / 0.3;
           const easeOrbit = 1 - Math.pow(1 - tOrbit, 3); // cubic ease out
@@ -1328,30 +1398,28 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           wheels.forEach((w) => {
             w.rotation.x += easeOrbit * 0.05;
           });
-        } 
-        else {
+        } else {
           // Phase 3: Track run!
           const tRun = (scrollProgress - 0.5) / 0.5;
-          
+
           camera.position.set(0.0, 1.2, 8.5);
           camera.lookAt(0, 0.4, 0);
           carGroup.rotation.y = Math.PI / 2;
 
           // Slide floor grid backwards
           const gridSpeed = tRun * 120;
-          gridHelper.position.z = (gridSpeed) % 1; // Seamless 1-unit spacing wrap
+          gridHelper.position.z = gridSpeed % 1; // Seamless 1-unit spacing wrap
 
           // Translate particles backwards
           const particleSpeed = tRun * 40;
-          particles.position.z = -(particleSpeed) % 20;
+          particles.position.z = -particleSpeed % 20;
 
           // Spin wheels proportional to velocity
           wheels.forEach((w) => {
             w.rotation.x += tRun * 0.35;
           });
         }
-      } 
-      else if (mode === "rotate") {
+      } else if (mode === "rotate") {
         particles.rotation.y += 0.0003;
         particles.rotation.x += 0.0001;
 
@@ -1365,8 +1433,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         wheels.forEach((w) => {
           w.rotation.x += 0.005;
         });
-      }
-      else {
+      } else {
         // Interactive mode
         particles.rotation.y += 0.0005;
         particles.rotation.x += 0.0002;
@@ -1401,6 +1468,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
 
     // --- Cleanup ---
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
@@ -1428,8 +1496,8 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
 
     if (controls) controls.enabled = false;
 
-    let targetPos = new THREE.Vector3();
-    let targetLookAt = new THREE.Vector3(0, 0.4, 0);
+    const targetPos = new THREE.Vector3();
+    const targetLookAt = new THREE.Vector3(0, 0.4, 0);
 
     if (cameraPreset === "top") {
       targetPos.set(0, 9.5, 0.01);
@@ -1462,7 +1530,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         if (!controls) {
           camera.lookAt(targetLookAt);
         }
-      }
+      },
     });
 
     if (controls) {
@@ -1474,7 +1542,7 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
         ease: "power2.inOut",
         onComplete: () => {
           controls.enabled = true;
-        }
+        },
       });
     }
   }, [cameraPreset]);
@@ -1515,14 +1583,18 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           {/* Top HUD */}
           <div className="flex justify-between items-start">
             <div className="border-l-2 border-white/50 pl-3">
-              <div className="text-[10px] tracking-widest text-ink-muted uppercase">// TELEMETRY ACTIVE</div>
+              <div className="text-[10px] tracking-widest text-ink-muted uppercase">
+                // TELEMETRY ACTIVE
+              </div>
               <div className="text-sm font-bold text-white uppercase tracking-tight">
                 {getTeam(teamId)?.name || teamId} SHOWROOM
               </div>
             </div>
             <div className="text-right">
               <div className="text-[10px] tracking-widest text-ink-muted uppercase">SYS.STATUS</div>
-              <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest">ONLINE</div>
+              <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest">
+                ONLINE
+              </div>
             </div>
           </div>
 
@@ -1536,7 +1608,9 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
             {driverNumber && (
               <div className="border border-white/20 px-3 py-1 bg-black/40 backdrop-blur-sm flex items-center gap-2">
                 <span className="text-[9px] text-ink-muted uppercase tracking-wider">NO.</span>
-                <span className="text-sm font-bold text-white tabular font-mono">#{driverNumber}</span>
+                <span className="text-sm font-bold text-white tabular font-mono">
+                  #{driverNumber}
+                </span>
               </div>
             )}
           </div>
@@ -1556,10 +1630,14 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
           {loadingProgress === 100 && (
             <div className="pointer-events-none absolute inset-x-0 bottom-12 flex flex-col items-center justify-center select-none z-20 px-6">
               <div className="w-full max-w-4xl bg-black/60 border border-hairline-strong p-6 backdrop-blur-md flex justify-between items-center flex-wrap gap-6">
-                
                 {/* Speed Telemetry */}
                 <div className="flex items-baseline gap-2">
-                  <span ref={speedRef} className="tabular text-6xl sm:text-7xl font-bold text-white font-mono">0</span>
+                  <span
+                    ref={speedRef}
+                    className="tabular text-6xl sm:text-7xl font-bold text-white font-mono"
+                  >
+                    0
+                  </span>
                   <span className="text-xs text-ink-muted font-mono">KM/H</span>
                 </div>
 
@@ -1567,17 +1645,29 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
                 <div className="flex-1 max-w-md hidden md:block">
                   <div className="flex justify-between items-center text-[9px] uppercase tracking-wider text-ink-muted mb-2 font-mono">
                     <span>Engine RPM</span>
-                    <span ref={drsRef} className="text-emerald-400 font-bold opacity-0 transition-opacity font-mono">DRS ACTIVE</span>
+                    <span
+                      ref={drsRef}
+                      className="text-emerald-400 font-bold opacity-0 transition-opacity font-mono"
+                    >
+                      DRS ACTIVE
+                    </span>
                   </div>
                   <div className="h-2 bg-surface-card border border-hairline relative overflow-hidden">
-                    <div ref={rpmBarRef} className="h-full bg-red-600 w-0 transition-[width] duration-75" />
+                    <div
+                      ref={rpmBarRef}
+                      className="h-full bg-red-600 w-0 transition-[width] duration-75"
+                    />
                   </div>
                 </div>
 
                 {/* Gear indicator */}
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] text-ink-muted uppercase tracking-wider font-mono">GEAR</span>
-                  <span ref={gearRef} className="text-5xl font-bold text-white font-mono">N</span>
+                  <span className="text-[10px] text-ink-muted uppercase tracking-wider font-mono">
+                    GEAR
+                  </span>
+                  <span ref={gearRef} className="text-5xl font-bold text-white font-mono">
+                    N
+                  </span>
                 </div>
 
                 {/* Active Lap progress bar */}
@@ -1599,7 +1689,10 @@ export function ThreeCarCanvas({ teamId, driverNumber, mode, onLoadProgress, onL
   );
 }
 
-function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" | "teal" | "white") {
+function applyMcLarenLivery(
+  carGroup: THREE.Group,
+  liveryMode: "dark" | "black" | "teal" | "white",
+) {
   carGroup.traverse((node) => {
     if (node instanceof THREE.Mesh) {
       const mat = node.material as THREE.MeshStandardMaterial;
@@ -1622,34 +1715,72 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
 
       // 1. Classify by fileIndex (for OBJ models)
       if (fileIndex !== undefined && fileIndex >= 0) {
-        isBody = (fileIndex === 10);
-        isFrontWing = (fileIndex === 6 || fileIndex === 7);
-        isHalo = (fileIndex === 8);
-        isRearWing = (fileIndex === 14);
-        isMirror = (fileIndex === 11);
-        isWheelCover = (fileIndex === 4 || fileIndex === 13);
-        isRim = (fileIndex === 16 || fileIndex === 17 || fileIndex === 22);
-        isSuspension = (fileIndex === 15 || fileIndex === 21);
-        isFloor = (fileIndex === 20);
-      } 
+        isBody = fileIndex === 10;
+        isFrontWing = fileIndex === 6 || fileIndex === 7;
+        isHalo = fileIndex === 8;
+        isRearWing = fileIndex === 14;
+        isMirror = fileIndex === 11;
+        isWheelCover = fileIndex === 4 || fileIndex === 13;
+        isRim = fileIndex === 16 || fileIndex === 17 || fileIndex === 22;
+        isSuspension = fileIndex === 15 || fileIndex === 21;
+        isFloor = fileIndex === 20;
+      }
       // 2. Classify by node name (for GLB models)
       else {
-        if (nameLower.includes("tire") || nameLower.includes("tyre") || nameLower.includes("tread")) {
+        if (
+          nameLower.includes("tire") ||
+          nameLower.includes("tyre") ||
+          nameLower.includes("tread")
+        ) {
           // Keep tire material
           return;
         }
-        isRim = (nameLower.includes("rim") || nameLower.includes("wheel") || nameLower.includes("nut") || nameLower.includes("screw")) && !nameLower.includes("steer") && !nameLower.includes("stwheel") && !nameLower.includes("cover");
+        isRim =
+          (nameLower.includes("rim") ||
+            nameLower.includes("wheel") ||
+            nameLower.includes("nut") ||
+            nameLower.includes("screw")) &&
+          !nameLower.includes("steer") &&
+          !nameLower.includes("stwheel") &&
+          !nameLower.includes("cover");
         isWheelCover = nameLower.includes("cover") || nameLower.includes("windlet");
         isHalo = nameLower.includes("halo");
         isMirror = nameLower.includes("mirror");
-        isFrontWing = nameLower.includes("front_wing") || nameLower.includes("f_wing") || (nameLower.includes("wing") && nameLower.includes("front"));
-        isRearWing = nameLower.includes("rear_wing") || nameLower.includes("r_wing") || (nameLower.includes("wing") && nameLower.includes("rear"));
-        isSuspension = nameLower.includes("suspension") || nameLower.includes("arm") || nameLower.includes("link");
-        isFloor = nameLower.includes("floor") || nameLower.includes("underbody") || nameLower.includes("diffuser");
-        
+        isFrontWing =
+          nameLower.includes("front_wing") ||
+          nameLower.includes("f_wing") ||
+          (nameLower.includes("wing") && nameLower.includes("front"));
+        isRearWing =
+          nameLower.includes("rear_wing") ||
+          nameLower.includes("r_wing") ||
+          (nameLower.includes("wing") && nameLower.includes("rear"));
+        isSuspension =
+          nameLower.includes("suspension") ||
+          nameLower.includes("arm") ||
+          nameLower.includes("link");
+        isFloor =
+          nameLower.includes("floor") ||
+          nameLower.includes("underbody") ||
+          nameLower.includes("diffuser");
+
         // If not matched, check if it's the main body/chassis
-        if (!isRim && !isWheelCover && !isHalo && !isMirror && !isFrontWing && !isRearWing && !isSuspension && !isFloor) {
-          isBody = nameLower.includes("body") || nameLower.includes("chassis") || nameLower.includes("car") || nameLower.includes("tub") || nameLower.includes("nose") || nameLower.includes("sidepod");
+        if (
+          !isRim &&
+          !isWheelCover &&
+          !isHalo &&
+          !isMirror &&
+          !isFrontWing &&
+          !isRearWing &&
+          !isSuspension &&
+          !isFloor
+        ) {
+          isBody =
+            nameLower.includes("body") ||
+            nameLower.includes("chassis") ||
+            nameLower.includes("car") ||
+            nameLower.includes("tub") ||
+            nameLower.includes("nose") ||
+            nameLower.includes("sidepod");
         }
       }
 
@@ -1662,8 +1793,10 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
         if (liveryMode === "dark") {
           mat.map = originalMap || null;
           mat.color.set("#ffffff");
-          mat.roughness = node.userData.originalRoughness !== undefined ? node.userData.originalRoughness : 0.28;
-          mat.metalness = node.userData.originalMetalness !== undefined ? node.userData.originalMetalness : 0.42;
+          mat.roughness =
+            node.userData.originalRoughness !== undefined ? node.userData.originalRoughness : 0.28;
+          mat.metalness =
+            node.userData.originalMetalness !== undefined ? node.userData.originalMetalness : 0.42;
         } else if (liveryMode === "black") {
           mat.map = originalMap || null;
           mat.color.set("#151515");
@@ -1680,8 +1813,7 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.roughness = 0.15;
           mat.metalness = 0.3;
         }
-      } 
-      else if (isFrontWing) {
+      } else if (isFrontWing) {
         if (liveryMode === "dark") {
           mat.map = originalMap || null;
           mat.color.set("#ffffff");
@@ -1703,8 +1835,7 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.roughness = 0.2;
           mat.metalness = 0.3;
         }
-      }
-      else if (isHalo) {
+      } else if (isHalo) {
         if (liveryMode === "dark") {
           mat.map = originalMap || null;
           mat.color.set("#ffffff");
@@ -1722,8 +1853,7 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.color.copy(white);
           mat.roughness = 0.2;
         }
-      }
-      else if (isRearWing) {
+      } else if (isRearWing) {
         if (liveryMode === "dark") {
           mat.map = originalMap || null;
           mat.color.set("#ffffff");
@@ -1741,8 +1871,7 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.color.copy(white);
           mat.roughness = 0.2;
         }
-      }
-      else if (isMirror) {
+      } else if (isMirror) {
         if (liveryMode === "dark") {
           mat.map = originalMap || null;
           mat.color.copy(orange);
@@ -1756,8 +1885,7 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.map = null;
           mat.color.copy(white);
         }
-      }
-      else if (isWheelCover) {
+      } else if (isWheelCover) {
         if (liveryMode === "dark") {
           mat.map = originalMap || null;
           mat.color.set("#ffffff");
@@ -1771,8 +1899,7 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.map = null;
           mat.color.copy(white);
         }
-      }
-      else if (isRim) {
+      } else if (isRim) {
         if (liveryMode === "dark") {
           mat.color.set("#cccccc");
           mat.roughness = 0.2;
@@ -1790,14 +1917,13 @@ function applyMcLarenLivery(carGroup: THREE.Group, liveryMode: "dark" | "black" 
           mat.roughness = 0.3;
           mat.metalness = 0.7;
         }
-      }
-      else if (isSuspension || isFloor) {
+      } else if (isSuspension || isFloor) {
         mat.map = null;
         mat.color.copy(black);
         mat.roughness = 0.65;
         mat.metalness = 0.2;
       }
-      
+
       mat.needsUpdate = true;
     }
   });

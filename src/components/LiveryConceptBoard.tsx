@@ -48,7 +48,9 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
                 <span className="h-5 w-[3.5px] bg-[#00B5A1]" />
                 <span className="h-5 w-[3.5px] bg-zinc-700" />
               </span>
-              <span className="font-bold uppercase tracking-[0.25em] text-xl sm:text-2xl text-white">McLAREN</span>
+              <span className="font-bold uppercase tracking-[0.25em] text-xl sm:text-2xl text-white">
+                McLAREN
+              </span>
             </div>
             <div className="text-[10px] tracking-widest text-[#FF8700] uppercase font-mono mt-1">
               MCL38 / 2025 LIVERY CONCEPT // SPEC 4.0
@@ -57,8 +59,12 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
 
           <div className="flex items-center gap-4">
             <div className="hidden md:block text-right">
-              <div className="text-[10px] tracking-widest text-zinc-500 uppercase font-mono">STATUS</div>
-              <div className="text-xs font-mono text-emerald-400 font-bold tracking-widest uppercase">ACTIVE RENDERING</div>
+              <div className="text-[10px] tracking-widest text-zinc-500 uppercase font-mono">
+                STATUS
+              </div>
+              <div className="text-xs font-mono text-emerald-400 font-bold tracking-widest uppercase">
+                ACTIVE RENDERING
+              </div>
             </div>
             <button
               onClick={onClose}
@@ -71,7 +77,6 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
 
         {/* Main Grid Content */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 sm:p-8 z-10">
-          
           {/* LEFT PANEL: Details & Spec Zoom (cols: 3) */}
           <div className="lg:col-span-3 flex flex-col gap-6 order-2 lg:order-1">
             <div>
@@ -80,7 +85,8 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
                 // CONCEPT DETAILS
               </div>
               <div className="text-[10px] text-zinc-400 leading-relaxed font-mono">
-                Click any layout element below to lock the high-fidelity 3D viewport camera telemetry onto the specific chassis component.
+                Click any layout element below to lock the high-fidelity 3D viewport camera
+                telemetry onto the specific chassis component.
               </div>
             </div>
 
@@ -131,7 +137,7 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
                 </div>
               </button>
             </div>
-            
+
             <div className="border border-zinc-800/80 p-4 bg-zinc-900/20 backdrop-blur-sm mt-auto">
               <div className="text-[10px] font-mono text-zinc-500 flex items-center gap-2 mb-1">
                 <Shield className="h-3 w-3 text-[#00B5A1]" />
@@ -147,16 +153,18 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
 
           {/* CENTRE PANEL: 3D Render & Exploded Schematic (cols: 6) */}
           <div className="lg:col-span-6 flex flex-col gap-6 order-1 lg:order-2">
-            
             {/* Top Interactive Exploded View Schematic */}
             <div className="bg-black/40 border border-zinc-800 p-4 relative overflow-hidden select-none">
               <div className="absolute top-2 left-3 text-[8px] font-mono tracking-widest text-zinc-500 uppercase">
                 // ACTIVE EXPLODED PANEL SPECS
               </div>
-              
+
               {/* SVG Parts Map */}
               <div className="h-20 w-full flex items-center justify-center relative mt-2">
-                <svg viewBox="0 0 400 60" className="w-full h-full max-w-md stroke-zinc-700 stroke-1 fill-none">
+                <svg
+                  viewBox="0 0 400 60"
+                  className="w-full h-full max-w-md stroke-zinc-700 stroke-1 fill-none"
+                >
                   {/* Left wing */}
                   <path
                     d="M 20,30 L 60,30 L 60,15"
@@ -191,11 +199,17 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
                   />
                   {/* Front suspension node */}
                   <line
-                    x1="80" y1="30" x2="100" y2="45"
+                    x1="80"
+                    y1="30"
+                    x2="100"
+                    y2="45"
                     className={`transition-all ${hoveredPart === "suspension" ? "stroke-zinc-400 stroke-[1.5px]" : ""}`}
                   />
                   <line
-                    x1="260" y1="30" x2="280" y2="45"
+                    x1="260"
+                    y1="30"
+                    x2="280"
+                    y2="45"
                     className={`transition-all ${hoveredPart === "suspension" ? "stroke-zinc-400 stroke-[1.5px]" : ""}`}
                   />
                 </svg>
@@ -209,7 +223,6 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
 
             {/* Main 3D Viewport Box */}
             <div className="flex-1 bg-black border border-zinc-800 relative flex flex-col min-h-[350px]">
-              
               {/* 3D Canvas */}
               <div className="flex-1 relative overflow-hidden bg-[#050505]">
                 <ThreeCarCanvas
@@ -225,9 +238,11 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
               <div className="p-3 border-t border-zinc-800 bg-black/80 flex justify-between items-center z-10 flex-wrap gap-3">
                 <div className="flex items-center gap-2">
                   <Camera className="h-3.5 w-3.5 text-zinc-500" />
-                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">CAMERA VIEWPORT</span>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                    CAMERA VIEWPORT
+                  </span>
                 </div>
-                
+
                 <div className="flex items-center gap-1 font-mono text-[9px]">
                   <button
                     onClick={() => setCameraPreset("orbit")}
@@ -268,14 +283,13 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
 
           {/* RIGHT PANEL: Colors & Livery Modes Selector (cols: 3) */}
           <div className="lg:col-span-3 flex flex-col gap-6 order-3">
-            
             {/* Colors Spec Panel */}
             <div className="border border-zinc-800 p-4 bg-black/20">
               <div className="text-xs font-mono tracking-widest text-zinc-500 uppercase mb-3 flex items-center gap-2">
                 <Palette className="h-3.5 w-3.5 text-[#FF8700]" />
                 // COLOURS
               </div>
-              
+
               <div className="flex flex-col gap-3 font-mono">
                 {colors.map((c) => (
                   <div key={c.hex} className="flex items-center gap-3">
@@ -285,7 +299,9 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
                     />
                     <div>
                       <div className="text-[10px] font-bold text-white uppercase">{c.name}</div>
-                      <div className="text-[9px] text-[#FF8700] font-mono tracking-wider mt-0.5">{c.hex}</div>
+                      <div className="text-[9px] text-[#FF8700] font-mono tracking-wider mt-0.5">
+                        {c.hex}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -317,12 +333,14 @@ export function LiveryConceptBoard({ open, onClose, driverNumber }: Props) {
                     }`}
                   >
                     <div>
-                      <div className="text-xs font-bold font-display uppercase tracking-wider">{m.name}</div>
+                      <div className="text-xs font-bold font-display uppercase tracking-wider">
+                        {m.name}
+                      </div>
                       <div className="text-[9px] text-zinc-500 group-hover:text-zinc-300 font-mono mt-0.5">
                         {m.label}
                       </div>
                     </div>
-                    
+
                     {/* Tiny neon color indicator */}
                     <div className="flex gap-[2px]">
                       {m.id === "dark" && (

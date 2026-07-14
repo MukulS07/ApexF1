@@ -6,10 +6,7 @@ import { useEffect, useRef } from "react";
  * - Skipped on coarse pointers and when prefers-reduced-motion is set.
  * - Sets CSS vars --px / --py in pixels (range ±intensity).
  */
-export function useRafTilt<T extends HTMLElement>(
-  intensity = 20,
-  opts: { global?: boolean } = {},
-) {
+export function useRafTilt<T extends HTMLElement>(intensity = 20, opts: { global?: boolean } = {}) {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
@@ -21,7 +18,8 @@ export function useRafTilt<T extends HTMLElement>(
     if (mqReduce.matches || !mqFine.matches) return;
 
     let rafId = 0;
-    let nx = 0, ny = 0;
+    let nx = 0,
+      ny = 0;
     let pending = false;
 
     const flush = () => {
@@ -31,10 +29,19 @@ export function useRafTilt<T extends HTMLElement>(
     };
 
     const onMove = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      if (r.width === 0) return;
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
+      let x = 0;
+      let y = 0;
+
+      if (opts.global) {
+        x = e.clientX / (window.innerWidth || 1) - 0.5;
+        y = e.clientY / (window.innerHeight || 1) - 0.5;
+      } else {
+        const r = el.getBoundingClientRect();
+        if (r.width === 0) return;
+        x = (e.clientX - r.left) / r.width - 0.5;
+        y = (e.clientY - r.top) / r.height - 0.5;
+      }
+
       nx = x * intensity;
       ny = y * intensity;
       if (!pending) {
@@ -44,7 +51,8 @@ export function useRafTilt<T extends HTMLElement>(
     };
 
     const onLeave = () => {
-      nx = 0; ny = 0;
+      nx = 0;
+      ny = 0;
       if (!pending) {
         pending = true;
         rafId = requestAnimationFrame(flush);
@@ -53,7 +61,9 @@ export function useRafTilt<T extends HTMLElement>(
 
     const target: EventTarget = opts.global ? window : el;
     target.addEventListener("pointermove", onMove as EventListener, { passive: true });
-    (opts.global ? window : el).addEventListener("pointerleave", onLeave as EventListener, { passive: true });
+    (opts.global ? window : el).addEventListener("pointerleave", onLeave as EventListener, {
+      passive: true,
+    });
 
     return () => {
       target.removeEventListener("pointermove", onMove as EventListener);

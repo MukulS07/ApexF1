@@ -6,7 +6,7 @@ export type Profile = {
   favoriteDriverId: string;
 };
 
-const KEY = "pitwall.profile.v1";
+const KEY = "apexf1.profile.v1";
 
 export function useProfile() {
   const [profile, setProfileState] = useState<Profile | null>(null);

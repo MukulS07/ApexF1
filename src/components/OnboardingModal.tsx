@@ -20,10 +20,26 @@ export function F1CarSilhouette({ color, className }: { color: string; className
         style={{ color }}
       />
       {/* Front Wheel */}
-      <circle cx="18" cy="21" r="5" fill="#080808" stroke="currentColor" strokeWidth="1.2" style={{ color }} />
+      <circle
+        cx="18"
+        cy="21"
+        r="5"
+        fill="#080808"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        style={{ color }}
+      />
       <circle cx="18" cy="21" r="2.2" fill="#181818" />
       {/* Rear Wheel */}
-      <circle cx="67" cy="21" r="5.5" fill="#080808" stroke="currentColor" strokeWidth="1.2" style={{ color }} />
+      <circle
+        cx="67"
+        cy="21"
+        r="5.5"
+        fill="#080808"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        style={{ color }}
+      />
       <circle cx="67" cy="21" r="2.5" fill="#181818" />
     </svg>
   );
@@ -70,13 +86,15 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl px-4 animate-in fade-in duration-200">
       <div className="w-full max-w-4xl bg-canvas border border-hairline-strong shadow-2xl overflow-hidden rise relative min-h-[500px] flex flex-col">
         <MStripe />
-        
+
         {step === 1 && (
           <div className="p-10 sm:p-14 flex-1 flex flex-col justify-between">
             <div>
-              <div className="text-eyebrow text-ink-muted mb-4">// Welcome to the pit wall</div>
+              <div className="text-eyebrow text-ink-muted mb-4">// Welcome to ApexF1</div>
               <h2 className="text-display text-white mb-4">Driver name.</h2>
-              <p className="text-lead text-body mb-10">Your season, your name in the timing tower.</p>
+              <p className="text-lead text-body mb-10">
+                Your season, your name in the timing tower.
+              </p>
               <input
                 autoFocus
                 value={name}
@@ -87,8 +105,18 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
               />
             </div>
             <div className="mt-10 flex items-center justify-between">
-              {onClose ? <button onClick={onClose} className="btn-m-ghost">Cancel</button> : <span />}
-              <button onClick={() => name.trim() && setStep(2)} disabled={!name.trim()} className="btn-m disabled:opacity-40">
+              {onClose ? (
+                <button onClick={onClose} className="btn-m-ghost">
+                  Cancel
+                </button>
+              ) : (
+                <span />
+              )}
+              <button
+                onClick={() => name.trim() && setStep(2)}
+                disabled={!name.trim()}
+                className="btn-m disabled:opacity-40"
+              >
                 Continue →
               </button>
             </div>
@@ -100,7 +128,9 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
             <div>
               <div className="text-eyebrow text-ink-muted mb-4">// Step 2 of 3</div>
               <h2 className="text-display text-white mb-2">Pick your driver.</h2>
-              <p className="text-lead text-body mb-8">We'll paint the season in their team colors.</p>
+              <p className="text-lead text-body mb-8">
+                We'll paint the season in their team colors.
+              </p>
               <div className="max-h-[45vh] overflow-y-auto -mx-2 pr-2">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-2">
                   {drivers.map((d) => {
@@ -111,17 +141,38 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
                         key={d.id}
                         onClick={() => setDriverId(d.id)}
                         className="group relative text-left bg-surface-card p-4 transition-all tilt-card border border-hairline hover:border-white flex flex-col justify-between min-h-[130px]"
-                        style={selected ? { borderColor: team.color, background: `color-mix(in oklab, ${team.color} 12%, var(--surface-card))` } : undefined}
+                        style={
+                          selected
+                            ? {
+                                borderColor: team.color,
+                                background: `color-mix(in oklab, ${team.color} 12%, var(--surface-card))`,
+                              }
+                            : undefined
+                        }
                       >
-                        <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: team.color }} />
+                        <div
+                          className="absolute inset-x-0 top-0 h-[3px]"
+                          style={{ background: team.color }}
+                        />
                         <div className="flex justify-between items-start w-full mt-2">
-                          <div className="tabular text-4xl font-bold" style={{ color: team.color }}>{d.number}</div>
-                          <F1CarSilhouette color={team.color} className="w-14 h-6 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <div className="tabular text-4xl font-bold" style={{ color: team.color }}>
+                            {d.number}
+                          </div>
+                          <F1CarSilhouette
+                            color={team.color}
+                            className="w-14 h-6 opacity-60 group-hover:opacity-100 transition-opacity"
+                          />
                         </div>
                         <div className="mt-3">
-                          <div className="text-[10px] uppercase tracking-widest text-ink-muted">{d.firstName}</div>
-                          <div className="text-base font-bold uppercase tracking-tight text-white">{d.lastName}</div>
-                          <div className="text-[9px] uppercase tracking-wider text-ink-muted mt-0.5">{team.name}</div>
+                          <div className="text-[10px] uppercase tracking-widest text-ink-muted">
+                            {d.firstName}
+                          </div>
+                          <div className="text-base font-bold uppercase tracking-tight text-white">
+                            {d.lastName}
+                          </div>
+                          <div className="text-[9px] uppercase tracking-wider text-ink-muted mt-0.5">
+                            {team.name}
+                          </div>
                         </div>
                       </button>
                     );
@@ -130,7 +181,9 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
               </div>
             </div>
             <div className="mt-10 flex items-center justify-between">
-              <button onClick={() => setStep(1)} className="btn-m-ghost">← Back</button>
+              <button onClick={() => setStep(1)} className="btn-m-ghost">
+                ← Back
+              </button>
               <button
                 onClick={() => driverId && setStep(3)}
                 disabled={!driverId}
@@ -160,11 +213,15 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
                 <div className="text-white/60">// COCKPIT LINK ESTABLISHED</div>
                 <div className="flex justify-between">
                   <span className="text-ink-muted">DRIVER:</span>
-                  <span className="text-white font-bold">{selectedDriver.firstName} {selectedDriver.lastName}</span>
+                  <span className="text-white font-bold">
+                    {selectedDriver.firstName} {selectedDriver.lastName}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-ink-muted">CAR ID:</span>
-                  <span className="text-white font-bold">{selectedTeam.short.toUpperCase()}-2026</span>
+                  <span className="text-white font-bold">
+                    {selectedTeam.short.toUpperCase()}-2026
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-ink-muted">FREQUENCY:</span>
@@ -172,17 +229,35 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
                 </div>
                 <div className="h-[1px] bg-hairline-strong my-2" />
                 <div className="space-y-1">
-                  <div className={syncPercentage > 20 ? "text-emerald-400" : "text-ink-muted animate-pulse"}>
+                  <div
+                    className={
+                      syncPercentage > 20 ? "text-emerald-400" : "text-ink-muted animate-pulse"
+                    }
+                  >
                     {syncPercentage > 20 ? "✓ LIVERY MAPPED" : "⚡ LOADING LIVERY..."}
                   </div>
-                  <div className={syncPercentage > 50 ? "text-emerald-400" : "text-ink-muted animate-pulse"}>
-                    {syncPercentage > 50 ? "✓ TYRE SCALES SYNCHRONIZED" : "⚡ CALIBRATING WHEEL SENSORS..."}
+                  <div
+                    className={
+                      syncPercentage > 50 ? "text-emerald-400" : "text-ink-muted animate-pulse"
+                    }
+                  >
+                    {syncPercentage > 50
+                      ? "✓ TYRE SCALES SYNCHRONIZED"
+                      : "⚡ CALIBRATING WHEEL SENSORS..."}
                   </div>
                   <div className={syncPercentage > 85 ? "text-emerald-400" : "text-ink-muted"}>
-                    {syncPercentage > 85 ? "✓ ENGINE MAPS LOADED" : syncPercentage > 50 ? "⚡ FETCHING CONFIG..." : "⚡ QUEUED"}
+                    {syncPercentage > 85
+                      ? "✓ ENGINE MAPS LOADED"
+                      : syncPercentage > 50
+                        ? "⚡ FETCHING CONFIG..."
+                        : "⚡ QUEUED"}
                   </div>
-                  <div className={syncPercentage >= 100 ? "text-emerald-400 font-bold" : "text-ink-muted"}>
-                    {syncPercentage >= 100 ? "✓ PIT WALL INTERFACE READY" : "⚡ GRID LINKING..."}
+                  <div
+                    className={
+                      syncPercentage >= 100 ? "text-emerald-400 font-bold" : "text-ink-muted"
+                    }
+                  >
+                    {syncPercentage >= 100 ? "✓ APEXF1 INTERFACE READY" : "⚡ GRID LINKING..."}
                   </div>
                 </div>
               </div>
@@ -214,7 +289,9 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
                       }}
                     >
                       <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                      <span className="relative z-10 font-bold uppercase tracking-wider">ENTER THE PIT WALL →</span>
+                      <span className="relative z-10 font-bold uppercase tracking-wider">
+                        ENTER APEXF1 →
+                      </span>
                     </button>
                     <div className="mt-2 text-[9px] font-mono text-emerald-400 uppercase tracking-widest animate-pulse">
                       STATUS: SYSTEM SYNC COMPLETE

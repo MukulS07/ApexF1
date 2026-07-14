@@ -40,7 +40,11 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">
           <div>
             <div className="text-eyebrow text-ink-muted mb-4">// The championship</div>
-            <h2 className="text-display text-white">Who's<br />winning.</h2>
+            <h2 className="text-display text-white">
+              Who's
+              <br />
+              winning.
+            </h2>
           </div>
           <div
             role="tablist"
@@ -88,7 +92,14 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                     className={`group grid grid-cols-[40px_1fr_auto] sm:grid-cols-[50px_60px_1fr_180px_130px] items-center gap-4 py-5 px-2 speed-line transition-colors hover:bg-surface-soft relative ${
                       mine ? "row-flash" : ""
                     }`}
-                    style={mine ? ({ ["--team-hex" as string]: t.color, animationDelay: `${flash * 0}ms` } as React.CSSProperties) : undefined}
+                    style={
+                      mine
+                        ? ({
+                            ["--team-hex" as string]: t.color,
+                            animationDelay: `${flash * 0}ms`,
+                          } as React.CSSProperties)
+                        : undefined
+                    }
                   >
                     {mine && (
                       <span
@@ -97,8 +108,15 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                         style={{ background: t.color }}
                       />
                     )}
-                    <span className="tabular text-2xl font-bold text-ink-muted">{(i + 1).toString().padStart(2, "0")}</span>
-                    <span className="tabular text-2xl font-bold hidden sm:block" style={{ color: t.color }}>{d.number}</span>
+                    <span className="tabular text-2xl font-bold text-ink-muted">
+                      {(i + 1).toString().padStart(2, "0")}
+                    </span>
+                    <span
+                      className="tabular text-2xl font-bold hidden sm:block"
+                      style={{ color: t.color }}
+                    >
+                      {d.number}
+                    </span>
                     <div>
                       <div className="text-lg font-bold uppercase tracking-tight flex items-center gap-3 text-white">
                         <span className="text-white/60">{d.firstName}</span>
@@ -113,7 +131,9 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-ink-muted uppercase tracking-wider mt-1">{t.name}</div>
+                      <div className="text-xs text-ink-muted uppercase tracking-wider mt-1">
+                        {t.name}
+                      </div>
                     </div>
                     <div className="hidden sm:block">
                       <div className="h-[3px] bg-hairline-strong overflow-hidden">
@@ -124,7 +144,8 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                       </div>
                     </div>
                     <div className="tabular text-3xl font-bold text-right text-white">
-                      {row.points}<span className="text-xs text-ink-muted ml-2 font-normal">PTS</span>
+                      {row.points}
+                      <span className="text-xs text-ink-muted ml-2 font-normal">PTS</span>
                     </div>
                   </li>
                 );
@@ -135,21 +156,36 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
               {constructorsStandings.map((row, i) => {
                 const t = getTeam(row.teamId)!;
                 return (
-                  <li key={row.teamId} className="group grid grid-cols-[50px_1fr_auto] sm:grid-cols-[50px_1fr_220px_130px] items-center gap-4 py-5 px-2 speed-line transition-colors hover:bg-surface-soft">
-                    <span className="tabular text-2xl font-bold text-ink-muted">{(i + 1).toString().padStart(2, "0")}</span>
+                  <li
+                    key={row.teamId}
+                    className="group grid grid-cols-[50px_1fr_auto] sm:grid-cols-[50px_1fr_220px_130px] items-center gap-4 py-5 px-2 speed-line transition-colors hover:bg-surface-soft"
+                  >
+                    <span className="tabular text-2xl font-bold text-ink-muted">
+                      {(i + 1).toString().padStart(2, "0")}
+                    </span>
                     <div className="flex items-center gap-4">
                       <span className="h-10 w-1" style={{ background: t.color }} />
                       <div>
-                        <div className="text-lg font-bold uppercase tracking-tight text-white">{t.name}</div>
-                        <div className="text-xs text-ink-muted uppercase tracking-wider mt-1">{t.hq}</div>
+                        <div className="text-lg font-bold uppercase tracking-tight text-white">
+                          {t.name}
+                        </div>
+                        <div className="text-xs text-ink-muted uppercase tracking-wider mt-1">
+                          {t.hq}
+                        </div>
                       </div>
                     </div>
                     <div className="hidden sm:block">
                       <div className="h-[3px] bg-hairline-strong overflow-hidden">
-                        <div className="h-full transition-all duration-700 group-hover:brightness-125" style={{ width: `${(row.points / leader) * 100}%`, background: t.color }} />
+                        <div
+                          className="h-full transition-all duration-700 group-hover:brightness-125"
+                          style={{ width: `${(row.points / leader) * 100}%`, background: t.color }}
+                        />
                       </div>
                     </div>
-                    <div className="tabular text-3xl font-bold text-right text-white">{row.points}<span className="text-xs text-ink-muted ml-2 font-normal">PTS</span></div>
+                    <div className="tabular text-3xl font-bold text-right text-white">
+                      {row.points}
+                      <span className="text-xs text-ink-muted ml-2 font-normal">PTS</span>
+                    </div>
                   </li>
                 );
               })}
