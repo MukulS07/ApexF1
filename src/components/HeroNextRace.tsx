@@ -8,6 +8,7 @@ import { useState } from "react";
 import { LiveryConceptBoard } from "./LiveryConceptBoard";
 import { Eye } from "lucide-react";
 import { useF1Schedule } from "@/hooks/useF1Data";
+import { StartingLights } from "./StartingLights";
 
 function greet() {
   const h = new Date().getHours();
@@ -131,6 +132,11 @@ export function HeroNextRace({
                   <TimeBlock label="Minutes" value={cd.minutes} />
                   <TimeBlock label="Seconds" value={cd.seconds} glow />
                 </div>
+              </div>
+
+              {/* F1 Gantry Start Lights Animation */}
+              <div className="mb-8 max-w-2xl">
+                <StartingLights />
               </div>
             </div>
 

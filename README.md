@@ -6,11 +6,15 @@ Welcome to **ApexF1** (Pitwall Refresh), a cutting-edge Formula 1 dashboard desi
 
 ## 🚀 Key Features
 
+*   **🚦 Interactive F1 Starting Lights Gantry (`StartingLights`)**
+    *   Fully interactive F1 start lights replicating the 5-red-light FIA start sequence.
+    *   Synthesizes buzzer beeps dynamically using the Web Audio API (zero audio file dependencies).
+    *   Randomized delay before "Lights Out" to simulate a real race start.
 *   **🏎️ Interactive 3D Livery Designer (`ThreeCarCanvas`)**
     *   Fully interactive 3D Formula 1 car rendered using **Three.js** and WebGL.
     *   Change colors, tweak paint finishes (glossy, matte, metallic), adjust decals, and preview custom designs in real-time.
 *   **🤖 AI Paddock Assistant (`MiniChatbot`)**
-    *   An in-dashboard chatbot powered by the **Google Gemini API**.
+    *   An in-dashboard chatbot powered by the **NVIDIA NIM API** and **Minimax-M3** model (with fallback support for Google Gemini).
     *   Ask questions about F1 rules, the 2026 season regulations, driver statistics, or team strategies.
 *   **📊 Live Track Telemetry (`TrackTelemetry`)**
     *   Real-time simulated telemetry displaying Speed (KM/H), Gear, RPM, DRS activation, Throttle/Brake percentages, and individual Tyre Temperatures.
@@ -31,8 +35,8 @@ Welcome to **ApexF1** (Pitwall Refresh), a cutting-edge Formula 1 dashboard desi
 *   **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
 *   **3D Graphics:** [Three.js](https://threejs.org/)
 *   **State Management & Data Fetching:** [TanStack Query](https://tanstack.com/query) (React Query)
-*   **Animations:** [GSAP](https://gsap.com/) (GreenSock Animation Platform)
-*   **AI Integration:** Gemini API via custom server functions
+*   **Animations & Audio:** [GSAP](https://gsap.com/) and Web Audio API
+*   **AI Integration:** NVIDIA NIM API (Minimax-M3) / Gemini API via custom server functions
 
 ---
 
@@ -54,7 +58,8 @@ npm install
 ### 🔑 Environment Variables
 Create a `.env` file in the root directory and configure the environment variables:
 ```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
+NVIDIA_API_KEY=your_nvidia_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 Refer to `.env.example` for details.
 
@@ -67,13 +72,15 @@ npm run dev
 ```
 Open [http://localhost:8080](http://localhost:8080) to view the application in your browser.
 
-### 🏗️ Building for Production
-To build the application for production:
+### 🏗️ Building for Production & Vercel
+To build the application locally for production:
 ```bash
 bun run build
 # or
 npm run build
 ```
+This project is configured to build using the **Vercel preset** for Nitro. Vercel deployments will automatically read the output at `.vercel/output`. Ensure your environment variables (`NVIDIA_API_KEY`, etc.) are configured in your Vercel Dashboard under Settings.
+
 To preview the production build locally:
 ```bash
 bun run preview

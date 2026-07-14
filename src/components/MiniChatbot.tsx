@@ -7,8 +7,8 @@ import { callGeminiServerFn } from "@/lib/gemini";
 // --- API CONFIGURATION ---
 // To connect Mini to a live AI model (e.g. Gemini, OpenAI, Claude, or a custom middleware),
 // enter your endpoint URL and API key here.
-const AI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
-const AI_API_KEY = "";
+const AI_API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
+const AI_API_KEY = "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";
 
 type Message = {
   id: string;
@@ -117,7 +117,8 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
               driverNumber,
               teamName,
               apiUrl: AI_API_URL,
-              apiKey: AI_API_KEY
+              apiKey: AI_API_KEY,
+              model: "minimaxai/minimax-m3"
             }
           });
           if (replyText.startsWith("Error")) {

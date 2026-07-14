@@ -8,9 +8,10 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
     teamName: string;
     apiUrl: string;
     apiKey: string;
+    model?: string;
   }) => data)
   .handler(async ({ data }) => {
-    const { text, driverName, driverNumber, teamName, apiUrl, apiKey } = data;
+    const { text, driverName, driverNumber, teamName, apiUrl, apiKey, model } = data;
     try {
       const isGemini = apiUrl.includes("generativelanguage.googleapis.com");
       
@@ -49,21 +50,28 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
         }
       } else {
         // Standard OpenAI compatible API
+        const resolvedApiKey = (typeof process !== "undefined" ? (process.env?.NVIDIA_API_KEY || process.env?.GEMINI_API_KEY) : null) 
+          || (globalThis as any).NVIDIA_API_KEY 
+          || (globalThis as any).GEMINI_API_KEY
+          || apiKey;
+
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+            Authorization: `Bearer ${resolvedApiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: model || "gpt-4o-mini",
             messages: [
               {
-                role: "system",
-                content: `You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.`,
-              },
-              { role: "user", content: text },
+                role: "user",
+                content: `[System Instruction: You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.]\n\nDriver Command: ${text}`
+              }
             ],
+            max_tokens: 8192,
+            temperature: 1.00,
+            top_p: 0.95,
           }),
         });
         const dataJson = await response.json();
