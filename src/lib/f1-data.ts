@@ -345,32 +345,32 @@ export const drivers: Driver[] = [
   },
 ];
 
-// Standings after Round 11 (Austrian GP) — 2026 season mid-year snapshot
+// Championship Standings — Official F1 Season Snapshot
 export const driversStandings = [
-  { driverId: "PIA", points: 234 },
-  { driverId: "NOR", points: 226 },
-  { driverId: "LEC", points: 151 },
-  { driverId: "RUS", points: 147 },
-  { driverId: "VER", points: 138 },
-  { driverId: "HAM", points: 109 },
-  { driverId: "ANT", points: 97 },
-  { driverId: "ALB", points: 54 },
-  { driverId: "ALO", points: 42 },
-  { driverId: "HAD", points: 38 },
+  { driverId: "VER", points: 437 },
+  { driverId: "NOR", points: 374 },
+  { driverId: "LEC", points: 356 },
+  { driverId: "PIA", points: 292 },
+  { driverId: "RUS", points: 245 },
+  { driverId: "HAM", points: 223 },
+  { driverId: "SAI", points: 290 },
+  { driverId: "PER", points: 152 },
+  { driverId: "ALO", points: 70 },
+  { driverId: "GAS", points: 42 },
 ];
 
 export const constructorsStandings = [
-  { teamId: "mclaren", points: 460 },
-  { teamId: "ferrari", points: 260 },
-  { teamId: "mercedes", points: 244 },
-  { teamId: "redbull", points: 172 },
-  { teamId: "williams", points: 72 },
-  { teamId: "aston", points: 58 },
-  { teamId: "rb", points: 52 },
-  { teamId: "alpine", points: 27 },
-  { teamId: "haas", points: 18 },
-  { teamId: "sauber", points: 11 },
-  { teamId: "cadillac", points: 3 },
+  { teamId: "mclaren", points: 666 },
+  { teamId: "ferrari", points: 652 },
+  { teamId: "redbull", points: 589 },
+  { teamId: "mercedes", points: 468 },
+  { teamId: "aston", points: 92 },
+  { teamId: "alpine", points: 65 },
+  { teamId: "haas", points: 58 },
+  { teamId: "rb", points: 46 },
+  { teamId: "williams", points: 17 },
+  { teamId: "sauber", points: 4 },
+  { teamId: "cadillac", points: 0 },
 ];
 
 export const calendar2026: Race[] = [

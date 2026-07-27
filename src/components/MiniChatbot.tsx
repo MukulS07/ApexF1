@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Bot, Send, X, Cpu, User, Sparkles, MessageSquare, Radio } from "lucide-react";
-import { getDriverOrFallback, getTeamOrFallback } from "@/lib/f1-data";
+import { getDriverOrFallback, getTeamOrFallback, driversStandings, constructorsStandings } from "@/lib/f1-data";
 import type { Profile } from "@/hooks/useProfile";
 import { callGeminiServerFn } from "@/lib/gemini";
 
@@ -226,21 +226,24 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
 
     // 4. Standings / Championship
     if (q.includes("standing") || q.includes("leader") || q.includes("points") || q.includes("championship")) {
-      return `**2026 World Championship Standings (Mid-Season Update)**:
+      const topDriversList = driversStandings.slice(0, 6).map((entry, idx) => {
+        const d = getDriverOrFallback(entry.driverId);
+        const t = getTeamOrFallback(d.teamId);
+        return `${idx + 1}. **${d.firstName} ${d.lastName}** (${t.name}) — ${entry.points} pts`;
+      }).join("\n");
+
+      const topTeamsList = constructorsStandings.slice(0, 4).map((entry, idx) => {
+        const t = getTeamOrFallback(entry.teamId);
+        return `${idx + 1}. **${t.name}** — ${entry.points} pts`;
+      }).join("\n");
+
+      return `**World Championship Standings**:
 
 **Drivers' Championship**:
-1. **Oscar Piastri** (McLaren) — 234 pts
-2. **Lando Norris** (McLaren) — 226 pts
-3. **Charles Leclerc** (Ferrari) — 151 pts
-4. **George Russell** (Mercedes) — 147 pts
-5. **Max Verstappen** (Red Bull) — 138 pts
-6. **Lewis Hamilton** (Ferrari) — 109 pts
+${topDriversList}
 
 **Constructors' Championship**:
-1. **McLaren** — 460 pts
-2. **Scuderia Ferrari** — 260 pts
-3. **Mercedes-AMG** — 244 pts
-4. **Red Bull Racing** — 172 pts
+${topTeamsList}
 
 *Your driver **${favLastName}** is locked in the championship battle with ${teamName}!*`;
     }
