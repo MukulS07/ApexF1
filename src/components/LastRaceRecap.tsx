@@ -39,11 +39,12 @@ export function LastRaceRecap() {
   if (stints && stints.length > 0) {
     const sortedStints = [...stints].sort((a, b) => a.stint_number - b.stint_number);
     sortedStints.forEach((s) => {
+      if (!s || !s.driver_number) return;
       if (!stintsByDriverNum[s.driver_number]) {
         stintsByDriverNum[s.driver_number] = [];
       }
       let compLetter = "S";
-      const compUpper = s.compound.toUpperCase();
+      const compUpper = (s.compound || "").toUpperCase();
       if (compUpper.startsWith("MED")) compLetter = "M";
       else if (compUpper.startsWith("HAR")) compLetter = "H";
       else if (compUpper.startsWith("INT")) compLetter = "I";

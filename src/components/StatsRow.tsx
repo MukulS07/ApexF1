@@ -16,35 +16,35 @@ export function StatsRow({ favoriteDriverId }: { favoriteDriverId: string }) {
   const leaderDriver = leaderEntry ? getDriverOrFallback(leaderEntry.driverId) : null;
   const secondDriver = secondEntry ? getDriverOrFallback(secondEntry.driverId) : null;
 
-  const leaderNameFmt = leaderDriver
+  const leaderNameFmt = leaderDriver?.firstName
     ? `${leaderDriver.firstName[0]}. ${leaderDriver.lastName}`
     : "";
-  const secondNameFmt = secondDriver
+  const secondNameFmt = secondDriver?.firstName
     ? `${secondDriver.firstName[0]}. ${secondDriver.lastName}`
     : "";
   const leadSubtext =
     leaderDriver && secondDriver ? `${leaderNameFmt} over ${secondNameFmt}` : "No active standings";
 
   // 2. Last Race Fastest Lap
-  const flDriver = getDriverOrFallback(currentLastRace.fastestLapId);
-  const flNameFmt = `${flDriver.firstName[0]}. ${flDriver.lastName}`;
-  const flValue = currentLastRace.fastestLap;
-  const flSubtext = `${flNameFmt} · ${currentLastRace.name}`;
+  const flDriver = getDriverOrFallback(currentLastRace?.fastestLapId);
+  const flNameFmt = flDriver?.firstName ? `${flDriver.firstName[0]}. ${flDriver.lastName}` : "";
+  const flValue = currentLastRace?.fastestLap || "—";
+  const flSubtext = `${flNameFmt} · ${currentLastRace?.name || "Last Race"}`;
 
   // 3. Last Race Winner
-  const winnerDriver = getDriverOrFallback(currentLastRace.winnerId);
-  const winnerTeam = getTeamOrFallback(winnerDriver.teamId);
-  const winnerNameFmt = `${winnerDriver.firstName[0]}. ${winnerDriver.lastName}`;
-  const winnerSubtext = `${winnerTeam.name} · ${currentLastRace.name}`;
+  const winnerDriver = getDriverOrFallback(currentLastRace?.winnerId);
+  const winnerTeam = getTeamOrFallback(winnerDriver?.teamId);
+  const winnerNameFmt = winnerDriver?.firstName ? `${winnerDriver.firstName[0]}. ${winnerDriver.lastName}` : "";
+  const winnerSubtext = `${winnerTeam?.name || "Team"} · ${currentLastRace?.name || "Last Race"}`;
 
   // 4. Your Driver Card
   const favoriteDriver = getDriverOrFallback(favoriteDriverId);
-  const favoriteTeam = getTeamOrFallback(favoriteDriver.teamId);
+  const favoriteTeam = getTeamOrFallback(favoriteDriver?.teamId);
   const rankIdx = currentDrivers.findIndex((s: any) => s.driverId === favoriteDriverId);
   const favoritePoints = rankIdx >= 0 ? currentDrivers[rankIdx].points : 0;
   const favoriteRank = rankIdx >= 0 ? `P${rankIdx + 1}` : "—";
-  const favoriteDriverNameFmt = `${favoriteDriver.firstName[0]}. ${favoriteDriver.lastName}`;
-  const favoriteSubtext = `${favoriteDriverNameFmt} · ${favoriteTeam.name}`;
+  const favoriteDriverNameFmt = favoriteDriver?.firstName ? `${favoriteDriver.firstName[0]}. ${favoriteDriver.lastName}` : "";
+  const favoriteSubtext = `${favoriteDriverNameFmt} · ${favoriteTeam?.name || ""}`;
 
   return (
     <div className="bg-canvas border-t border-b border-hairline-strong">
