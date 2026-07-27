@@ -5,10 +5,8 @@ import type { Profile } from "@/hooks/useProfile";
 import { callGeminiServerFn } from "@/lib/gemini";
 
 // --- API CONFIGURATION ---
-// To connect Mini to a live AI model (e.g. Gemini, OpenAI, Claude, or a custom middleware),
-// enter your endpoint URL and API key here.
 const AI_API_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
-const AI_API_KEY = "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";
+const AI_API_KEY = "";
 
 type Message = {
   id: string;
@@ -104,31 +102,28 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
     setInputText("");
     setIsTyping(true);
 
-    // Simulate thinking/typing animation
     setTimeout(async () => {
       let replyText = "";
 
-      if (AI_API_URL) {
-        try {
-          replyText = await callGeminiServerFn({
-            data: {
-              text: textToSend,
-              driverName,
-              driverNumber,
-              teamName,
-              apiUrl: AI_API_URL,
-              apiKey: AI_API_KEY,
-              model: "minimaxai/minimax-m3"
-            }
-          });
-          if (replyText.startsWith("Error")) {
-            replyText = `Comms telemetry is temporarily congested (Paddock Code: ${replyText.split(":")[0] || "503"}). Falling back to local pit wall data:\n\n` + getFallbackResponse(textToSend);
-          }
-        } catch (e: any) {
-          console.error("API Call failed", e);
-          replyText = "Error connecting to AI API endpoint. Falling back to local paddock intelligence... " + getFallbackResponse(textToSend);
+      try {
+        const response = await callGeminiServerFn({
+          data: {
+            text: textToSend,
+            driverName,
+            driverNumber,
+            teamName,
+            apiUrl: AI_API_URL,
+            apiKey: "",
+            model: "meta/llama-3.3-70b-instruct",
+          },
+        });
+        if (response && !response.startsWith("Error")) {
+          replyText = response;
+        } else {
+          replyText = getFallbackResponse(textToSend);
         }
-      } else {
+      } catch (e: any) {
+        console.warn("AI API endpoint unavailable, falling back to local paddock intelligence", e);
         replyText = getFallbackResponse(textToSend);
       }
 
@@ -141,8 +136,8 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
 
       setMessages((prev) => [...prev, miniMsg]);
       setIsTyping(false);
-      playRadioSound(); // Play notification sound when Mini replies
-    }, 1200);
+      playRadioSound();
+    }, 800);
   };
 
   const getFallbackResponse = (query: string): string => {
