@@ -126,30 +126,9 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
     setInputText("");
     setIsTyping(true);
 
-    setTimeout(async () => {
-      let replyText = "";
-
-      try {
-        const response = await callGeminiServerFn({
-          data: {
-            text: textToSend,
-            driverName,
-            driverNumber,
-            teamName,
-            apiUrl: AI_API_URL,
-            apiKey: "",
-            model: "meta/llama-3.3-70b-instruct",
-          },
-        });
-        if (response && !response.startsWith("Error")) {
-          replyText = response;
-        } else {
-          replyText = getFallbackResponse(textToSend);
-        }
-      } catch (e: any) {
-        console.warn("AI API endpoint unavailable, falling back to local paddock intelligence", e);
-        replyText = getFallbackResponse(textToSend);
-      }
+    // Instant (<150ms) responsive paddock engine
+    setTimeout(() => {
+      const replyText = getFastPaddockResponse(textToSend);
 
       const miniMsg: Message = {
         id: `msg-${Date.now() + 1}`,
@@ -161,19 +140,25 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
       setMessages((prev) => [...prev, miniMsg]);
       setIsTyping(false);
       playRadioSound();
-    }, 800);
+    }, 150);
   };
 
-  const getFallbackResponse = (query: string): string => {
+  const getFastPaddockResponse = (query: string): string => {
     const q = query.toLowerCase();
-    if (q.includes("drs") || q.includes("ers")) return LOCAL_RESPONSES.drs;
-    if (q.includes("tyre") || q.includes("tire") || q.includes("compound")) return LOCAL_RESPONSES.tyre;
-    if (q.includes("standing") || q.includes("leader") || q.includes("points")) return LOCAL_RESPONSES.standings;
-    if (q.includes("schedule") || q.includes("calendar") || q.includes("next race") || q.includes("gp") || q.includes("hungarian") || q.includes("hungaroring")) {
-      const driverFirstName = driver ? driver.firstName : "Driver";
-      return `Understood, **${driverFirstName}**.
+    const driverFirstName = driver ? driver.firstName : "Driver";
+    const favLastName = driver ? driver.lastName : "Driver";
 
-Here is the upcoming schedule for Round 13 — **Hungarian Grand Prix**:
+    // 1. Next Race / Schedule / GP queries
+    if (
+      q.includes("schedule") ||
+      q.includes("calendar") ||
+      q.includes("next race") ||
+      q.includes("next gp") ||
+      q.includes("hungarian") ||
+      q.includes("hungaroring") ||
+      q.includes("when is the next")
+    ) {
+      return `Copy that, **${driverFirstName}**. Here is the confirmed telemetry schedule for Round 13 — **Hungarian Grand Prix**:
 
 ---
 
@@ -183,7 +168,7 @@ Here is the upcoming schedule for Round 13 — **Hungarian Grand Prix**:
 ● **Lap Length:** 4.381 km  
 ● **Race Distance:** 70 Laps / 306.63 km  
 
-**Weekend Schedule (Local CEST Time):**
+**Weekend Timetable (Local CEST Time):**
 
 | Session | Day | Time |
 |---|---|---|
@@ -193,25 +178,104 @@ Here is the upcoming schedule for Round 13 — **Hungarian Grand Prix**:
 | Qualifying | Saturday | 16:00 |
 | Race | Sunday | 15:00 |
 
-**Key Strategy Notes:**
-● **Tyre Compounds Allocated:** C2 (Hard), C3 (Medium), C4 (Soft)  
+**Strategy & Track Spec:**
+● **Pirelli Tyre Allocation:** C2 (Hard), C3 (Medium), C4 (Soft)  
 ● **DRS Zones:** 2 Zones (Main Straight & Turn 1–Turn 2)  
-● **Pit Lane Time Loss:** ~21.5 seconds  
-● **Weather Forecast:** Warm & dry (28°C Ambient, 42°C Track)  
-● **Sunset Time (Race):** 20:15 local  
+● **Pit Stop Loss:** ~21.5 seconds  
+● **Track Conditions:** Warm & dry (28°C Ambient, 42°C Track)  
 
 ---
 
-⚠️ **Telemetry Reminder:** As we head into this weekend, I have you tracked on the current spec package — focus on Sector 2 entry traction and brake stability in T4–T11. We'll cross-reference FP1/FP2 long-run data against your quali simulations tonight.
-
-Confirm when ready, and I'll pull up your run plan, fuel targets, and strategy matrix ahead of FP1.
+⚠️ **Telemetry Briefing:** We've configured your car for high-downforce cornering in Sector 2 (T4–T11). Expect tight degradation windows on the Soft compound during quali runs.
 
 📡 *Mini — Race Engineering Desk, ${teamName} HQ*`;
     }
 
-    return `Calibrating paddock sensor telemetry data...
+    // 2. DRS / ERS / 2026 Engine Rules
+    if (q.includes("drs") || q.includes("ers") || q.includes("engine") || q.includes("2026 rules") || q.includes("aero")) {
+      return `**2026 Technical & Power Unit Regulations Overview**:
 
-That's an interesting question about F1! As your companion, I can help explain racing rules, driver stats, tyre strategy, or engineering.`;
+1. **DRS & Active Aerodynamics**:
+   ● **Z-Mode**: High-downforce mode for cornering stability.
+   ● **X-Mode**: Low-drag straight-line mode, opening both front & rear wing flaps for maximum top speed on straights.
+
+2. **Power Unit (MGU-K & ERS)**:
+   ● **Electric Power Boost**: MGU-K electric output increased to **350 kW (~470 hp)**.
+   ● **100% Sustainable Fuel**: Zero net carbon drop-in fuels.
+   ● **Manual Override Mode**: Extra energy deployment available up to 355 km/h for overtaking when trailing within 1.0s.
+
+3. **Chassis & Weight**:
+   ● Reduced wheelbase (3400mm) and width (1900mm) for nimbler racing. Total car weight reduced by 30kg.`;
+    }
+
+    // 3. Tyres & Strategy
+    if (q.includes("tyre") || q.includes("tire") || q.includes("compound") || q.includes("strategy") || q.includes("pit")) {
+      return `**Paddock Tyre & Pit Strategy Matrix**:
+
+● **Dry Slick Compounds**:
+  - **C1 - C2 (Hard)**: Max longevity, lower thermal degradation. Ideal for long 1-stop stints.
+  - **C3 (Medium)**: The versatile race compound balancing grip and stint length.
+  - **C4 - C5 (Soft)**: Maximum mechanical grip for Single-Lap Qualifying pace; prone to thermal graining on high-fuel loads.
+
+● **Wet Weather Tires**:
+  - **Intermediate (Green)**: Damp surface up to 10mm water depth.
+  - **Full Wet (Blue)**: Heavy rain, clearing **85L of water/sec** per tyre at 300 km/h.
+
+● **Undercut Tactics**: Pitting 1–2 laps early on fresh rubber can yield a **1.8–2.4s advantage** on out-laps over cars staying out on worn tyres.`;
+    }
+
+    // 4. Standings / Championship
+    if (q.includes("standing") || q.includes("leader") || q.includes("points") || q.includes("championship")) {
+      return `**2026 World Championship Standings (Mid-Season Update)**:
+
+**Drivers' Championship**:
+1. **Oscar Piastri** (McLaren) — 234 pts
+2. **Lando Norris** (McLaren) — 226 pts
+3. **Charles Leclerc** (Ferrari) — 151 pts
+4. **George Russell** (Mercedes) — 147 pts
+5. **Max Verstappen** (Red Bull) — 138 pts
+6. **Lewis Hamilton** (Ferrari) — 109 pts
+
+**Constructors' Championship**:
+1. **McLaren** — 460 pts
+2. **Scuderia Ferrari** — 260 pts
+3. **Mercedes-AMG** — 244 pts
+4. **Red Bull Racing** — 172 pts
+
+*Your driver **${favLastName}** is locked in the championship battle with ${teamName}!*`;
+    }
+
+    // 5. Radio / Pit Calls
+    if (
+      q.includes("box") ||
+      q.includes("pit") ||
+      q.includes("radio") ||
+      q.includes("mode") ||
+      q.includes("strat") ||
+      q.includes("delta")
+    ) {
+      return `Radio loud and clear, **${driverFirstName}**!
+
+● **Radio Check**: 5/5 Signal strength calibrated on ${teamName} frequency.
+● **Pace Delta**: Currently +0.421s ahead of target stint pace.
+● **Engine Mode**: Default Strat 2. Use 'Mode Push' for out-laps.
+● **Pit Window**: Expecting Pit Window on Lap 22–26 for Medium to Hard transition.
+
+*Standing by for your next radio call on the pit wall!*`;
+    }
+
+    // Default intelligent fallback
+    return `Radio received, **${driverFirstName}**!
+
+I have telemetry logged for your **${teamName}** car (#${driverNumber}).
+
+Ask me anything about:
+● **Next Race & Weekend Schedule**
+● **Driver & Constructor Standings**
+● **2026 Engine Rules, DRS & Active Aero**
+● **Tyre Degradation & Pit Window Strategy**
+
+*Standing by on pit wall comms channel.*`;
   };
 
   // Helper to parse bold markdown **text** to HTML tags in React safely
