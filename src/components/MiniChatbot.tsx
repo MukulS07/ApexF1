@@ -140,7 +140,7 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
       });
 
       const timeoutPromise = new Promise<string>((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout")), 3000)
+        setTimeout(() => reject(new Error("Timeout")), 12000)
       );
 
       const response = await Promise.race([aiPromise, timeoutPromise]);

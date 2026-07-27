@@ -19,7 +19,7 @@ const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
 // 60 seconds refresh for weather and stints during a session
 const ONE_MIN_MS = 60 * 1000;
 
-export function useDriverStandings(year = "2026") {
+export function useDriverStandings(year = "2024") {
   return useQuery({
     queryKey: ["driverStandings", year],
     queryFn: () => fetchDriverStandings(year),
@@ -28,7 +28,7 @@ export function useDriverStandings(year = "2026") {
   });
 }
 
-export function useConstructorStandings(year = "2026") {
+export function useConstructorStandings(year = "2024") {
   return useQuery({
     queryKey: ["constructorStandings", year],
     queryFn: () => fetchConstructorStandings(year),
