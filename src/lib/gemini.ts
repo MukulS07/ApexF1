@@ -21,7 +21,9 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
           || (globalThis as any).GEMINI_API_KEY 
           || apiKey;
 
-        const systemInstruction = `You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.`;
+        const f1Context = `Current Season: 2026. Next Race: Round 13 - Hungarian Grand Prix at Hungaroring, Budapest (Aug 1 - Aug 2, 2026). Lap Length: 4.381 km, 70 Laps (306.63 km). Schedule (Local CEST): FP1 Friday 13:30, FP2 Friday 17:00, FP3 Saturday 12:30, Quali Saturday 16:00, Race Sunday 15:00. Tyres: C2 Hard, C3 Medium, C4 Soft. DRS: 2 Zones. Standings: Piastri (234), Norris (226), Leclerc (151), Russell (147), Verstappen (138), Hamilton (109). NEVER use bracket placeholders like [Circuit Name] or [HH:MM] in your output; always use actual F1 data.`;
+
+        const systemInstruction = `You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.\n\nContext Data: ${f1Context}`;
         
         const response = await fetch(`${apiUrl}?key=${resolvedApiKey}`, {
           method: "POST",
@@ -55,6 +57,8 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
           || (globalThis as any).GEMINI_API_KEY
           || apiKey;
 
+        const f1Context = `Current Season: 2026. Next Race: Round 13 - Hungarian Grand Prix at Hungaroring, Budapest (Aug 1 - Aug 2, 2026). Lap Length: 4.381 km, 70 Laps (306.63 km). Schedule (Local CEST): FP1 Friday 13:30, FP2 Friday 17:00, FP3 Saturday 12:30, Quali Saturday 16:00, Race Sunday 15:00. Tyres: C2 Hard, C3 Medium, C4 Soft. DRS: 2 Zones. Standings: Piastri (234), Norris (226), Leclerc (151), Russell (147), Verstappen (138), Hamilton (109). NEVER use bracket placeholders like [Circuit Name] or [HH:MM] in your output; always use actual F1 data.`;
+
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -66,7 +70,7 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
             messages: [
               {
                 role: "user",
-                content: `[System Instruction: You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.]\n\nDriver Command: ${text}`
+                content: `[System Instruction: You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.\n\nContext Data: ${f1Context}]\n\nDriver Command: ${text}`
               }
             ],
             max_tokens: 8192,

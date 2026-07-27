@@ -31,14 +31,38 @@ const LOCAL_RESPONSES: Record<string, string> = {
 ● **Slicks (Dry)**: C1 (Hardest) to C5 (Softest). Softs provide maximum grip but wear quickly. Hards offer longevity at the expense of peak cornering speeds.
 
 ● **Wets (Rain)**: **Intermediates** (green sidewall, for damp tracks without standing water) and **Full Wets** (blue sidewall, designed to evacuate up to 85 liters of water per second to prevent aquaplaning).`,
-  standings: `The current 2026 driver standings show Verstappen leading the pack with Scuderia Ferrari, closely contested by Hamilton (Mercedes) and Norris (McLaren).
+  standings: `The current 2026 driver standings show Oscar Piastri (234 pts) leading Lando Norris (226 pts), followed by Charles Leclerc (151 pts) and George Russell (147 pts).
 
 Teams are pushing hard under the brand new 2026 engine and active aero regulations!`,
-  schedule: `The next round is the **Belgian Grand Prix** at Spa-Francorchamps.
+  schedule: `Understood. Here is the upcoming schedule for Round 13 — **Hungarian Grand Prix**:
 
-● **Friday:** Practice 1 & 2
-● **Saturday:** Practice 3 & Qualifying
-● **Sunday:** Grand Prix (Spa-Francorchamps, 44 Laps of high-speed racing)`,
+---
+
+**NEXT GRAND PRIX — Hungarian Grand Prix**
+● **Country:** Hungary  
+● **Circuit:** Hungaroring, Budapest  
+● **Lap Length:** 4.381 km  
+● **Race Distance:** 70 Laps / 306.63 km  
+
+**Weekend Schedule (Local CEST Time):**
+
+| Session | Day | Time |
+|---|---|---|
+| Free Practice 1 | Friday | 13:30 |
+| Free Practice 2 | Friday | 17:00 |
+| Free Practice 3 | Saturday | 12:30 |
+| Qualifying | Saturday | 16:00 |
+| Race | Sunday | 15:00 |
+
+**Key Strategy Notes:**
+● **Tyre Compounds Allocated:** C2 (Hard), C3 (Medium), C4 (Soft)  
+● **DRS Zones:** 2 Zones (Main Straight & Turn 1–Turn 2)  
+● **Pit Lane Time Loss:** ~21.5 seconds  
+● **Weather Forecast:** Warm & dry (28°C Ambient, 42°C Track)  
+
+---
+
+⚠️ **Telemetry Reminder:** As we head into this weekend, focus on Sector 2 entry traction and brake stability. We'll cross-reference FP1/FP2 long-run data against your quali simulations tonight.`,
 };
 
 export function MiniChatbot({ profile }: { profile: Profile | null }) {
@@ -145,13 +169,49 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
     if (q.includes("drs") || q.includes("ers")) return LOCAL_RESPONSES.drs;
     if (q.includes("tyre") || q.includes("tire") || q.includes("compound")) return LOCAL_RESPONSES.tyre;
     if (q.includes("standing") || q.includes("leader") || q.includes("points")) return LOCAL_RESPONSES.standings;
-    if (q.includes("schedule") || q.includes("calendar") || q.includes("next race") || q.includes("gp")) return LOCAL_RESPONSES.schedule;
+    if (q.includes("schedule") || q.includes("calendar") || q.includes("next race") || q.includes("gp") || q.includes("hungarian") || q.includes("hungaroring")) {
+      const driverFirstName = driver ? driver.firstName : "Driver";
+      return `Understood, **${driverFirstName}**.
+
+Here is the upcoming schedule for Round 13 — **Hungarian Grand Prix**:
+
+---
+
+**NEXT GRAND PRIX — Hungarian Grand Prix**
+● **Country:** Hungary  
+● **Circuit:** Hungaroring, Budapest  
+● **Lap Length:** 4.381 km  
+● **Race Distance:** 70 Laps / 306.63 km  
+
+**Weekend Schedule (Local CEST Time):**
+
+| Session | Day | Time |
+|---|---|---|
+| Free Practice 1 | Friday | 13:30 |
+| Free Practice 2 | Friday | 17:00 |
+| Free Practice 3 | Saturday | 12:30 |
+| Qualifying | Saturday | 16:00 |
+| Race | Sunday | 15:00 |
+
+**Key Strategy Notes:**
+● **Tyre Compounds Allocated:** C2 (Hard), C3 (Medium), C4 (Soft)  
+● **DRS Zones:** 2 Zones (Main Straight & Turn 1–Turn 2)  
+● **Pit Lane Time Loss:** ~21.5 seconds  
+● **Weather Forecast:** Warm & dry (28°C Ambient, 42°C Track)  
+● **Sunset Time (Race):** 20:15 local  
+
+---
+
+⚠️ **Telemetry Reminder:** As we head into this weekend, I have you tracked on the current spec package — focus on Sector 2 entry traction and brake stability in T4–T11. We'll cross-reference FP1/FP2 long-run data against your quali simulations tonight.
+
+Confirm when ready, and I'll pull up your run plan, fuel targets, and strategy matrix ahead of FP1.
+
+📡 *Mini — Race Engineering Desk, ${teamName} HQ*`;
+    }
 
     return `Calibrating paddock sensor telemetry data...
 
-That's an interesting question about F1! As your companion, I can help explain racing rules, driver stats, tyre strategy, or engineering.
-
-*(Note: To enable full AI reasoning, configure your private GEMINI_API_KEY inside your root [.env](file:///m:/WEBSITES/pitwall-refresh/.env) file or in your Cloudflare dashboard!)*`;
+That's an interesting question about F1! As your companion, I can help explain racing rules, driver stats, tyre strategy, or engineering.`;
   };
 
   // Helper to parse bold markdown **text** to HTML tags in React safely
