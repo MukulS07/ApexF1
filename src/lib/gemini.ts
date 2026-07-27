@@ -51,13 +51,13 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
           return dataJson.candidates?.[0]?.content?.parts?.[0]?.text || "Error: Empty response payload received from Gemini API.";
         }
       } else {
-        // Standard OpenAI compatible API
-        const resolvedApiKey = (typeof process !== "undefined" ? (process.env?.NVIDIA_API_KEY || process.env?.GEMINI_API_KEY) : null) 
+        // Standard OpenAI compatible API (NVIDIA NIM)
+        const resolvedApiKey = (typeof process !== "undefined" ? (process.env?.NVIDIA_API_KEY || process.env?.GEMINI_API_KEY || process.env?.VITE_NVIDIA_API_KEY) : null) 
           || (globalThis as any).NVIDIA_API_KEY 
           || (globalThis as any).GEMINI_API_KEY
           || apiKey;
 
-        const f1Context = `Current Season: 2026. Next Race: Round 13 - Hungarian Grand Prix at Hungaroring, Budapest (Aug 1 - Aug 2, 2026). Lap Length: 4.381 km, 70 Laps (306.63 km). Schedule (Local CEST): FP1 Friday 13:30, FP2 Friday 17:00, FP3 Saturday 12:30, Quali Saturday 16:00, Race Sunday 15:00. Tyres: C2 Hard, C3 Medium, C4 Soft. DRS: 2 Zones. Standings: Piastri (234), Norris (226), Leclerc (151), Russell (147), Verstappen (138), Hamilton (109). NEVER use bracket placeholders like [Circuit Name] or [HH:MM] in your output; always use actual F1 data.`;
+        const f1Context = `Current Season: 2026. Next Race: Round 13 - Hungarian Grand Prix at Hungaroring, Budapest (Aug 1 - Aug 2, 2026). Lap Length: 4.381 km, 70 Laps (306.63 km). Schedule (Local CEST): FP1 Friday 13:30, FP2 Friday 17:00, FP3 Saturday 12:30, Quali Saturday 16:00, Race Sunday 15:00. Tyres: C2 Hard, C3 Medium, C4 Soft. DRS: 2 Zones. Standings: Verstappen (437 pts), Norris (374 pts), Leclerc (356 pts), Piastri (292 pts), Russell (245 pts), Hamilton (223 pts).`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -66,16 +66,19 @@ export const callGeminiServerFn = createServerFn({ method: "POST" })
             Authorization: `Bearer ${resolvedApiKey}`,
           },
           body: JSON.stringify({
-            model: model || "gpt-4o-mini",
+            model: model || "meta/llama-3.1-8b-instruct",
             messages: [
               {
+                role: "system",
+                content: `You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, concise, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.\n\nContext Data: ${f1Context}`
+              },
+              {
                 role: "user",
-                content: `[System Instruction: You are 'Mini', a helpful, expert F1 telemetry and race engineer companion. Keep answers clear, technical, and F1-themed. Respond in a highly professional, telemetry-focused paddock tone. The user is acting as ${driverName} (#${driverNumber}) of ${teamName}.\n\nContext Data: ${f1Context}]\n\nDriver Command: ${text}`
+                content: text
               }
             ],
-            max_tokens: 8192,
-            temperature: 1.00,
-            top_p: 0.95,
+            max_tokens: 512,
+            temperature: 0.7,
           }),
         });
         const dataJson = await response.json();

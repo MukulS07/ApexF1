@@ -126,8 +126,44 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
     setInputText("");
     setIsTyping(true);
 
-    // Instant (<150ms) responsive paddock engine
-    setTimeout(() => {
+    try {
+      const aiPromise = callGeminiServerFn({
+        data: {
+          text: textToSend,
+          driverName,
+          driverNumber,
+          teamName,
+          apiUrl: AI_API_URL,
+          apiKey: "",
+          model: "meta/llama-3.1-8b-instruct",
+        },
+      });
+
+      const timeoutPromise = new Promise<string>((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout")), 3000)
+      );
+
+      const response = await Promise.race([aiPromise, timeoutPromise]);
+
+      let replyText = "";
+      if (response && !response.startsWith("Error")) {
+        replyText = response;
+      } else {
+        replyText = getFastPaddockResponse(textToSend);
+      }
+
+      const miniMsg: Message = {
+        id: `msg-${Date.now() + 1}`,
+        sender: "mini",
+        text: replyText,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      setMessages((prev) => [...prev, miniMsg]);
+      setIsTyping(false);
+      playRadioSound();
+    } catch (e: any) {
+      console.warn("AI API call falling back to fast local paddock engine", e);
       const replyText = getFastPaddockResponse(textToSend);
 
       const miniMsg: Message = {
@@ -140,7 +176,7 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
       setMessages((prev) => [...prev, miniMsg]);
       setIsTyping(false);
       playRadioSound();
-    }, 150);
+    }
   };
 
   const getFastPaddockResponse = (query: string): string => {
