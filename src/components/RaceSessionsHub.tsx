@@ -29,7 +29,7 @@ type QualiPhase = "Q1" | "Q2" | "Q3";
 export function RaceSessionsHub({ profile }: { profile?: Profile }) {
   const [mode, setMode] = useState<ViewMode>("upcoming");
   const [upcomingTab, setUpcomingTab] = useState<UpcomingSessionId>("fp1");
-  const [previousTab, setPreviousTab] = useState<PreviousSessionId>("race");
+  const [previousTab, setPreviousTab] = useState<PreviousSessionId>("qualifying");
   const [activeQualiPhase, setActiveQualiPhase] = useState<QualiPhase>("Q3");
 
   const handleModeChange = (newMode: ViewMode) => {
