@@ -14,6 +14,8 @@ import { Footer, TopNav } from "@/components/Shell";
 import { SystemLogBar } from "@/components/SystemLogBar";
 import { MiniChatbot } from "@/components/MiniChatbot";
 
+import { RaceSessionsHub } from "@/components/RaceSessionsHub";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -54,6 +56,7 @@ function Index() {
             <HeroNextRace profile={profile} onEditProfile={() => setEditing(true)} />
           </div>
           <StatsRow favoriteDriverId={profile.favoriteDriverId} />
+          <RaceSessionsHub profile={profile} />
           <PaddockLapsRow profile={profile} />
           <div id="standings">
             <ChampionshipBoard favoriteDriverId={profile.favoriteDriverId} />

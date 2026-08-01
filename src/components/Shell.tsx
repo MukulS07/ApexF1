@@ -20,6 +20,9 @@ export function TopNav({ onEdit }: { onEdit: () => void }) {
             <a href="#next" className="hover:text-white transition-colors">
               Next race
             </a>
+            <a href="#sessions" className="hover:text-white transition-colors text-white font-bold">
+              Sessions
+            </a>
             <a href="#standings" className="hover:text-white transition-colors">
               Standings
             </a>
