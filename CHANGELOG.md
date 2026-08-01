@@ -4,7 +4,23 @@ All notable changes to the **ApexF1 Dashboard** project will be documented in th
 
 ---
 
-## [Unreleased] - 2026-07-14
+## [2026-08-01] - Telemetry Hub & Session Control
+
+### Added
+- **🏎 Race Weekend Session Control Hub (`RaceSessionsHub`)**:
+  - Implemented a prominent, accessible toggle switch between **Upcoming Race Sessions** (FP1–FP3, Qualifying, GP specs, rain forecasts, tyre compounds) and **Previous Race Session Data**.
+  - Added **Interactive Q1, Q2, and Q3 Expandable Dropdown Accordion Panels**: Clicking on Q1, Q2, or Q3 opens a detailed session classification dropdown showing driver lap times, gaps, sector splits, and knockout zone indicators.
+- **📡 Real-time User Interaction Telemetry Logger**:
+  - Wired live `systemLogger` events to stream telemetry logs to the bottom HUD on every website interaction (session toggles, standings tab switches, driver profile changes, super licence card exports, AI chatbot queries).
+
+### Fixed
+- **📊 2026 Driver & Constructor Standings Synchronization**:
+  - Fixed out-of-order driver points and aligned all 22 drivers across the 2026 season grid.
+  - Synchronized driver points mathematically with `constructorsStandings` totals and updated the `lastRace` snapshot to Round 12: British GP.
+
+---
+
+## [2026-07-14]
 
 ### Added
 - **🚦 Interactive F1 Starting Lights Gantry (`StartingLights`)**:

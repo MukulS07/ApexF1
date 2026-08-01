@@ -295,35 +295,33 @@ export function Footer() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-zinc-900/10 border border-zinc-900/60 p-5 hover:border-zinc-800 transition-colors">
-              <span className="text-xs font-mono text-[#ff2a2a] block font-bold uppercase tracking-wider">
-                2026-07-14 · PERFORMANCE
+            <div className="bg-zinc-900/20 border border-emerald-500/30 p-5 hover:border-emerald-400 transition-colors rounded-[2px] shadow-lg">
+              <span className="text-xs font-mono text-emerald-400 block font-bold uppercase tracking-wider">
+                2026-08-01 · TELEMETRY HUB
               </span>
-              <p className="text-zinc-400 text-sm leading-relaxed mt-2 font-light">
-                Added scroll IntersectionObserver to sleep offscreen WebGL contexts, optimized
-                shadow map bounds, and restricted devicePixelRatio. Fixed useRafTilt layout reflows
-                by replacing client rect calls.
+              <p className="text-zinc-300 text-sm leading-relaxed mt-2 font-light">
+                Added interactive Race Weekend Session Control Hub featuring a big, accessible toggle
+                between Upcoming Race Sessions (FP1–3, Quali, GP specs) and Previous Race Data.
               </p>
             </div>
 
-            <div className="bg-zinc-900/10 border border-zinc-900/60 p-5 hover:border-zinc-800 transition-colors">
-              <span className="text-xs font-mono text-[#ff2a2a] block font-bold uppercase tracking-wider">
-                2026-07-14 · CONSOLE
+            <div className="bg-zinc-900/20 border border-amber-500/30 p-5 hover:border-amber-400 transition-colors rounded-[2px] shadow-lg">
+              <span className="text-xs font-mono text-amber-400 block font-bold uppercase tracking-wider">
+                2026-08-01 · QUALI DROPDOWNS
               </span>
-              <p className="text-zinc-400 text-sm leading-relaxed mt-2 font-light">
-                System telemetry status bar & log terminal console added to the bottom of the
-                screen, tracking live WebGL load/suspend loops, PWA install captures, and weather
-                sync events.
+              <p className="text-zinc-300 text-sm leading-relaxed mt-2 font-light">
+                Implemented interactive Q1, Q2, and Q3 expandable dropdown accordion panels with full driver
+                lap times, sector splits, gap deltas, and knockout zone indicators.
               </p>
             </div>
 
-            <div className="bg-zinc-900/10 border border-zinc-900/60 p-5 hover:border-zinc-800 transition-colors">
-              <span className="text-xs font-mono text-[#ff2a2a] block font-bold uppercase tracking-wider">
-                2026-05-16 · SHOWROOM
+            <div className="bg-zinc-900/20 border border-sky-500/30 p-5 hover:border-sky-400 transition-colors rounded-[2px] shadow-lg">
+              <span className="text-xs font-mono text-sky-400 block font-bold uppercase tracking-wider">
+                2026-08-01 · DATA SYNC & LOGS
               </span>
-              <p className="text-zinc-400 text-sm leading-relaxed mt-2 font-light">
-                Livery showroom concept board implementation: support for Papaya Orange, Carbon
-                Black, Teal, and White liveries with standard texture overrides.
+              <p className="text-zinc-300 text-sm leading-relaxed mt-2 font-light">
+                Synchronized all 22 drivers across the 2026 season data model, fixed team points math, and
+                wired live systemLogger events to stream telemetry logs on every website interaction.
               </p>
             </div>
           </div>
