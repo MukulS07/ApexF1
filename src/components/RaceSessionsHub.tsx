@@ -10,7 +10,12 @@ import {
   Thermometer,
   CloudRain,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Sparkles,
+  Trophy,
+  AlertCircle,
+  XCircle,
 } from "lucide-react";
 import { getDriverOrFallback, getTeamOrFallback, nextRace, lastRace } from "@/lib/f1-data";
 import { useF1Schedule, useLastRaceResults } from "@/hooks/useF1Data";
@@ -19,11 +24,13 @@ import type { Profile } from "@/hooks/useProfile";
 type ViewMode = "upcoming" | "previous";
 type UpcomingSessionId = "fp1" | "fp2" | "fp3" | "qualifying" | "race";
 type PreviousSessionId = "fp" | "qualifying" | "race" | "strategy";
+type QualiPhase = "Q1" | "Q2" | "Q3";
 
 export function RaceSessionsHub({ profile }: { profile?: Profile }) {
   const [mode, setMode] = useState<ViewMode>("upcoming");
   const [upcomingTab, setUpcomingTab] = useState<UpcomingSessionId>("fp1");
   const [previousTab, setPreviousTab] = useState<PreviousSessionId>("race");
+  const [activeQualiPhase, setActiveQualiPhase] = useState<QualiPhase>("Q3");
 
   const handleModeChange = (newMode: ViewMode) => {
     setMode(newMode);
@@ -31,6 +38,11 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
       `Race session hub mode toggled to: ${newMode === "upcoming" ? "UPCOMING SESSIONS" : "PREVIOUS SESSION DATA"}`,
       "info",
     );
+  };
+
+  const handleQualiPhaseToggle = (phase: QualiPhase) => {
+    setActiveQualiPhase(phase);
+    systemLogger.log(`Qualifying telemetry dropdown opened: ${phase} session classification`, "info");
   };
 
   const handleUpcomingTabChange = (tabId: UpcomingSessionId) => {
@@ -427,24 +439,319 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
             )}
 
             {previousTab === "qualifying" && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-canvas p-5 border border-hairline">
-                  <div className="text-eyebrow text-emerald-400 mb-2">// Q3 Pole Position</div>
-                  <div className="text-2xl font-bold text-white font-mono">{racePrevious.poleTime || "1:25.819"}</div>
-                  <div className="text-sm font-bold text-white mt-2 uppercase">{poleDriver.firstName} {poleDriver.lastName}</div>
-                  <div className="text-xs text-ink-muted mt-0.5">McLaren F1 Team</div>
+              <div className="space-y-6">
+                {/* 3 Interactive Dropdown Triggers for Q1, Q2, Q3 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Q3 POLE SHOOTOUT TRIGGER */}
+                  <button
+                    onClick={() => handleQualiPhaseToggle("Q3")}
+                    aria-expanded={activeQualiPhase === "Q3"}
+                    className={`p-5 border transition-all text-left relative cursor-pointer group ${
+                      activeQualiPhase === "Q3"
+                        ? "bg-canvas border-emerald-400 shadow-lg ring-1 ring-emerald-400/50"
+                        : "bg-canvas/50 border-hairline hover:border-zinc-500 hover:bg-canvas"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-eyebrow text-emerald-400 font-bold uppercase flex items-center gap-1.5">
+                        <Trophy className="h-3.5 w-3.5" /> // Q3 Pole Position
+                      </span>
+                      {activeQualiPhase === "Q3" ? (
+                        <ChevronUp className="h-4 w-4 text-emerald-400" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-zinc-500 group-hover:text-white" />
+                      )}
+                    </div>
+                    <div className="text-2xl font-bold text-white font-mono">{racePrevious.poleTime || "1:25.819"}</div>
+                    <div className="text-sm font-bold text-white mt-2 uppercase">{poleDriver.firstName} {poleDriver.lastName}</div>
+                    <div className="text-xs text-ink-muted mt-0.5 flex justify-between items-center">
+                      <span>McLaren F1 Team</span>
+                      <span className="text-[10px] text-emerald-400 uppercase font-mono tracking-wider">
+                        {activeQualiPhase === "Q3" ? "▾ Inspecting Results" : "▸ Click to open Q3 dropdown"}
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Q2 KNOCKOUT TRIGGER */}
+                  <button
+                    onClick={() => handleQualiPhaseToggle("Q2")}
+                    aria-expanded={activeQualiPhase === "Q2"}
+                    className={`p-5 border transition-all text-left relative cursor-pointer group ${
+                      activeQualiPhase === "Q2"
+                        ? "bg-canvas border-amber-400 shadow-lg ring-1 ring-amber-400/50"
+                        : "bg-canvas/50 border-hairline hover:border-zinc-500 hover:bg-canvas"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-eyebrow text-amber-400 font-bold uppercase flex items-center gap-1.5">
+                        <Zap className="h-3.5 w-3.5" /> // Q2 Knockout Phase
+                      </span>
+                      {activeQualiPhase === "Q2" ? (
+                        <ChevronUp className="h-4 w-4 text-amber-400" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-zinc-500 group-hover:text-white" />
+                      )}
+                    </div>
+                    <div className="text-2xl font-bold text-white font-mono">+0.084s</div>
+                    <div className="text-sm font-bold text-white mt-2 uppercase">Q2 Knockout Margin</div>
+                    <div className="text-xs text-ink-muted mt-0.5 flex justify-between items-center">
+                      <span>Top 10 separated by 0.412s</span>
+                      <span className="text-[10px] text-amber-400 uppercase font-mono tracking-wider">
+                        {activeQualiPhase === "Q2" ? "▾ Inspecting Results" : "▸ Click to open Q2 dropdown"}
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Q1 KNOCKOUT TRIGGER */}
+                  <button
+                    onClick={() => handleQualiPhaseToggle("Q1")}
+                    aria-expanded={activeQualiPhase === "Q1"}
+                    className={`p-5 border transition-all text-left relative cursor-pointer group ${
+                      activeQualiPhase === "Q1"
+                        ? "bg-canvas border-sky-400 shadow-lg ring-1 ring-sky-400/50"
+                        : "bg-canvas/50 border-hairline hover:border-zinc-500 hover:bg-canvas"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-eyebrow text-sky-400 font-bold uppercase flex items-center gap-1.5">
+                        <Flag className="h-3.5 w-3.5" /> // Q1 Knockout Phase
+                      </span>
+                      {activeQualiPhase === "Q1" ? (
+                        <ChevronUp className="h-4 w-4 text-sky-400" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-zinc-500 group-hover:text-white" />
+                      )}
+                    </div>
+                    <div className="text-2xl font-bold text-white font-mono">328.4 km/h</div>
+                    <div className="text-sm font-bold text-white mt-2 uppercase">Speed Trap Record</div>
+                    <div className="text-xs text-ink-muted mt-0.5 flex justify-between items-center">
+                      <span>Main Straight Apex</span>
+                      <span className="text-[10px] text-sky-400 uppercase font-mono tracking-wider">
+                        {activeQualiPhase === "Q1" ? "▾ Inspecting Results" : "▸ Click to open Q1 dropdown"}
+                      </span>
+                    </div>
+                  </button>
                 </div>
-                <div className="bg-canvas p-5 border border-hairline">
-                  <div className="text-eyebrow text-amber-400 mb-2">// Q2 Cut-off Delta</div>
-                  <div className="text-2xl font-bold text-white font-mono">+0.084s</div>
-                  <div className="text-sm font-bold text-white mt-2 uppercase">Q2 Knockout Margin</div>
-                  <div className="text-xs text-ink-muted mt-0.5">Top 10 separated by 0.412s</div>
-                </div>
-                <div className="bg-canvas p-5 border border-hairline">
-                  <div className="text-eyebrow text-sky-400 mb-2">// Q1 Session Track Speed</div>
-                  <div className="text-2xl font-bold text-white font-mono">328.4 km/h</div>
-                  <div className="text-sm font-bold text-white mt-2 uppercase">Speed Trap Record</div>
-                  <div className="text-xs text-ink-muted mt-0.5">Main Straight Apex</div>
+
+                {/* EXPANDABLE DROPBOX RESULTS PANEL */}
+                <div className="bg-canvas border border-hairline p-6 rounded-[2px] shadow-2xl transition-all duration-300">
+                  <div className="flex items-center justify-between border-b border-hairline pb-4 mb-6 flex-wrap gap-4">
+                    <div>
+                      <span
+                        className={`text-xs font-mono font-bold uppercase tracking-widest ${
+                          activeQualiPhase === "Q3"
+                            ? "text-emerald-400"
+                            : activeQualiPhase === "Q2"
+                            ? "text-amber-400"
+                            : "text-sky-400"
+                        }`}
+                      >
+                        // {activeQualiPhase} QUALIFYING SESSION TELEMETRY & RESULTS
+                      </span>
+                      <h4 className="text-xl font-bold text-white mt-1">
+                        {activeQualiPhase === "Q3"
+                          ? "Q3 Pole Position Top 10 Final Shootout"
+                          : activeQualiPhase === "Q2"
+                          ? "Q2 Intermediate Qualifying (P11–P15 Eliminated)"
+                          : "Q1 Initial Qualifying Knockout (P16–P20 Eliminated)"}
+                      </h4>
+                    </div>
+
+                    {/* Phase Switch Pills inside the dropdown */}
+                    <div className="flex items-center gap-1 bg-zinc-900 p-1 border border-hairline rounded-[2px]">
+                      {(["Q1", "Q2", "Q3"] as QualiPhase[]).map((phase) => (
+                        <button
+                          key={phase}
+                          onClick={() => handleQualiPhaseToggle(phase)}
+                          className={`px-3 py-1 text-xs font-bold font-mono transition-colors cursor-pointer ${
+                            activeQualiPhase === phase
+                              ? "bg-white text-black font-extrabold"
+                              : "text-zinc-400 hover:text-white"
+                          }`}
+                        >
+                          {phase}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* RESULTS LIST BASED ON ACTIVE QUALI PHASE */}
+                  {activeQualiPhase === "Q3" && (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-[40px_1fr_120px_140px] text-[10px] font-mono text-ink-muted uppercase tracking-widest pb-2 border-b border-hairline px-2">
+                        <span>POS</span>
+                        <span>DRIVER & TEAM</span>
+                        <span className="text-right">Q3 TIME</span>
+                        <span className="text-right">SECTOR SPLITS</span>
+                      </div>
+                      {[
+                        { code: "NOR", time: racePrevious.poleTime || "1:25.819", gap: "POLE", s1: "27.102", s2: "34.215", s3: "24.502" },
+                        { code: "PIA", time: "1:26.041", gap: "+0.222s", s1: "27.180", s2: "34.310", s3: "24.551" },
+                        { code: "HAM", time: "1:26.115", gap: "+0.296s", s1: "27.205", s2: "34.350", s3: "24.560" },
+                        { code: "VER", time: "1:26.208", gap: "+0.389s", s1: "27.240", s2: "34.390", s3: "24.578" },
+                        { code: "LEC", time: "1:26.290", gap: "+0.471s", s1: "27.270", s2: "34.420", s3: "24.600" },
+                        { code: "RUS", time: "1:26.350", gap: "+0.531s", s1: "27.310", s2: "34.450", s3: "24.590" },
+                        { code: "ANT", time: "1:26.440", gap: "+0.621s", s1: "27.350", s2: "34.490", s3: "24.600" },
+                        { code: "TSU", time: "1:26.530", gap: "+0.711s", s1: "27.390", s2: "34.520", s3: "24.620" },
+                        { code: "ALO", time: "1:26.610", gap: "+0.791s", s1: "27.420", s2: "34.560", s3: "24.630" },
+                        { code: "GAS", time: "1:26.720", gap: "+0.901s", s1: "27.480", s2: "34.610", s3: "24.630" },
+                      ].map((item, idx) => {
+                        const d = getDriverOrFallback(item.code);
+                        const t = getTeamOrFallback(d.teamId);
+                        return (
+                          <div
+                            key={item.code}
+                            className={`grid grid-cols-[40px_1fr_120px_140px] items-center p-3 text-sm transition-colors border-b border-hairline/60 ${
+                              idx === 0 ? "bg-emerald-950/30 border-l-4 border-l-emerald-400" : "hover:bg-surface-soft"
+                            }`}
+                          >
+                            <span className="tabular font-bold font-mono text-ink-muted">
+                              {idx === 0 ? "P1" : `P${idx + 1}`}
+                            </span>
+                            <div className="flex items-center gap-3">
+                              <span className="h-5 w-1" style={{ background: t.color }} />
+                              <div>
+                                <span className="font-bold text-white uppercase">{d.firstName} {d.lastName}</span>
+                                <span className="text-xs text-ink-muted ml-2">#{d.number} · {t.name}</span>
+                              </div>
+                            </div>
+                            <div className="text-right font-mono">
+                              <div className="font-bold text-white">{item.time}</div>
+                              <div className="text-[10px] text-ink-muted">{item.gap}</div>
+                            </div>
+                            <div className="text-right font-mono text-xs text-ink-muted">
+                              {item.s1} / {item.s2} / {item.s3}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {activeQualiPhase === "Q2" && (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-[40px_1fr_140px] text-[10px] font-mono text-ink-muted uppercase tracking-widest pb-2 border-b border-hairline px-2">
+                        <span>POS</span>
+                        <span>DRIVER & TEAM</span>
+                        <span className="text-right">Q2 LAP TIME & GAP</span>
+                      </div>
+                      {[
+                        { code: "PIA", time: "1:25.992", gap: "leader" },
+                        { code: "NOR", time: "1:26.040", gap: "+0.048s" },
+                        { code: "HAM", time: "1:26.115", gap: "+0.123s" },
+                        { code: "VER", time: "1:26.180", gap: "+0.188s" },
+                        { code: "LEC", time: "1:26.245", gap: "+0.253s" },
+                        { code: "RUS", time: "1:26.310", gap: "+0.318s" },
+                        { code: "ANT", time: "1:26.390", gap: "+0.398s" },
+                        { code: "TSU", time: "1:26.460", gap: "+0.468s" },
+                        { code: "ALO", time: "1:26.540", gap: "+0.548s" },
+                        { code: "GAS", time: "1:26.620", gap: "+0.628s" },
+                        // Q2 ELIMINATION CUTOFF
+                        { code: "OCO", time: "1:26.704", gap: "+0.712s", eliminated: true },
+                        { code: "HAD", time: "1:26.780", gap: "+0.788s", eliminated: true },
+                        { code: "COL", time: "1:26.850", gap: "+0.858s", eliminated: true },
+                        { code: "STR", time: "1:26.920", gap: "+0.928s", eliminated: true },
+                        { code: "BEA", time: "1:27.010", gap: "+1.018s", eliminated: true },
+                      ].map((item, idx) => {
+                        const d = getDriverOrFallback(item.code);
+                        const t = getTeamOrFallback(d.teamId);
+                        const isCutoff = idx === 10;
+                        return (
+                          <div key={item.code}>
+                            {isCutoff && (
+                              <div className="my-3 py-1.5 px-3 bg-amber-950/40 border-y border-amber-800/60 text-amber-400 text-xs font-mono font-bold flex items-center justify-between">
+                                <span>⚠ Q2 KNOCKOUT CUTOFF ZONE (P11 - P15 ELIMINATED)</span>
+                                <span>Q2 Margin: +0.084s</span>
+                              </div>
+                            )}
+                            <div
+                              className={`grid grid-cols-[40px_1fr_140px] items-center p-3 text-sm transition-colors border-b border-hairline/60 ${
+                                item.eliminated ? "bg-red-950/10 text-zinc-400" : "hover:bg-surface-soft"
+                              }`}
+                            >
+                              <span className="tabular font-bold font-mono text-ink-muted">P{idx + 1}</span>
+                              <div className="flex items-center gap-3">
+                                <span className="h-5 w-1" style={{ background: t.color }} />
+                                <div>
+                                  <span className="font-bold uppercase text-white">{d.firstName} {d.lastName}</span>
+                                  <span className="text-xs text-ink-muted ml-2">#{d.number} · {t.name}</span>
+                                </div>
+                              </div>
+                              <div className="text-right font-mono">
+                                <div className="font-bold text-white">{item.time}</div>
+                                <div className="text-[10px] text-ink-muted">{item.gap}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {activeQualiPhase === "Q1" && (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-[40px_1fr_140px] text-[10px] font-mono text-ink-muted uppercase tracking-widest pb-2 border-b border-hairline px-2">
+                        <span>POS</span>
+                        <span>DRIVER & TEAM</span>
+                        <span className="text-right">Q1 LAP TIME & GAP</span>
+                      </div>
+                      {[
+                        { code: "NOR", time: "1:26.110", gap: "leader" },
+                        { code: "VER", time: "1:26.240", gap: "+0.130s" },
+                        { code: "LEC", time: "1:26.315", gap: "+0.205s" },
+                        { code: "PIA", time: "1:26.380", gap: "+0.270s" },
+                        { code: "HAM", time: "1:26.450", gap: "+0.340s" },
+                        { code: "RUS", time: "1:26.510", gap: "+0.400s" },
+                        { code: "ANT", time: "1:26.580", gap: "+0.470s" },
+                        { code: "TSU", time: "1:26.690", gap: "+0.580s" },
+                        { code: "ALO", time: "1:26.740", gap: "+0.630s" },
+                        { code: "GAS", time: "1:26.810", gap: "+0.700s" },
+                        { code: "OCO", time: "1:26.880", gap: "+0.770s" },
+                        { code: "HAD", time: "1:26.940", gap: "+0.830s" },
+                        { code: "COL", time: "1:27.010", gap: "+0.900s" },
+                        { code: "STR", time: "1:27.080", gap: "+0.970s" },
+                        { code: "BEA", time: "1:27.140", gap: "+1.030s" },
+                        // Q1 ELIMINATION CUTOFF
+                        { code: "LAW", time: "1:27.280", gap: "+1.170s", eliminated: true },
+                        { code: "ALB", time: "1:27.350", gap: "+1.240s", eliminated: true },
+                        { code: "SAI", time: "1:27.420", gap: "+1.310s", eliminated: true },
+                        { code: "HUL", time: "1:27.560", gap: "+1.450s", eliminated: true },
+                        { code: "BOR", time: "1:27.790", gap: "+1.680s", eliminated: true },
+                      ].map((item, idx) => {
+                        const d = getDriverOrFallback(item.code);
+                        const t = getTeamOrFallback(d.teamId);
+                        const isCutoff = idx === 15;
+                        return (
+                          <div key={item.code}>
+                            {isCutoff && (
+                              <div className="my-3 py-1.5 px-3 bg-red-950/40 border-y border-red-800/60 text-red-400 text-xs font-mono font-bold flex items-center justify-between">
+                                <span>🚨 Q1 KNOCKOUT CUTOFF ZONE (P16 - P20 ELIMINATED)</span>
+                                <span>Q1 Margin: +0.140s</span>
+                              </div>
+                            )}
+                            <div
+                              className={`grid grid-cols-[40px_1fr_140px] items-center p-3 text-sm transition-colors border-b border-hairline/60 ${
+                                item.eliminated ? "bg-red-950/15 text-zinc-400" : "hover:bg-surface-soft"
+                              }`}
+                            >
+                              <span className="tabular font-bold font-mono text-ink-muted">P{idx + 1}</span>
+                              <div className="flex items-center gap-3">
+                                <span className="h-5 w-1" style={{ background: t.color }} />
+                                <div>
+                                  <span className="font-bold uppercase text-white">{d.firstName} {d.lastName}</span>
+                                  <span className="text-xs text-ink-muted ml-2">#{d.number} · {t.name}</span>
+                                </div>
+                              </div>
+                              <div className="text-right font-mono">
+                                <div className="font-bold text-white">{item.time}</div>
+                                <div className="text-[10px] text-ink-muted">{item.gap}</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
