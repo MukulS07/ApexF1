@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { systemLogger } from "@/lib/system-logger";
 import {
   constructorsStandings,
   driversStandings,
@@ -13,6 +14,14 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
   const [tab, setTab] = useState<Tab>("drivers");
   const [renderTab, setRenderTab] = useState<Tab>("drivers");
   const [phase, setPhase] = useState<"in" | "out">("in");
+
+  const handleTabChange = (newTab: Tab) => {
+    setTab(newTab);
+    systemLogger.log(
+      `Championship standings view switched: ${newTab === "drivers" ? "Drivers' Championship" : "Constructors' Cup"}`,
+      "info",
+    );
+  };
 
   const { data: realTimeDrivers = [] } = useDriverStandings();
   const { data: realTimeTeams = [] } = useConstructorStandings();
@@ -68,7 +77,7 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                 key={t}
                 role="tab"
                 aria-selected={tab === t}
-                onClick={() => setTab(t)}
+                onClick={() => handleTabChange(t)}
                 className={`relative text-eyebrow pb-2 transition-colors ${
                   tab === t ? "text-white" : "text-ink-muted hover:text-white"
                 }`}

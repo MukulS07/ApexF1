@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { drivers, getTeam, getDriver } from "@/lib/f1-data";
 import type { Profile } from "@/hooks/useProfile";
+import { systemLogger } from "@/lib/system-logger";
 import { MStripe } from "./MStripe";
 import { ThreeCarCanvas } from "./ThreeCarCanvas";
 
@@ -280,7 +281,13 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
                 ) : (
                   <div className="animate-in fade-in duration-300">
                     <button
-                      onClick={() => onComplete({ name: name.trim(), favoriteDriverId: driverId })}
+                      onClick={() => {
+                        const finalName = name.trim() || "Driver";
+                        const d = getDriver(driverId) || drivers[0];
+                        const t = getTeam(d.teamId);
+                        systemLogger.log(`Driver profile configured: ${finalName} (Fav: #${d.number} ${d.lastName} - ${t?.name})`, "success");
+                        onComplete({ name: finalName, favoriteDriverId: driverId });
+                      }}
                       className="w-full btn-m text-center flex items-center justify-center gap-3 relative overflow-hidden group shadow-lg py-5 text-lg cursor-pointer"
                       style={{
                         background: selectedTeam.color,

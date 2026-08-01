@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { systemLogger } from "@/lib/system-logger";
 import {
   Calendar,
   History,
@@ -23,6 +24,24 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
   const [mode, setMode] = useState<ViewMode>("upcoming");
   const [upcomingTab, setUpcomingTab] = useState<UpcomingSessionId>("fp1");
   const [previousTab, setPreviousTab] = useState<PreviousSessionId>("race");
+
+  const handleModeChange = (newMode: ViewMode) => {
+    setMode(newMode);
+    systemLogger.log(
+      `Race session hub mode toggled to: ${newMode === "upcoming" ? "UPCOMING SESSIONS" : "PREVIOUS SESSION DATA"}`,
+      "info",
+    );
+  };
+
+  const handleUpcomingTabChange = (tabId: UpcomingSessionId) => {
+    setUpcomingTab(tabId);
+    systemLogger.log(`Upcoming session tab selected: ${tabId.toUpperCase()}`, "info");
+  };
+
+  const handlePreviousTabChange = (tabId: PreviousSessionId) => {
+    setPreviousTab(tabId);
+    systemLogger.log(`Previous race session tab selected: ${tabId.toUpperCase()}`, "info");
+  };
 
   const { data: realTimeSchedule = [] } = useF1Schedule();
   const { data: realTimeLastRace = null } = useLastRaceResults();
@@ -161,7 +180,7 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
             <button
               role="tab"
               aria-selected={mode === "upcoming"}
-              onClick={() => setMode("upcoming")}
+              onClick={() => handleModeChange("upcoming")}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                 mode === "upcoming"
                   ? "bg-surface-card text-white shadow-lg border border-white/20 scale-[1.02]"
@@ -181,7 +200,7 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
             <button
               role="tab"
               aria-selected={mode === "previous"}
-              onClick={() => setMode("previous")}
+              onClick={() => handleModeChange("previous")}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                 mode === "previous"
                   ? "bg-surface-card text-white shadow-lg border border-white/20 scale-[1.02]"
@@ -218,7 +237,7 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                   return (
                     <button
                       key={tabId}
-                      onClick={() => setUpcomingTab(tabId)}
+                      onClick={() => handleUpcomingTabChange(tabId)}
                       className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-[2px] whitespace-nowrap ${
                         active
                           ? "bg-white text-black font-extrabold shadow-md"
@@ -333,7 +352,7 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                   return (
                     <button
                       key={tabId}
-                      onClick={() => setPreviousTab(tabId)}
+                      onClick={() => handlePreviousTabChange(tabId)}
                       className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-[2px] whitespace-nowrap ${
                         active
                           ? "bg-white text-black font-extrabold shadow-md"

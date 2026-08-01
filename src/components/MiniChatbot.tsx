@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Bot, Send, X, Cpu, User, Sparkles, MessageSquare, Radio } from "lucide-react";
+import { systemLogger } from "@/lib/system-logger";
 import { getDriverOrFallback, getTeamOrFallback, driversStandings, constructorsStandings } from "@/lib/f1-data";
 import type { Profile } from "@/hooks/useProfile";
 import { callGeminiServerFn } from "@/lib/gemini";
@@ -125,6 +126,7 @@ export function MiniChatbot({ profile }: { profile: Profile | null }) {
     setMessages((prev) => [...prev, userMsg]);
     setInputText("");
     setIsTyping(true);
+    systemLogger.log(`Paddock AI query logged: "${textToSend.slice(0, 35)}${textToSend.length > 35 ? '...' : ''}"`, "info");
 
     try {
       const aiPromise = callGeminiServerFn({

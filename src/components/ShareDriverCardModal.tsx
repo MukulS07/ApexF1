@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Copy, Check, Download, Film } from "lucide-react";
 import { getDriverOrFallback, getTeamOrFallback } from "@/lib/f1-data";
+import { systemLogger } from "@/lib/system-logger";
 import type { Profile } from "@/hooks/useProfile";
 // @ts-ignore
 import gifshot from "gifshot";
@@ -39,11 +40,13 @@ export function ShareDriverCardModal({
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     navigator.clipboard.writeText(`${origin}/?driver=${d.id}`);
     setCopied(true);
+    systemLogger.log(`Super Licence share link copied to clipboard (${d.id})`, "info");
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
     setDownloading(true);
+    systemLogger.log(`Super Licence card export initiated for ${d.lastName}`, "info");
     const svgText = generateSvgCard(d, team, rank, points, wins, podiums);
     const blob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(blob);
