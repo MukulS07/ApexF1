@@ -52,7 +52,7 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
             index="01"
             title="Drivers'"
             accent="Championship"
-            sub={`${currentDrivers.length} rounds in`}
+            sub={`${currentLastRace.round || 12} rounds completed`}
           >
             <ol>
               {currentDrivers.map((row: any, i: number) => {

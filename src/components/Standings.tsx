@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { constructorsStandings, driversStandings, getDriver, getTeam } from "@/lib/f1-data";
+import {
+  constructorsStandings,
+  driversStandings,
+  getDriverOrFallback,
+  getTeamOrFallback,
+} from "@/lib/f1-data";
+import { useDriverStandings, useConstructorStandings } from "@/hooks/useF1Data";
 
 type Tab = "drivers" | "constructors";
 
@@ -7,6 +13,12 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
   const [tab, setTab] = useState<Tab>("drivers");
   const [renderTab, setRenderTab] = useState<Tab>("drivers");
   const [phase, setPhase] = useState<"in" | "out">("in");
+
+  const { data: realTimeDrivers = [] } = useDriverStandings();
+  const { data: realTimeTeams = [] } = useConstructorStandings();
+
+  const currentDrivers = realTimeDrivers.length > 0 ? realTimeDrivers : driversStandings;
+  const currentTeams = realTimeTeams.length > 0 ? realTimeTeams : constructorsStandings;
 
   // Cross-fade between tabs: fade current out, swap, fade new in.
   useEffect(() => {
@@ -20,8 +32,8 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
   }, [tab, renderTab]);
 
   const leader = useMemo(
-    () => (renderTab === "drivers" ? driversStandings[0].points : constructorsStandings[0].points),
-    [renderTab],
+    () => (renderTab === "drivers" ? (currentDrivers[0]?.points || 1) : (currentTeams[0]?.points || 1)),
+    [renderTab, currentDrivers, currentTeams],
   );
 
   // Highlight flash when the favorite driver changes.
@@ -80,13 +92,18 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
         >
           {renderTab === "drivers" ? (
             <ol className="divide-y divide-hairline-strong border-y border-hairline-strong">
-              {driversStandings.map((row, i) => {
-                const d = getDriver(row.driverId)!;
-                const t = getTeam(d.teamId)!;
+              {currentDrivers.map((row: any, i: number) => {
+                const d = getDriverOrFallback(
+                  row.driverId,
+                  row.rawDriver
+                    ? { ...row.rawDriver, constructorId: row.constructorId }
+                    : undefined,
+                );
+                const t = getTeamOrFallback(d.teamId);
                 const mine = d.id === favoriteDriverId;
                 return (
                   <li
-                    key={row.driverId}
+                    key={row.driverId || i}
                     // key on flash re-triggers the highlight animation
                     data-mine={mine ? "true" : undefined}
                     className={`group grid grid-cols-[40px_1fr_auto] sm:grid-cols-[50px_60px_1fr_180px_130px] items-center gap-4 py-5 px-2 speed-line transition-colors hover:bg-surface-soft relative ${
@@ -153,11 +170,11 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
             </ol>
           ) : (
             <ol className="divide-y divide-hairline-strong border-y border-hairline-strong">
-              {constructorsStandings.map((row, i) => {
-                const t = getTeam(row.teamId)!;
+              {currentTeams.map((row: any, i: number) => {
+                const t = getTeamOrFallback(row.teamId, row.teamName);
                 return (
                   <li
-                    key={row.teamId}
+                    key={row.teamId || i}
                     className="group grid grid-cols-[50px_1fr_auto] sm:grid-cols-[50px_1fr_220px_130px] items-center gap-4 py-5 px-2 speed-line transition-colors hover:bg-surface-soft"
                   >
                     <span className="tabular text-2xl font-bold text-ink-muted">
