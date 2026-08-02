@@ -240,20 +240,20 @@ function DriversFlipCard({
 }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasAutoFlipped = useRef(false);
 
-  // Auto flip when scrolled into view & auto unflip when scrolled out of view
+  // Auto flip once when scrolled into view cleanly
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !hasAutoFlipped.current) {
+            hasAutoFlipped.current = true;
             setIsFlipped(true);
-          } else {
-            setIsFlipped(false);
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.25 }
     );
 
     if (containerRef.current) {
@@ -465,20 +465,20 @@ function ConstructorsFlipCard({
 }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasAutoFlipped = useRef(false);
 
-  // Auto flip when scrolled into viewport & unflip when scrolled out of viewport
+  // Auto flip once when scrolled into viewport cleanly
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !hasAutoFlipped.current) {
+            hasAutoFlipped.current = true;
             setIsFlipped(true);
-          } else {
-            setIsFlipped(false);
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.25 }
     );
 
     if (containerRef.current) {

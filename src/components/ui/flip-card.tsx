@@ -18,13 +18,15 @@ export function FlipCard({
   containerClassName,
   isFlipped: externalFlipped,
   onFlip,
-  triggerOnHover = false,
+  triggerOnHover = true,
 }: FlipCardProps) {
   const [internalFlipped, setInternalFlipped] = useState(false);
-  const isFlipped = externalFlipped !== undefined ? externalFlipped : internalFlipped;
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleToggle = () => {
-    if (triggerOnHover) return;
+  const isFlipped = externalFlipped !== undefined ? externalFlipped : (internalFlipped || (triggerOnHover && isHovered));
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onFlip) {
       onFlip();
     } else {
@@ -33,29 +35,23 @@ export function FlipCard({
   };
 
   const handleMouseEnter = () => {
-    if (triggerOnHover) {
-      if (onFlip) onFlip();
-      else setInternalFlipped(true);
-    }
+    if (triggerOnHover) setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
-    if (triggerOnHover) {
-      if (onFlip) onFlip();
-      else setInternalFlipped(false);
-    }
+    if (triggerOnHover) setIsHovered(false);
   };
 
   return (
     <div
-      className={cn("perspective-[1200px] w-full select-none", containerClassName)}
-      onClick={handleToggle}
+      className={cn("perspective-[1200px] w-full select-none cursor-pointer group", containerClassName)}
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div
         className={cn(
-          "relative w-full transition-transform duration-700 ease-out [transform-style:preserve-3d]",
+          "relative w-full transition-transform duration-700 ease-in-out [transform-style:preserve-3d]",
           isFlipped ? "[transform:rotateY(180deg)]" : "",
           className
         )}
