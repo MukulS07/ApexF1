@@ -3,6 +3,7 @@ import { X, Copy, Check, Download, Film } from "lucide-react";
 import { getDriverOrFallback, getTeamOrFallback } from "@/lib/f1-data";
 import { systemLogger } from "@/lib/system-logger";
 import type { Profile } from "@/hooks/useProfile";
+import { CardContainer, CardBody, CardItem } from "@/components/ui/card-3d";
 // @ts-ignore
 import gifshot from "gifshot";
 
@@ -157,143 +158,155 @@ export function ShareDriverCardModal({
           </h3>
         </div>
 
-        {/* CSS Preview Card */}
-        <div className="relative overflow-hidden aspect-[1.6/1] bg-[#121212] border border-zinc-800 p-6 flex flex-col justify-between rounded-[2px] shadow-2xl select-none">
-          {/* Carbon Fiber subtle grid effect */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-20"
-            style={{
-              backgroundImage:
-                "linear-gradient(45deg, rgba(255,255,255,0.01) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.01) 75%), linear-gradient(45deg, rgba(255,255,255,0.01) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.01) 75%)",
-              backgroundSize: "20px 20px",
-              backgroundPosition: "0 0, 10px 10px",
-            }}
-          />
+        {/* 3D Interactive Preview Card */}
+        <CardContainer containerClassName="w-full py-0">
+          <CardBody className="w-full">
+            <div className="relative overflow-hidden aspect-[1.6/1] bg-[#121212] border border-zinc-800 p-6 flex flex-col justify-between rounded-[2px] shadow-2xl select-none">
+              {/* Carbon Fiber subtle grid effect */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-20"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(45deg, rgba(255,255,255,0.01) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.01) 75%), linear-gradient(45deg, rgba(255,255,255,0.01) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.01) 75%)",
+                  backgroundSize: "20px 20px",
+                  backgroundPosition: "0 0, 10px 10px",
+                }}
+              />
 
-          {/* Large background number */}
-          <span
-            className="absolute bottom-[-30px] right-4 text-[180px] font-black leading-none opacity-[0.03] select-none pointer-events-none"
-            style={{ color }}
-          >
-            #{d.number}
-          </span>
-
-          {/* Top Line & Labels */}
-          <div>
-            <div className="h-[2px] w-full mb-3" style={{ backgroundColor: color }} />
-            <div className="flex justify-between items-center text-[8px] font-mono font-bold tracking-wider">
-              <span className="text-[#cfa05b]">FIA AUTOMOBILE SUPER LICENCE</span>
-              <span className="text-emerald-400">STATUS: ACTIVE // PADDOCK GRANTED</span>
-            </div>
-            <div className="h-[1px] w-full bg-zinc-800 mt-2" />
-          </div>
-
-          {/* Main Details Body */}
-          <div className="flex items-stretch flex-1 my-4">
-            {/* Portrait Box */}
-            <div className="w-24 bg-[#181818] border border-zinc-800 rounded-[1px] flex flex-col items-center justify-between p-3 select-none">
-              <div className="w-full flex-1 flex items-center justify-center opacity-25">
-                {/* SVG Minimalist Helmet Outline */}
-                <svg
-                  viewBox="0 0 100 100"
-                  className="w-14 h-14"
-                  stroke="currentColor"
-                  fill="none"
+              {/* Large background number */}
+              <CardItem translateZ="20" className="absolute bottom-[-30px] right-4 pointer-events-none">
+                <span
+                  className="text-[180px] font-black leading-none opacity-[0.05] select-none"
                   style={{ color }}
                 >
-                  <path
-                    d="M50 15 C30 15 30 75 30 75 C30 80 40 85 50 85 C60 85 70 80 70 75 C70 75 70 15 50 15 Z"
-                    strokeWidth="4"
-                  />
-                  <path
-                    d="M35 50 C35 50 50 40 65 50 L65 62 C65 62 50 68 35 62 Z"
-                    strokeWidth="3"
-                    fill="currentColor"
-                    fillOpacity="0.1"
-                  />
-                </svg>
-              </div>
-              <div className="text-[7px] font-mono text-zinc-500 tracking-wider text-center mt-2 uppercase">
-                PILOT ACCESS ID
-              </div>
-            </div>
+                  #{d.number}
+                </span>
+              </CardItem>
 
-            {/* Info Grid */}
-            <div className="flex-1 pl-5 flex flex-col justify-between">
-              <div>
-                <h4 className="text-lg font-black uppercase tracking-wider text-white leading-none mb-1">
-                  {d.firstName} {d.lastName}
-                </h4>
-                <div
-                  className="text-[9px] font-mono font-bold uppercase tracking-widest"
-                  style={{ color }}
-                >
-                  {team.name}
+              {/* Top Line & Labels */}
+              <CardItem translateZ="30" className="w-full">
+                <div className="h-[2px] w-full mb-3" style={{ backgroundColor: color }} />
+                <div className="flex justify-between items-center text-[8px] font-mono font-bold tracking-wider">
+                  <span className="text-[#cfa05b]">FIA AUTOMOBILE SUPER LICENCE</span>
+                  <span className="text-emerald-400">STATUS: ACTIVE // PADDOCK GRANTED</span>
+                </div>
+                <div className="h-[1px] w-full bg-zinc-800 mt-2" />
+              </CardItem>
+
+              {/* Main Details Body */}
+              <div className="flex items-stretch flex-1 my-4">
+                {/* Portrait Box */}
+                <CardItem translateZ="50" className="w-24">
+                  <div className="w-24 h-full bg-[#181818] border border-zinc-800 rounded-[1px] flex flex-col items-center justify-between p-3 select-none">
+                    <div className="w-full flex-1 flex items-center justify-center opacity-25">
+                      {/* SVG Minimalist Helmet Outline */}
+                      <svg
+                        viewBox="0 0 100 100"
+                        className="w-14 h-14"
+                        stroke="currentColor"
+                        fill="none"
+                        style={{ color }}
+                      >
+                        <path
+                          d="M50 15 C30 15 30 75 30 75 C30 80 40 85 50 85 C60 85 70 80 70 75 C70 75 70 15 50 15 Z"
+                          strokeWidth="4"
+                        />
+                        <path
+                          d="M35 50 C35 50 50 40 65 50 L65 62 C65 62 50 68 35 62 Z"
+                          strokeWidth="3"
+                          fill="currentColor"
+                          fillOpacity="0.1"
+                        />
+                      </svg>
+                    </div>
+                    <div className="text-[7px] font-mono text-zinc-500 tracking-wider text-center mt-2 uppercase">
+                      PILOT ACCESS ID
+                    </div>
+                  </div>
+                </CardItem>
+
+                {/* Info Grid */}
+                <div className="flex-1 pl-5 flex flex-col justify-between">
+                  <CardItem translateZ="60" className="w-full">
+                    <h4 className="text-lg font-black uppercase tracking-wider text-white leading-none mb-1">
+                      {d.firstName} {d.lastName}
+                    </h4>
+                    <div
+                      className="text-[9px] font-mono font-bold uppercase tracking-widest"
+                      style={{ color }}
+                    >
+                      {team.name}
+                    </div>
+                  </CardItem>
+
+                  <CardItem translateZ="40" className="w-full">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-2">
+                      <div>
+                        <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
+                          STANDING
+                        </div>
+                        <div className="text-sm font-bold text-white font-mono mt-0.5">
+                          {rank >= 0 ? `P${rank + 1}` : "—"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
+                          POINTS
+                        </div>
+                        <div className="text-sm font-bold text-white font-mono mt-0.5">{points}</div>
+                      </div>
+                      <div>
+                        <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
+                          WINS
+                        </div>
+                        <div className="text-sm font-bold text-white font-mono mt-0.5">{wins}</div>
+                      </div>
+                      <div>
+                        <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
+                          PODIUMS
+                        </div>
+                        <div className="text-sm font-bold text-white font-mono mt-0.5">{podiums}</div>
+                      </div>
+                    </div>
+                  </CardItem>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-2">
-                <div>
-                  <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
-                    STANDING
+              {/* Bottom Barcode & Delegation */}
+              <CardItem translateZ="30" className="w-full">
+                <div className="flex justify-between items-end border-t border-zinc-800 pt-3">
+                  {/* Barcode representation */}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex gap-px h-5 items-stretch opacity-60">
+                      <div className="w-[3px] bg-zinc-400" />
+                      <div className="w-[1px] bg-zinc-400" />
+                      <div className="w-[4px] bg-zinc-400" />
+                      <div className="w-[2px] bg-zinc-400" />
+                      <div className="w-[1px] bg-zinc-400" />
+                      <div className="w-[3px] bg-zinc-400" />
+                      <div className="w-[2px] bg-zinc-400" />
+                      <div className="w-[4px] bg-zinc-400" />
+                    </div>
+                    <div className="text-[7px] font-mono text-zinc-500 uppercase tracking-widest">
+                      {d.id}-{d.number}
+                    </div>
                   </div>
-                  <div className="text-sm font-bold text-white font-mono mt-0.5">
-                    {rank >= 0 ? `P${rank + 1}` : "—"}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
-                    POINTS
-                  </div>
-                  <div className="text-sm font-bold text-white font-mono mt-0.5">{points}</div>
-                </div>
-                <div>
-                  <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
-                    WINS
-                  </div>
-                  <div className="text-sm font-bold text-white font-mono mt-0.5">{wins}</div>
-                </div>
-                <div>
-                  <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-wider">
-                    PODIUMS
-                  </div>
-                  <div className="text-sm font-bold text-white font-mono mt-0.5">{podiums}</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Bottom Barcode & Delegation */}
-          <div className="flex justify-between items-end border-t border-zinc-800 pt-3">
-            {/* Barcode representation */}
-            <div className="flex flex-col gap-1">
-              <div className="flex gap-px h-5 items-stretch opacity-60">
-                <div className="w-[3px] bg-zinc-400" />
-                <div className="w-[1px] bg-zinc-400" />
-                <div className="w-[4px] bg-zinc-400" />
-                <div className="w-[2px] bg-zinc-400" />
-                <div className="w-[1px] bg-zinc-400" />
-                <div className="w-[3px] bg-zinc-400" />
-                <div className="w-[2px] bg-zinc-400" />
-                <div className="w-[4px] bg-zinc-400" />
-              </div>
-              <div className="text-[7px] font-mono text-zinc-500 uppercase tracking-widest">
-                {d.id}-{d.number}
-              </div>
+                  {/* Stewards stamp */}
+                  <div className="text-right">
+                    <div className="text-[8px] font-mono text-[#cfa05b] font-bold uppercase tracking-wider">
+                      FIA STEWARDS DELEGATE
+                    </div>
+                    <div className="h-[1px] w-32 bg-zinc-800 ml-auto my-0.5" />
+                    <div className="text-[6px] font-mono text-zinc-600 uppercase">
+                      HASH // F1-2026-{d.id}
+                    </div>
+                  </div>
+                </div>
+              </CardItem>
             </div>
-
-            {/* Stewards stamp */}
-            <div className="text-right">
-              <div className="text-[8px] font-mono text-[#cfa05b] font-bold uppercase tracking-wider">
-                FIA STEWARDS DELEGATE
-              </div>
-              <div className="h-[1px] w-32 bg-zinc-800 ml-auto my-0.5" />
-              <div className="text-[6px] font-mono text-zinc-600 uppercase">
-                HASH // F1-2026-{d.id}
-              </div>
-            </div>
-          </div>
-        </div>
+          </CardBody>
+        </CardContainer>
 
         {/* Share Actions Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
