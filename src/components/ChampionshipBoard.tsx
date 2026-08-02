@@ -9,6 +9,8 @@ import {
   lastRace,
 } from "@/lib/f1-data";
 import { useDriverStandings, useConstructorStandings, useLastRaceResults } from "@/hooks/useF1Data";
+import { FlipCard } from "./ui/flip-card";
+import { RotateCw, Trophy } from "lucide-react";
 
 /**
  * Three-column aligned board:
@@ -139,43 +141,16 @@ export function ChampionshipBoard({ favoriteDriverId }: { favoriteDriverId?: str
             title="Constructors'"
             accent="Cup"
             sub={`All ${currentTeams.length} teams · 2026`}
+            aside={
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                <RotateCw className="h-3 w-3 animate-spin" style={{ animationDuration: "10s" }} />
+                FLIP CARD ENABLED
+              </span>
+            }
           >
-            <ol>
-              {currentTeams.map((row: any, i: number) => {
-                const t = getTeamOrFallback(row.teamId, (row as any).teamName);
-                return (
-                  <li
-                    key={row.teamId}
-                    className="group grid grid-cols-[36px_1fr_auto] items-center gap-3 py-4 px-4 border-b border-hairline transition-colors hover:bg-surface-soft"
-                  >
-                    <span className="tabular text-lg font-bold text-ink-muted">
-                      {(i + 1).toString().padStart(2, "0")}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="text-white font-bold uppercase tracking-tight truncate">
-                        {t.name}
-                      </div>
-                      <div className="text-[11px] text-ink-muted uppercase tracking-wider mt-1 truncate">
-                        {t.short} · {t.hq}
-                      </div>
-                      <div className="h-[2px] bg-hairline-strong overflow-hidden mt-2">
-                        <div
-                          className="h-full transition-all duration-700"
-                          style={{
-                            width: `${(row.points / teamLeader) * 100}%`,
-                            background: t.color,
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="tabular text-2xl font-bold text-right text-white leading-none">
-                      {row.points}
-                      <div className="text-[10px] text-ink-muted font-normal mt-1">PTS</div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
+            <div className="p-3">
+              <ConstructorsFlipCard teams={currentTeams} teamLeader={teamLeader} />
+            </div>
           </Column>
 
           {/* -------- § 03 Paddock Intel -------- */}
@@ -314,3 +289,157 @@ function Story({
     </div>
   );
 }
+
+function ConstructorsFlipCard({
+  teams,
+  teamLeader,
+}: {
+  teams: any[];
+  teamLeader: number;
+}) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const topRow = teams[0];
+  const topTeam = getTeamOrFallback(topRow?.teamId, topRow?.teamName);
+  const secondRow = teams[1];
+  const leadMargin = (topRow?.points || 0) - (secondRow?.points || 0);
+
+  const frontSide = (
+    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-6 min-h-[480px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
+      {/* Carbon fiber grid texture */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-25"
+        style={{
+          backgroundImage:
+            "linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.02) 75%), linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.02) 75%)",
+          backgroundSize: "16px 16px",
+          backgroundPosition: "0 0, 8px 8px",
+        }}
+      />
+
+      {/* Top Accent Color Glow */}
+      <div
+        className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full blur-3xl opacity-40"
+        style={{ background: topTeam.color }}
+      />
+
+      {/* Watermark Big Number */}
+      <span
+        className="absolute bottom-[-20px] right-2 text-[160px] font-black leading-none opacity-[0.04] pointer-events-none select-none"
+        style={{ color: topTeam.color }}
+      >
+        #1
+      </span>
+
+      {/* Header */}
+      <div className="relative z-10">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-eyebrow text-ink-muted flex items-center gap-1.5">
+            <Trophy className="h-3.5 w-3.5" style={{ color: topTeam.color }} />
+            // LEADER SPOTLIGHT
+          </span>
+          <span
+            className="text-[9px] font-mono font-bold px-2 py-0.5 uppercase tracking-widest text-white rounded-[1px]"
+            style={{ background: topTeam.color }}
+          >
+            P1 LEADER
+          </span>
+        </div>
+        <div className="h-[2px] w-full" style={{ background: topTeam.color }} />
+      </div>
+
+      {/* Main Brand Info */}
+      <div className="relative z-10 my-auto py-6">
+        <div className="text-[11px] font-mono text-ink-muted uppercase tracking-widest mb-1">
+          {topTeam.hq} · {topTeam.short}
+        </div>
+        <h3 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white leading-none mb-3">
+          {topTeam.name}
+        </h3>
+
+        <div className="flex items-baseline gap-4 mt-6">
+          <span className="tabular text-5xl font-extrabold text-white">
+            {topRow?.points}
+          </span>
+          <span className="text-xs font-mono text-ink-muted uppercase tracking-wider">
+            PTS ({leadMargin > 0 ? `+${leadMargin} PTS LEAD` : "CHAMPIONSHIP LEADER"})
+          </span>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="h-[3px] bg-hairline-strong overflow-hidden mt-4 w-full">
+          <div
+            className="h-full"
+            style={{ width: "100%", background: topTeam.color }}
+          />
+        </div>
+      </div>
+
+      {/* Footer Flip CTA */}
+      <div className="relative z-10 pt-4 border-t border-hairline flex items-center justify-between">
+        <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+          <RotateCw className="h-3.5 w-3.5 text-emerald-400 animate-spin" style={{ animationDuration: "8s" }} />
+          CLICK CARD TO VIEW ALL TEAMS
+        </span>
+        <span className="text-[10px] font-mono text-white px-2.5 py-1 border border-hairline bg-surface-card uppercase tracking-wider group-hover/card:border-white transition-colors">
+          FLIP 🔄
+        </span>
+      </div>
+    </div>
+  );
+
+  const backSide = (
+    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-4 min-h-[480px] flex flex-col justify-between rounded-[2px] shadow-2xl">
+      <div className="flex items-center justify-between pb-3 border-b border-hairline mb-2">
+        <span className="text-eyebrow text-ink-muted">// CONSTRUCTORS STANDINGS</span>
+        <span className="text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider">
+          FLIP BACK 🔄
+        </span>
+      </div>
+
+      <ol className="flex-1 overflow-y-auto max-h-[380px] space-y-1 pr-1 custom-scrollbar">
+        {teams.map((row: any, i: number) => {
+          const t = getTeamOrFallback(row.teamId, (row as any).teamName);
+          return (
+            <li
+              key={row.teamId}
+              className="grid grid-cols-[28px_1fr_auto] items-center gap-2 py-2 px-3 border-b border-hairline/40 hover:bg-surface-soft transition-colors"
+            >
+              <span className="tabular text-xs font-bold text-ink-muted">
+                {(i + 1).toString().padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <div className="text-xs text-white font-bold uppercase truncate">
+                  {t.name}
+                </div>
+                <div className="h-[2px] bg-hairline-strong overflow-hidden mt-1">
+                  <div
+                    className="h-full"
+                    style={{
+                      width: `${(row.points / teamLeader) * 100}%`,
+                      background: t.color,
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="tabular text-xs font-bold text-right text-white">
+                {row.points} <span className="text-[9px] text-ink-muted">PTS</span>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+
+  return (
+    <FlipCard
+      front={frontSide}
+      back={backSide}
+      isFlipped={isFlipped}
+      onFlip={() => setIsFlipped(!isFlipped)}
+      className="h-[480px]"
+    />
+  );
+}
+
