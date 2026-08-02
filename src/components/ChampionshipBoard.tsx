@@ -275,7 +275,7 @@ function DriversFlipCard({
   const leadMargin = (topRow?.points || 0) - (secondRow?.points || 0);
 
   const frontSide = (
-    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-6 min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
+    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-4 sm:p-6 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
       {/* Carbon fiber grid texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-25"
@@ -295,7 +295,7 @@ function DriversFlipCard({
 
       {/* Watermark Big Number */}
       <span
-        className="absolute bottom-[-20px] right-2 text-[160px] font-black leading-none opacity-[0.04] pointer-events-none select-none"
+        className="absolute bottom-[-20px] right-2 text-[120px] sm:text-[160px] font-black leading-none opacity-[0.04] pointer-events-none select-none"
         style={{ color: topTeam.color }}
       >
         #{topDriver.number}
@@ -319,21 +319,21 @@ function DriversFlipCard({
       </div>
 
       {/* Main Driver Info */}
-      <div className="relative z-10 my-auto py-6">
-        <div className="text-[11px] font-mono text-ink-muted uppercase tracking-widest mb-1 flex items-center gap-2">
+      <div className="relative z-10 my-auto py-4 sm:py-6">
+        <div className="text-[10px] sm:text-[11px] font-mono text-ink-muted uppercase tracking-widest mb-1 flex items-center gap-2">
           <span>{topTeam.name}</span>
           <span>·</span>
           <span>#{topDriver.number}</span>
         </div>
-        <h3 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white leading-none mb-3">
+        <h3 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white leading-none mb-3">
           {topDriver.firstName} {topDriver.lastName}
         </h3>
 
-        <div className="flex items-baseline gap-4 mt-6">
-          <span className="tabular text-5xl font-extrabold text-white">
+        <div className="flex items-baseline gap-3 sm:gap-4 mt-4 sm:mt-6">
+          <span className="tabular text-4xl sm:text-5xl font-extrabold text-white">
             {topRow?.points}
           </span>
-          <span className="text-xs font-mono text-ink-muted uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-mono text-ink-muted uppercase tracking-wider">
             PTS ({leadMargin > 0 ? `+${leadMargin} PTS LEAD` : "CHAMPIONSHIP LEADER"})
           </span>
         </div>
@@ -348,12 +348,12 @@ function DriversFlipCard({
       </div>
 
       {/* Footer Flip CTA */}
-      <div className="relative z-10 pt-4 border-t border-hairline flex items-center justify-between">
-        <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-          <RotateCw className="h-3.5 w-3.5 text-emerald-400 animate-spin" style={{ animationDuration: "8s" }} />
-          SCROLL TO AUTO-FLIP / UNFLIP
+      <div className="relative z-10 pt-3 sm:pt-4 border-t border-hairline flex items-center justify-between">
+        <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+          <RotateCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-400 animate-spin" style={{ animationDuration: "8s" }} />
+          TAP / FLIP CARD
         </span>
-        <span className="text-[10px] font-mono text-white px-2.5 py-1 border border-hairline bg-surface-card uppercase tracking-wider group-hover/card:border-white transition-colors">
+        <span className="text-[9px] sm:text-[10px] font-mono text-white px-2 sm:px-2.5 py-1 border border-hairline bg-surface-card uppercase tracking-wider group-hover/card:border-white transition-colors">
           FLIP 🔄
         </span>
       </div>
@@ -361,10 +361,10 @@ function DriversFlipCard({
   );
 
   const backSide = (
-    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-4 sm:p-5 min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
-      <div className="flex items-center justify-between pb-3 border-b border-hairline mb-2">
-        <span className="text-eyebrow text-ink-muted">// FULL DRIVERS STANDINGS ({drivers.length})</span>
-        <span className="text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
+      <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2">
+        <span className="text-eyebrow text-ink-muted text-[10px] sm:text-xs">// DRIVERS STANDINGS ({drivers.length})</span>
+        <span className="text-[9px] sm:text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
           FLIP TO LEADER 🔄
         </span>
       </div>
@@ -384,7 +384,7 @@ function DriversFlipCard({
           return (
             <li
               key={row.driverId}
-              className={`grid grid-cols-[28px_1fr_auto] items-center gap-3 py-1.5 px-3 border-b border-hairline/30 hover:bg-surface-soft transition-colors relative ${
+              className={`grid grid-cols-[24px_1fr_auto] sm:grid-cols-[28px_1fr_auto] items-center gap-2 sm:gap-3 py-1 sm:py-1.5 px-2 sm:px-3 border-b border-hairline/30 hover:bg-surface-soft transition-colors relative ${
                 mine ? "row-flash" : ""
               }`}
               style={
@@ -400,30 +400,30 @@ function DriversFlipCard({
                   style={{ background: t.color }}
                 />
               )}
-              <span className="tabular text-xs font-bold text-ink-muted">
+              <span className="tabular text-[11px] sm:text-xs font-bold text-ink-muted">
                 {(i + 1).toString().padStart(2, "0")}
               </span>
               <div className="min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <span className="text-xs text-white font-bold uppercase truncate">
+                <div className="flex items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-1 sm:gap-1.5 truncate">
+                    <span className="text-[11px] sm:text-xs text-white font-bold uppercase truncate">
                       {d.firstName[0]}. {d.lastName}
                     </span>
                     {mine && (
                       <span
                         key={`badge-${flash}`}
-                        className="text-[8px] font-bold uppercase tracking-[0.15em] px-1 py-0.2 mine-badge"
+                        className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.15em] px-1 py-0.2 mine-badge"
                         style={{ background: t.color, color: "white" }}
                       >
                         YOU
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] font-mono text-ink-muted uppercase hidden sm:inline truncate">
+                  <span className="text-[9px] sm:text-[10px] font-mono text-ink-muted uppercase hidden sm:inline truncate">
                     {t.short}
                   </span>
                 </div>
-                <div className="h-[2px] bg-hairline-strong overflow-hidden mt-1">
+                <div className="h-[2px] bg-hairline-strong overflow-hidden mt-0.5 sm:mt-1">
                   <div
                     className="h-full transition-all duration-500"
                     style={{
@@ -433,8 +433,8 @@ function DriversFlipCard({
                   />
                 </div>
               </div>
-              <div className="tabular text-xs font-bold text-right text-white">
-                {row.points} <span className="text-[9px] text-ink-muted font-normal">PTS</span>
+              <div className="tabular text-[11px] sm:text-xs font-bold text-right text-white">
+                {row.points} <span className="text-[8px] sm:text-[9px] text-ink-muted font-normal">PTS</span>
               </div>
             </li>
           );
@@ -450,7 +450,7 @@ function DriversFlipCard({
         back={backSide}
         isFlipped={isFlipped}
         onFlip={() => setIsFlipped(!isFlipped)}
-        className="h-[580px]"
+        className="h-[500px] sm:h-[580px]"
       />
     </div>
   );
@@ -494,7 +494,7 @@ function ConstructorsFlipCard({
   const leadMargin = (topRow?.points || 0) - (secondRow?.points || 0);
 
   const frontSide = (
-    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-6 min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
+    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-4 sm:p-6 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
       {/* Carbon fiber grid texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-25"
@@ -514,7 +514,7 @@ function ConstructorsFlipCard({
 
       {/* Watermark Big Number */}
       <span
-        className="absolute bottom-[-20px] right-2 text-[160px] font-black leading-none opacity-[0.04] pointer-events-none select-none"
+        className="absolute bottom-[-20px] right-2 text-[120px] sm:text-[160px] font-black leading-none opacity-[0.04] pointer-events-none select-none"
         style={{ color: topTeam.color }}
       >
         #1
@@ -538,19 +538,19 @@ function ConstructorsFlipCard({
       </div>
 
       {/* Main Brand Info */}
-      <div className="relative z-10 my-auto py-6">
-        <div className="text-[11px] font-mono text-ink-muted uppercase tracking-widest mb-1">
+      <div className="relative z-10 my-auto py-4 sm:py-6">
+        <div className="text-[10px] sm:text-[11px] font-mono text-ink-muted uppercase tracking-widest mb-1">
           {topTeam.hq} · {topTeam.short}
         </div>
-        <h3 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white leading-none mb-3">
+        <h3 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white leading-none mb-3">
           {topTeam.name}
         </h3>
 
-        <div className="flex items-baseline gap-4 mt-6">
-          <span className="tabular text-5xl font-extrabold text-white">
+        <div className="flex items-baseline gap-3 sm:gap-4 mt-4 sm:mt-6">
+          <span className="tabular text-4xl sm:text-5xl font-extrabold text-white">
             {topRow?.points}
           </span>
-          <span className="text-xs font-mono text-ink-muted uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-mono text-ink-muted uppercase tracking-wider">
             PTS ({leadMargin > 0 ? `+${leadMargin} PTS LEAD` : "CHAMPIONSHIP LEADER"})
           </span>
         </div>
@@ -565,12 +565,12 @@ function ConstructorsFlipCard({
       </div>
 
       {/* Footer Flip CTA */}
-      <div className="relative z-10 pt-4 border-t border-hairline flex items-center justify-between">
-        <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-          <RotateCw className="h-3.5 w-3.5 text-emerald-400 animate-spin" style={{ animationDuration: "8s" }} />
-          CLICK CARD TO VIEW ALL TEAMS
+      <div className="relative z-10 pt-3 sm:pt-4 border-t border-hairline flex items-center justify-between">
+        <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400 uppercase tracking-wider flex items-center gap-1.5 sm:gap-2">
+          <RotateCw className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-400 animate-spin" style={{ animationDuration: "8s" }} />
+          TAP / FLIP CARD
         </span>
-        <span className="text-[10px] font-mono text-white px-2.5 py-1 border border-hairline bg-surface-card uppercase tracking-wider group-hover/card:border-white transition-colors">
+        <span className="text-[9px] sm:text-[10px] font-mono text-white px-2 sm:px-2.5 py-1 border border-hairline bg-surface-card uppercase tracking-wider group-hover/card:border-white transition-colors">
           FLIP 🔄
         </span>
       </div>
@@ -578,10 +578,10 @@ function ConstructorsFlipCard({
   );
 
   const backSide = (
-    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-4 sm:p-5 min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
-      <div className="flex items-center justify-between pb-3 border-b border-hairline mb-2">
-        <span className="text-eyebrow text-ink-muted">// FULL CONSTRUCTORS STANDINGS ({teams.length})</span>
-        <span className="text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
+      <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2">
+        <span className="text-eyebrow text-ink-muted text-[10px] sm:text-xs">// CONSTRUCTORS STANDINGS ({teams.length})</span>
+        <span className="text-[9px] sm:text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
           FLIP TO LEADER 🔄
         </span>
       </div>
@@ -593,21 +593,21 @@ function ConstructorsFlipCard({
           return (
             <li
               key={row.teamId}
-              className="grid grid-cols-[28px_1fr_auto] items-center gap-3 py-1.5 px-3 border-b border-hairline/30 hover:bg-surface-soft transition-colors"
+              className="grid grid-cols-[24px_1fr_auto] sm:grid-cols-[28px_1fr_auto] items-center gap-2 sm:gap-3 py-1 sm:py-1.5 px-2 sm:px-3 border-b border-hairline/30 hover:bg-surface-soft transition-colors"
             >
-              <span className="tabular text-xs font-bold text-ink-muted">
+              <span className="tabular text-[11px] sm:text-xs font-bold text-ink-muted">
                 {(i + 1).toString().padStart(2, "0")}
               </span>
               <div className="min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-white font-bold uppercase truncate">
+                <div className="flex items-center justify-between gap-1.5">
+                  <span className="text-[11px] sm:text-xs text-white font-bold uppercase truncate">
                     {t.name}
                   </span>
-                  <span className="text-[10px] font-mono text-ink-muted uppercase hidden sm:inline truncate">
+                  <span className="text-[9px] sm:text-[10px] font-mono text-ink-muted uppercase hidden sm:inline truncate">
                     {t.short}
                   </span>
                 </div>
-                <div className="h-[2px] bg-hairline-strong overflow-hidden mt-1">
+                <div className="h-[2px] bg-hairline-strong overflow-hidden mt-0.5 sm:mt-1">
                   <div
                     className="h-full transition-all duration-500"
                     style={{
@@ -617,8 +617,8 @@ function ConstructorsFlipCard({
                   />
                 </div>
               </div>
-              <div className="tabular text-xs font-bold text-right text-white">
-                {row.points} <span className="text-[9px] text-ink-muted font-normal">PTS</span>
+              <div className="tabular text-[11px] sm:text-xs font-bold text-right text-white">
+                {row.points} <span className="text-[8px] sm:text-[9px] text-ink-muted font-normal">PTS</span>
               </div>
             </li>
           );
@@ -634,9 +634,10 @@ function ConstructorsFlipCard({
         back={backSide}
         isFlipped={isFlipped}
         onFlip={() => setIsFlipped(!isFlipped)}
-        className="h-[580px]"
+        className="h-[500px] sm:h-[580px]"
       />
     </div>
   );
 }
+
 
