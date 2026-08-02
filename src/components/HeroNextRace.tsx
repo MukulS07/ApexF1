@@ -9,6 +9,7 @@ import { LiveryConceptBoard } from "./LiveryConceptBoard";
 import { Eye } from "lucide-react";
 import { useF1Schedule } from "@/hooks/useF1Data";
 import { StartingLights } from "./StartingLights";
+import { Ripple } from "./ui/ripple";
 
 function greet() {
   const h = new Date().getHours();
@@ -71,6 +72,9 @@ export function HeroNextRace({
 
   return (
     <section ref={heroRef} className="relative overflow-hidden bg-canvas grid-bg">
+      {/* Ambient Team Color Ripple Effect */}
+      <Ripple color={team?.color ?? "#1c69d4"} numCircles={7} mainCircleSize={220} />
+
       {/* Ambient team-color glow */}
       <div
         className="pointer-events-none absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full blur-3xl opacity-30"
