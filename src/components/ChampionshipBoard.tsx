@@ -298,6 +298,29 @@ function ConstructorsFlipCard({
   teamLeader: number;
 }) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hasAutoFlipped = useRef(false);
+
+  // Auto flip when scrolled into viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAutoFlipped.current) {
+            hasAutoFlipped.current = true;
+            setIsFlipped(true);
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const topRow = teams[0];
   const topTeam = getTeamOrFallback(topRow?.teamId, topRow?.teamName);
@@ -305,7 +328,7 @@ function ConstructorsFlipCard({
   const leadMargin = (topRow?.points || 0) - (secondRow?.points || 0);
 
   const frontSide = (
-    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-6 min-h-[480px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
+    <div className="relative overflow-hidden bg-[#0d0d0d] border border-hairline-strong p-6 min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl group/card">
       {/* Carbon fiber grid texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-25"
@@ -389,32 +412,38 @@ function ConstructorsFlipCard({
   );
 
   const backSide = (
-    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-4 min-h-[480px] flex flex-col justify-between rounded-[2px] shadow-2xl">
+    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-4 sm:p-5 min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
       <div className="flex items-center justify-between pb-3 border-b border-hairline mb-2">
-        <span className="text-eyebrow text-ink-muted">// CONSTRUCTORS STANDINGS</span>
-        <span className="text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider">
-          FLIP BACK 🔄
+        <span className="text-eyebrow text-ink-muted">// FULL CONSTRUCTORS STANDINGS ({teams.length})</span>
+        <span className="text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+          FLIP TO LEADER 🔄
         </span>
       </div>
 
-      <ol className="flex-1 overflow-y-auto max-h-[380px] space-y-1 pr-1 custom-scrollbar">
+      {/* Entire standings displayed cleanly with zero inner scrolling */}
+      <ol className="flex-1 flex flex-col justify-between py-1">
         {teams.map((row: any, i: number) => {
           const t = getTeamOrFallback(row.teamId, (row as any).teamName);
           return (
             <li
               key={row.teamId}
-              className="grid grid-cols-[28px_1fr_auto] items-center gap-2 py-2 px-3 border-b border-hairline/40 hover:bg-surface-soft transition-colors"
+              className="grid grid-cols-[28px_1fr_auto] items-center gap-3 py-1.5 px-3 border-b border-hairline/30 hover:bg-surface-soft transition-colors"
             >
               <span className="tabular text-xs font-bold text-ink-muted">
                 {(i + 1).toString().padStart(2, "0")}
               </span>
               <div className="min-w-0">
-                <div className="text-xs text-white font-bold uppercase truncate">
-                  {t.name}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-white font-bold uppercase truncate">
+                    {t.name}
+                  </span>
+                  <span className="text-[10px] font-mono text-ink-muted uppercase hidden sm:inline truncate">
+                    {t.short}
+                  </span>
                 </div>
                 <div className="h-[2px] bg-hairline-strong overflow-hidden mt-1">
                   <div
-                    className="h-full"
+                    className="h-full transition-all duration-500"
                     style={{
                       width: `${(row.points / teamLeader) * 100}%`,
                       background: t.color,
@@ -423,7 +452,7 @@ function ConstructorsFlipCard({
                 </div>
               </div>
               <div className="tabular text-xs font-bold text-right text-white">
-                {row.points} <span className="text-[9px] text-ink-muted">PTS</span>
+                {row.points} <span className="text-[9px] text-ink-muted font-normal">PTS</span>
               </div>
             </li>
           );
@@ -433,13 +462,15 @@ function ConstructorsFlipCard({
   );
 
   return (
-    <FlipCard
-      front={frontSide}
-      back={backSide}
-      isFlipped={isFlipped}
-      onFlip={() => setIsFlipped(!isFlipped)}
-      className="h-[480px]"
-    />
+    <div ref={containerRef} className="w-full">
+      <FlipCard
+        front={frontSide}
+        back={backSide}
+        isFlipped={isFlipped}
+        onFlip={() => setIsFlipped(!isFlipped)}
+        className="h-[580px]"
+      />
+    </div>
   );
 }
 
