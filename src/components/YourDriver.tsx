@@ -193,10 +193,10 @@ export function YourDriver({ profile }: { profile: Profile }) {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: string }) {
   return (
-    <div className="bg-surface-card p-6 tilt-card">
+    <div className="bg-surface-card p-4 sm:p-6 tilt-card">
       <div className="text-eyebrow text-ink-muted">{label}</div>
       <div
-        className="tabular text-5xl font-bold mt-4 text-white"
+        className="tabular text-3xl sm:text-5xl font-bold mt-2 sm:mt-4 text-white"
         style={accent ? { color: accent } : undefined}
       >
         {value}

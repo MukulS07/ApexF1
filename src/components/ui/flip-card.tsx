@@ -66,12 +66,30 @@ export function FlipCard({
         )}
       >
         {/* Front Face */}
-        <div className="w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] rounded-[2px] overflow-hidden">
+        <div
+          className={cn(
+            "w-full h-full rounded-[2px] overflow-hidden transition-all duration-300",
+            isFlipped ? "opacity-0 pointer-events-none invisible" : "opacity-100 pointer-events-auto visible"
+          )}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
+        >
           {front}
         </div>
 
         {/* Back Face */}
-        <div className="absolute inset-0 w-full h-full [transform:rotateY(180deg)] [-webkit-transform:rotateY(180deg)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden] rounded-[2px] overflow-hidden">
+        <div
+          className={cn(
+            "absolute inset-0 w-full h-full [transform:rotateY(180deg)] [-webkit-transform:rotateY(180deg)] rounded-[2px] overflow-hidden transition-all duration-300",
+            isFlipped ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"
+          )}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
+        >
           {back}
         </div>
       </div>

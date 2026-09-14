@@ -181,10 +181,10 @@ function Column({
 }) {
   return (
     <div className="bg-surface-card">
-      <header className="px-4 pt-6 pb-5 border-b border-hairline flex items-start justify-between gap-3">
+      <header className="px-4 pt-5 sm:pt-6 pb-4 sm:pb-5 border-b border-hairline flex flex-wrap sm:flex-nowrap items-start justify-between gap-2 sm:gap-3">
         <div className="min-w-0">
           <div className="text-eyebrow text-ink-muted mb-2">§ {index}</div>
-          <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-none">
+          <h2 className="text-xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-none">
             {title}{" "}
             <span
               className="italic font-serif normal-case tracking-normal"
@@ -193,9 +193,9 @@ function Column({
               {accent}
             </span>
           </h2>
-          <div className="text-[11px] uppercase tracking-wider text-ink-muted mt-3">{sub}</div>
+          <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-ink-muted mt-2 sm:mt-3">{sub}</div>
         </div>
-        {aside && <div className="shrink-0 mt-1">{aside}</div>}
+        {aside && <div className="shrink-0 mt-0.5">{aside}</div>}
       </header>
       {children}
     </div>
@@ -361,8 +361,8 @@ function DriversFlipCard({
   );
 
   const backSide = (
-    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
-      <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2">
+    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl overflow-hidden">
+      <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2 shrink-0">
         <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">// DRIVERS STANDINGS ({drivers.length})</span>
         <button
           onClick={(e) => { e.stopPropagation(); setIsFlipped(false); }}
@@ -373,8 +373,8 @@ function DriversFlipCard({
         </button>
       </div>
 
-      {/* Entire drivers standings displayed cleanly */}
-      <ol className="flex-1 flex flex-col gap-1 py-1">
+      {/* Entire drivers standings displayed cleanly with scrollable container */}
+      <ol className="flex-1 overflow-y-auto max-h-[410px] sm:max-h-[480px] pr-1 space-y-1 py-1 custom-scrollbar">
         {drivers.map((row: any, i: number) => {
           const d = getDriverOrFallback(
             row.driverId,
@@ -582,8 +582,8 @@ function ConstructorsFlipCard({
   );
 
   const backSide = (
-    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
-      <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2">
+    <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl overflow-hidden">
+      <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2 shrink-0">
         <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">// CONSTRUCTORS STANDINGS ({teams.length})</span>
         <button
           onClick={(e) => { e.stopPropagation(); setIsFlipped(false); }}
@@ -594,8 +594,8 @@ function ConstructorsFlipCard({
         </button>
       </div>
 
-      {/* Entire standings displayed cleanly */}
-      <ol className="flex-1 flex flex-col gap-1 py-1">
+      {/* Entire standings displayed cleanly with scrollable container */}
+      <ol className="flex-1 overflow-y-auto max-h-[410px] sm:max-h-[480px] pr-1 space-y-1 py-1 custom-scrollbar">
         {teams.map((row: any, i: number) => {
           const t = getTeamOrFallback(row.teamId, (row as any).teamName);
           return (

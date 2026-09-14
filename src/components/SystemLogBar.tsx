@@ -234,28 +234,30 @@ export function SystemLogBar() {
       </div>
 
       {/* Main Status Log Bar */}
-      <div className="h-10 bg-black/90 backdrop-blur-md border-t border-hairline-strong px-6 flex items-center justify-between text-white shadow-2xl">
+      <div className="h-10 bg-black/90 backdrop-blur-md border-t border-hairline-strong px-2 sm:px-6 flex items-center justify-between text-white shadow-2xl overflow-hidden text-[10px] sm:text-xs">
         {/* Left Side: System status & last update */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-4 truncate">
+          <div className="flex items-center gap-1.5 shrink-0">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00B5A1] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00B5A1]"></span>
             </span>
-            <span className="font-bold tracking-wider text-zinc-300">TELEMETRY SYSTEM: ACTIVE</span>
+            <span className="font-bold tracking-wider text-zinc-300">
+              <span className="hidden sm:inline">TELEMETRY </span>SYS: ACTIVE
+            </span>
           </div>
 
-          <span className="text-zinc-700">|</span>
+          <span className="text-zinc-700 hidden xs:inline">|</span>
 
-          <div className="flex items-center gap-1 text-zinc-400">
-            <span>LAST UPDATE:</span>
+          <div className="hidden xs:flex items-center gap-1 text-zinc-400">
+            <span className="hidden md:inline">LAST UPDATE:</span>
             <span className="text-[#00B5A1] tabular-nums">{lastUpdated}</span>
           </div>
 
           {logs.length > 0 && (
             <>
-              <span className="text-zinc-700">|</span>
-              <div className="text-zinc-500 hidden sm:inline truncate max-w-[200px] md:max-w-[350px]">
+              <span className="text-zinc-700 hidden md:inline">|</span>
+              <div className="text-zinc-500 hidden md:inline truncate max-w-[200px] lg:max-w-[350px]">
                 <span className="text-[#FF8700] mr-1.5">&gt;&gt;</span>
                 {logs[0].message}
               </div>
@@ -264,14 +266,14 @@ export function SystemLogBar() {
         </div>
 
         {/* Right Side: Refresh & Toggles */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
             onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-2.5 py-1 border border-zinc-800 hover:border-zinc-500 bg-zinc-950/50 hover:bg-zinc-900 text-zinc-400 hover:text-white transition-all cursor-pointer rounded-xs"
+            className="flex items-center gap-1 px-2 py-1 border border-zinc-800 hover:border-zinc-500 bg-zinc-950/50 hover:bg-zinc-900 text-zinc-400 hover:text-white transition-all cursor-pointer rounded-xs"
             title="Force telemetry refresh"
           >
             <RefreshCw className="h-3 w-3 animate-spin-hover" />
-            <span className="hidden xs:inline">REFRESH</span>
+            <span className="hidden md:inline">REFRESH</span>
           </button>
 
           <button
@@ -279,14 +281,14 @@ export function SystemLogBar() {
               setIsTipOpen(!isTipOpen);
               setIsOpen(false);
             }}
-            className={`flex items-center gap-1 px-2.5 py-1 border transition-all cursor-pointer rounded-xs ${
+            className={`flex items-center gap-1 px-2 py-1 border transition-all cursor-pointer rounded-xs ${
               isTipOpen
                 ? "border-[#ff2a2a] text-[#ff2a2a] bg-[#ff2a2a]/5 hover:bg-[#ff2a2a]/10"
                 : "border-zinc-800 text-zinc-400 hover:border-[#ff2a2a] bg-zinc-950/50 hover:bg-zinc-900 hover:text-white"
             }`}
           >
             <Heart className={`h-3 w-3 ${isTipOpen ? "fill-current" : ""}`} />
-            <span>CREDITS & TIP</span>
+            <span><span className="hidden sm:inline">CREDITS & </span>TIP</span>
             {isTipOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
           </button>
 
@@ -295,14 +297,14 @@ export function SystemLogBar() {
               setIsOpen(!isOpen);
               setIsTipOpen(false);
             }}
-            className={`flex items-center gap-1 px-2.5 py-1 border transition-all cursor-pointer rounded-xs ${
+            className={`flex items-center gap-1 px-2 py-1 border transition-all cursor-pointer rounded-xs ${
               isOpen
                 ? "border-[#FF8700] text-[#FF8700] bg-[#FF8700]/5 hover:bg-[#FF8700]/10"
                 : "border-zinc-800 text-zinc-400 hover:border-zinc-500 bg-zinc-950/50 hover:bg-zinc-900 hover:text-white"
             }`}
           >
             <Terminal className="h-3 w-3" />
-            <span>SYSTEM LOG</span>
+            <span><span className="hidden sm:inline">SYSTEM </span>LOG</span>
             {isOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
           </button>
         </div>
