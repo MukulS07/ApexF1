@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getDriverOrFallback, getTeamOrFallback, nextRace } from "@/lib/f1-data";
 import type { Profile } from "@/hooks/useProfile";
 import { useLiveWeatherAndStints } from "@/hooks/useF1Data";
+import { f1Circuits, getCircuitData } from "@/lib/circuits-data";
 
 export function TrackTelemetry({ profile }: { profile: Profile }) {
   const driver = getDriverOrFallback(profile.favoriteDriverId);
@@ -9,6 +10,9 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
   const color = team?.color ?? "#1c69d4";
   const race = nextRace();
   const { weather } = useLiveWeatherAndStints();
+
+  const [selectedCircuitName, setSelectedCircuitName] = useState<string>(race.circuit);
+  const activeCircuit = getCircuitData(selectedCircuitName);
 
   const pathRef = useRef<SVGPathElement | null>(null);
 
@@ -125,7 +129,7 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [color]);
+  }, [color, selectedCircuitName]);
 
   const sectorTimes = ["23.482", "27.914", "24.106"];
 
@@ -142,7 +146,7 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
             <div className="text-eyebrow mb-4" style={{ color }}>// Track telemetry</div>
             <h2 className="text-display text-white">Live from<br />the car.</h2>
             <p className="text-body text-sm mt-4 max-w-md">
-              Simulated lap of {race.circuit} in {driver?.lastName ?? "your driver"}'s{" "}
+              Simulated lap of {activeCircuit.name} ({activeCircuit.location}) in {driver?.lastName ?? "your driver"}'s{" "}
               <span style={{ color }}>{team?.name}</span>.
             </p>
           </div>
@@ -157,9 +161,23 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-px bg-hairline-strong border border-hairline-strong">
           {/* Circuit map */}
-          <div className="bg-surface-card p-6 sm:p-8 relative">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-eyebrow text-ink-muted">Circuit trace</div>
+          <div className="bg-surface-card p-6 sm:p-8 relative flex flex-col justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">// CIRCUIT TRACE:</span>
+                <select
+                  value={selectedCircuitName}
+                  onChange={(e) => setSelectedCircuitName(e.target.value)}
+                  className="bg-zinc-900 text-white border border-zinc-700 text-xs font-mono px-2 py-1 rounded outline-none cursor-pointer hover:border-zinc-500 transition-colors"
+                >
+                  {Object.keys(f1Circuits).map((cKey) => (
+                    <option key={cKey} value={cKey}>
+                      {f1Circuits[cKey].name} ({f1Circuits[cKey].country})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="flex items-center gap-3 text-xs font-mono">
                 {weather ? (
                   <>
@@ -170,36 +188,46 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
                     <span className="text-emerald-400">LIVE // Track {Math.round(weather.track_temperature)}°C // Air {Math.round(weather.air_temperature)}°C</span>
                   </>
                 ) : (
-                  <span className="text-ink-muted">{race.circuit}</span>
+                  <span className="text-zinc-400">{activeCircuit.lengthKm} · {activeCircuit.turns} turns</span>
                 )}
               </div>
             </div>
-            <svg viewBox="0 0 400 240" className="w-full h-56">
+
+            {/* REAL CIRCUIT VECTOR MAP */}
+            <svg viewBox="0 0 400 240" className="w-full h-64 my-auto">
+              {/* Background Guide Track Outline */}
               <path
-                d="M40,180 C40,60 120,40 200,60 C280,80 340,40 360,90 C380,140 300,160 260,140 C220,120 200,200 140,200 C80,200 40,220 40,180 Z"
+                d={activeCircuit.svgPath}
                 fill="none"
                 stroke="rgba(255,255,255,0.08)"
                 strokeWidth="14"
                 strokeLinecap="round"
+                strokeLinejoin="round"
               />
+              {/* Active Racing Line */}
               <path
                 ref={pathRef}
-                d="M40,180 C40,60 120,40 200,60 C280,80 340,40 360,90 C380,140 300,160 260,140 C220,120 200,200 140,200 C80,200 40,220 40,180 Z"
+                d={activeCircuit.svgPath}
                 fill="none"
                 stroke={color}
-                strokeWidth="2"
-                strokeDasharray="4 6"
-                opacity="0.6"
+                strokeWidth="2.5"
+                strokeDasharray="5 7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.85"
               />
-              {/* Statically positioned sector markers */}
-              <circle cx={243} cy={68} r={3} fill="white" opacity={0.5} />
-              <circle cx={213} cy={172} r={3} fill="white" opacity={0.5} />
 
-              {/* Car dot */}
-              <circle ref={dotOutlineRef} cx={40} cy={180} r={10} fill={color} opacity={0.25} />
-              <circle ref={dotFillRef} cx={40} cy={180} r={5} fill={color} />
-              <circle ref={dotCoreRef} cx={40} cy={180} r={2} fill="white" />
+              {/* Real Sector Checkpoint Markers */}
+              {activeCircuit.sectorMarkers.map((pt, idx) => (
+                <circle key={idx} cx={pt.x} cy={pt.y} r={3.5} fill="white" opacity={0.6} />
+              ))}
+
+              {/* Car telemetry dot */}
+              <circle ref={dotOutlineRef} cx={activeCircuit.startPoint.x} cy={activeCircuit.startPoint.y} r={10} fill={color} opacity={0.3} />
+              <circle ref={dotFillRef} cx={activeCircuit.startPoint.x} cy={activeCircuit.startPoint.y} r={5} fill={color} />
+              <circle ref={dotCoreRef} cx={activeCircuit.startPoint.x} cy={activeCircuit.startPoint.y} r={2} fill="white" />
             </svg>
+
             <div className="grid grid-cols-3 gap-4 mt-6">
               {sectorTimes.map((s, i) => (
                 <div
