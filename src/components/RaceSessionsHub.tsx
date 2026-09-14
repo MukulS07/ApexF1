@@ -168,15 +168,19 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
     <section className="bg-canvas border-t border-b border-hairline-strong py-16 sm:py-24" id="sessions">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10">
         {/* Header & Main Big Accessible Toggle */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
           <div>
-            <div className="flex items-center gap-3 text-eyebrow text-ink-muted mb-3">
+            <div className="flex items-center gap-3 text-xs font-mono text-zinc-400 mb-2">
               <Sparkles className="h-4 w-4 text-emerald-400 animate-pulse" />
               <span>// Telemetry & Session Hub</span>
+              <span className="hidden sm:inline text-zinc-600">•</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-red-950/60 border border-red-800/60 text-red-400 text-xs font-mono rounded-full">
+                <Clock className="h-3 w-3" />
+                Next GP: {raceUpcoming.city}, {raceUpcoming.country}
+              </span>
             </div>
-            <h2 className="text-display text-white">
-              Race Weekend
-              <br />
+            <h2 className="text-3xl sm:text-5xl font-serif text-white tracking-tight">
+              Race Weekend{" "}
               <span className="italic font-serif font-normal" style={{ color: accentColor }}>
                 Session Control.
               </span>
@@ -187,24 +191,23 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
           <div
             role="tablist"
             aria-label="Race Session Selector"
-            className="bg-zinc-950 p-2 border-2 border-hairline-strong rounded-xl shadow-2xl flex flex-col sm:flex-row gap-2 w-full lg:w-auto"
+            className="bg-zinc-950 p-1.5 border border-zinc-800 rounded-xl shadow-xl flex flex-col sm:flex-row gap-2 w-full xl:w-auto"
           >
             <button
               role="tab"
               aria-selected={mode === "upcoming"}
               onClick={() => handleModeChange("upcoming")}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-5 py-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                 mode === "upcoming"
-                  ? "bg-surface-card text-white shadow-lg border border-white/20 scale-[1.02]"
+                  ? "bg-zinc-900 text-white shadow-md border-b-2 border-red-500"
                   : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
               }`}
-              style={mode === "upcoming" ? { borderLeft: `4px solid ${accentColor}` } : {}}
             >
               <Calendar className="h-4 w-4" style={{ color: mode === "upcoming" ? accentColor : "currentColor" }} />
               <div className="text-left">
-                <div>UPCOMING SESSIONS</div>
-                <div className="text-[10px] font-mono font-normal text-zinc-400 lowercase tracking-normal">
-                  {raceUpcoming.name} · Round {raceUpcoming.round}
+                <div>Upcoming Sessions</div>
+                <div className="text-xs font-mono font-normal text-zinc-400 lowercase tracking-normal">
+                  {raceUpcoming.name} · Rd {raceUpcoming.round}
                 </div>
               </div>
             </button>
@@ -213,18 +216,17 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
               role="tab"
               aria-selected={mode === "previous"}
               onClick={() => handleModeChange("previous")}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-3 px-5 py-3 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                 mode === "previous"
-                  ? "bg-surface-card text-white shadow-lg border border-white/20 scale-[1.02]"
+                  ? "bg-zinc-900 text-white shadow-md border-b-2 border-red-500"
                   : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
               }`}
-              style={mode === "previous" ? { borderLeft: `4px solid ${accentColor}` } : {}}
             >
               <History className="h-4 w-4" style={{ color: mode === "previous" ? accentColor : "currentColor" }} />
               <div className="text-left">
-                <div>PREVIOUS RACE SESSION DATA</div>
-                <div className="text-[10px] font-mono font-normal text-zinc-400 lowercase tracking-normal">
-                  {racePrevious.name} · Round {racePrevious.round} Results
+                <div>Previous Session Data</div>
+                <div className="text-xs font-mono font-normal text-zinc-400 lowercase tracking-normal">
+                  {racePrevious.name} · Rd {racePrevious.round}
                 </div>
               </div>
             </button>
@@ -250,10 +252,10 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                     <button
                       key={tabId}
                       onClick={() => handleUpcomingTabChange(tabId)}
-                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-[2px] whitespace-nowrap ${
+                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-md whitespace-nowrap ${
                         active
-                          ? "bg-white text-black font-extrabold shadow-md"
-                          : "text-ink-muted hover:text-white hover:bg-zinc-900"
+                          ? "bg-zinc-100 text-zinc-900 font-bold shadow-md"
+                          : "text-zinc-400 hover:text-white hover:bg-zinc-900"
                       }`}
                     >
                       {labels[tabId]}
@@ -262,8 +264,8 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                 })}
               </div>
 
-              <div className="hidden md:flex items-center gap-2 text-xs text-ink-muted font-mono">
-                <Clock className="h-3.5 w-3.5" />
+              <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
+                <Clock className="h-3.5 w-3.5 text-zinc-500" />
                 <span>Next GP: {raceUpcoming.city}, {raceUpcoming.country}</span>
               </div>
             </div>
@@ -306,34 +308,35 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
               </div>
 
               {/* Right Weather & Tyres Card */}
-              <div className="bg-canvas/70 border border-hairline p-6 flex flex-col justify-between space-y-6">
+              <div className="bg-canvas/70 border border-hairline p-6 flex flex-col gap-5">
                 <div>
-                  <div className="text-eyebrow text-ink-muted mb-4">// Track & Weather Spec</div>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-4">// Track &amp; Weather Spec</div>
+                  <div className="grid grid-cols-2 gap-4 mb-5">
                     <div className="flex items-center gap-3">
                       <Thermometer className="h-5 w-5 text-red-400" />
                       <div>
-                        <div className="text-[10px] text-ink-muted uppercase font-mono">Track Temp</div>
+                        <div className="text-xs text-zinc-400 uppercase font-mono">Track Temp</div>
                         <div className="text-lg font-bold text-white">{currentUpcoming.trackC}°C</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <CloudRain className="h-5 w-5 text-sky-400" />
                       <div>
-                        <div className="text-[10px] text-ink-muted uppercase font-mono">Rain Risk</div>
+                        <div className="text-xs text-zinc-400 uppercase font-mono">Rain Risk</div>
                         <div className="text-lg font-bold text-white">{currentUpcoming.rainRisk}</div>
                       </div>
                     </div>
                   </div>
 
                   <div className="border-t border-hairline pt-4">
-                    <div className="text-[10px] text-ink-muted uppercase font-mono mb-3">// Nominated Compounds</div>
-                    <div className="flex items-center gap-2">
+                    <div className="text-xs text-zinc-400 uppercase font-mono mb-2.5">// Nominated Compounds</div>
+                    <div className="flex items-center gap-3">
                       {currentUpcoming.compounds.map((c, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1 bg-zinc-900 border border-hairline text-xs font-bold uppercase tracking-wider text-white"
+                          className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-200"
                         >
+                          <span className="w-2.5 h-2.5 rounded-full bg-white border border-zinc-500" aria-hidden="true" />
                           {c}
                         </span>
                       ))}
@@ -341,7 +344,7 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                   </div>
                 </div>
 
-                <div className="border-t border-hairline pt-4 flex items-center justify-between text-xs text-ink-muted font-mono">
+                <div className="border-t border-hairline pt-4 flex items-center justify-between text-xs text-zinc-400 font-mono">
                   <span>Round {raceUpcoming.round} of 24</span>
                   <span className="text-white font-bold">{raceUpcoming.city} GP</span>
                 </div>
@@ -365,10 +368,10 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                     <button
                       key={tabId}
                       onClick={() => handlePreviousTabChange(tabId)}
-                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-[2px] whitespace-nowrap ${
+                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-md whitespace-nowrap ${
                         active
-                          ? "bg-white text-black font-extrabold shadow-md"
-                          : "text-ink-muted hover:text-white hover:bg-zinc-900"
+                          ? "bg-zinc-100 text-zinc-900 font-bold shadow-md"
+                          : "text-zinc-400 hover:text-white hover:bg-zinc-900"
                       }`}
                     >
                       {labels[tabId]}
@@ -377,7 +380,7 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
                 })}
               </div>
 
-              <div className="hidden md:flex items-center gap-2 text-xs text-ink-muted font-mono">
+              <div className="hidden md:flex items-center gap-2 text-xs text-zinc-400 font-mono">
                 <Flag className="h-3.5 w-3.5 text-amber-400" />
                 <span>Last Completed: {racePrevious.name} ({racePrevious.circuit})</span>
               </div>

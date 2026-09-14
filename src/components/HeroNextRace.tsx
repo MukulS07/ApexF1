@@ -28,7 +28,7 @@ function TimeBlock({ label, value, glow }: { label: string; value: number; glow?
       >
         {value.toString().padStart(2, "0")}
       </div>
-      <div className="mt-1 text-[10px] uppercase tracking-[0.3em] text-ink-muted">{label}</div>
+      <div className="mt-1 text-xs uppercase tracking-[0.2em] text-ink-muted">{label}</div>
     </div>
   );
 }
@@ -91,12 +91,20 @@ export function HeroNextRace({
       <MStripe />
 
       <div className="mx-auto max-w-6xl px-6 sm:px-10 pt-6 sm:pt-8 pb-8 sm:pb-10 relative">
-        <div className="flex items-center justify-between text-eyebrow text-ink-muted mb-8">
-          <span>
-            {greet()}, {profile.name}.
-          </span>
-          <button onClick={onEditProfile} className="hover:text-white transition-colors">
-            Edit profile →
+        <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-400 mb-8 border-b border-hairline/60 pb-4">
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-200 font-semibold uppercase tracking-wider">
+              {greet()}, {profile.name}.
+            </span>
+            <span className="text-zinc-600 hidden sm:inline">•</span>
+            <span className="text-zinc-400 text-xs hidden sm:inline font-normal">ApexF1 Dashboard</span>
+          </div>
+          <button
+            onClick={onEditProfile}
+            className="px-3 py-1.5 border border-zinc-700 bg-zinc-900/90 hover:bg-zinc-800 text-xs font-mono text-zinc-200 hover:text-white rounded-md transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
+          >
+            <span>Edit Profile</span>
+            <span aria-hidden="true" className="text-red-500 font-bold">→</span>
           </button>
         </div>
 

@@ -363,14 +363,18 @@ function DriversFlipCard({
   const backSide = (
     <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
       <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2">
-        <span className="text-eyebrow text-ink-muted text-[10px] sm:text-xs">// DRIVERS STANDINGS ({drivers.length})</span>
-        <span className="text-[9px] sm:text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
-          FLIP TO LEADER 🔄
-        </span>
+        <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">// DRIVERS STANDINGS ({drivers.length})</span>
+        <button
+          onClick={(e) => { e.stopPropagation(); setIsFlipped(false); }}
+          className="text-xs font-mono text-zinc-200 px-2.5 py-1 border border-zinc-700 bg-zinc-900 rounded uppercase tracking-wider whitespace-nowrap inline-flex items-center gap-1.5 hover:bg-zinc-800 transition-colors cursor-pointer"
+        >
+          <span>FLIP TO LEADER</span>
+          <span aria-hidden="true">🔄</span>
+        </button>
       </div>
 
-      {/* Entire drivers standings displayed cleanly with zero inner scrolling */}
-      <ol className="flex-1 flex flex-col justify-between py-1">
+      {/* Entire drivers standings displayed cleanly */}
+      <ol className="flex-1 flex flex-col gap-1 py-1">
         {drivers.map((row: any, i: number) => {
           const d = getDriverOrFallback(
             row.driverId,
@@ -580,14 +584,18 @@ function ConstructorsFlipCard({
   const backSide = (
     <div className="relative bg-[#0d0d0d] border border-hairline-strong p-3 sm:p-5 min-h-[500px] sm:min-h-[580px] flex flex-col justify-between rounded-[2px] shadow-2xl">
       <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-hairline mb-2">
-        <span className="text-eyebrow text-ink-muted text-[10px] sm:text-xs">// CONSTRUCTORS STANDINGS ({teams.length})</span>
-        <span className="text-[9px] sm:text-[10px] font-mono text-white px-2 py-0.5 border border-hairline bg-surface-card uppercase tracking-wider hover:bg-zinc-800 transition-colors">
-          FLIP TO LEADER 🔄
-        </span>
+        <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">// CONSTRUCTORS STANDINGS ({teams.length})</span>
+        <button
+          onClick={(e) => { e.stopPropagation(); setIsFlipped(false); }}
+          className="text-xs font-mono text-zinc-200 px-2.5 py-1 border border-zinc-700 bg-zinc-900 rounded uppercase tracking-wider whitespace-nowrap inline-flex items-center gap-1.5 hover:bg-zinc-800 transition-colors cursor-pointer"
+        >
+          <span>FLIP TO LEADER</span>
+          <span aria-hidden="true">🔄</span>
+        </button>
       </div>
 
-      {/* Entire standings displayed cleanly with zero inner scrolling */}
-      <ol className="flex-1 flex flex-col justify-between py-1">
+      {/* Entire standings displayed cleanly */}
+      <ol className="flex-1 flex flex-col gap-1 py-1">
         {teams.map((row: any, i: number) => {
           const t = getTeamOrFallback(row.teamId, (row as any).teamName);
           return (

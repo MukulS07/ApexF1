@@ -95,13 +95,14 @@ export function StartingLights() {
       <div className="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
 
       {/* Header telemetry info */}
-      <div className="w-full flex items-center justify-between text-[9px] font-mono text-zinc-500 uppercase tracking-widest mb-4">
+      <div className="w-full flex items-center justify-between text-xs font-mono text-zinc-400 uppercase tracking-wider mb-4">
         <span>// PADDOCK START GANTRY</span>
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
-          className="hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
+          aria-label="Toggle audio feedback"
+          className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-xs font-mono text-zinc-300 hover:text-white rounded-full transition-colors flex items-center gap-1.5 cursor-pointer"
         >
-          {soundEnabled ? <Volume2 className="h-3 w-3" /> : <VolumeX className="h-3 w-3" />}
+          {soundEnabled ? <Volume2 className="h-3.5 w-3.5 text-red-500" /> : <VolumeX className="h-3.5 w-3.5 text-zinc-500" />}
           {soundEnabled ? "SOUND ON" : "MUTED"}
         </button>
       </div>
@@ -151,12 +152,12 @@ export function StartingLights() {
       {/* Text Indicator overlay / Status output */}
       <div className="h-10 mt-5 flex items-center justify-center text-center">
         {state === "idle" && (
-          <span className="text-[10px] sm:text-xs font-mono text-zinc-400 uppercase tracking-widest animate-pulse">
+          <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider animate-pulse">
             Ready to deploy. Click trigger to begin lights sequence.
           </span>
         )}
         {typeof state === "number" && (
-          <span className="text-[10px] sm:text-xs font-mono text-red-500 uppercase tracking-widest font-bold">
+          <span className="text-xs font-mono text-red-500 uppercase tracking-wider font-bold">
             STEADY... LIGHTS ON ({state}/5)
           </span>
         )}
@@ -172,15 +173,15 @@ export function StartingLights() {
         {state === "idle" ? (
           <button
             onClick={triggerSequence}
-            className="px-4 py-2 border border-white hover:bg-white hover:text-black text-xs font-mono uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer"
+            className="px-5 py-2.5 bg-white hover:bg-zinc-200 text-black font-mono font-bold text-xs uppercase tracking-wider rounded transition-all shadow-md flex items-center gap-2 cursor-pointer"
           >
-            <Play className="h-3.5 w-3.5" />
+            <Play className="h-3.5 w-3.5 fill-current" />
             Trigger Sequence
           </button>
         ) : (
           <button
             onClick={resetSequence}
-            className="px-4 py-2 border border-red-500/50 text-red-500 hover:bg-red-500/10 text-xs font-mono uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer"
+            className="px-5 py-2.5 bg-red-950/80 border border-red-700 text-red-400 hover:bg-red-900 hover:text-white text-xs font-mono font-bold uppercase tracking-wider rounded transition-all flex items-center gap-2 cursor-pointer"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Abort & Reset

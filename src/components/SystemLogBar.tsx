@@ -68,7 +68,7 @@ export function SystemLogBar() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col font-mono text-[10px] select-none pointer-events-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-col font-mono text-xs select-none pointer-events-auto">
       {/* BMW M Stripe Divider above the bar */}
       <div className="h-[2px] w-full bg-linear-to-r from-[var(--m-blue-light)] via-[var(--m-blue-dark)] to-[var(--m-red)]" />
 
@@ -131,27 +131,27 @@ export function SystemLogBar() {
 
               {/* Tiers */}
               <div className="grid grid-cols-3 gap-2.5">
-                <div className="border border-zinc-800/80 p-2.5 text-center bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors flex flex-col items-center justify-between rounded-xs">
-                  <span className="bg-zinc-800 text-zinc-300 text-[9.5px] font-mono px-1.5 py-0.5 rounded-xs font-bold select-none">P10</span>
+                <div className="border border-zinc-800/80 p-2.5 text-center bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors flex flex-col items-center justify-between rounded">
+                  <span className="bg-zinc-800 text-zinc-300 text-xs font-mono px-1.5 py-0.5 rounded font-bold select-none">P10</span>
                   <span className="text-lg font-mono font-bold tracking-tight text-white mt-1">₹100</span>
-                  <span className="text-[8.5px] font-mono text-zinc-500 uppercase tracking-wider block mt-1 whitespace-nowrap">POINTS FINISH</span>
+                  <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider block mt-1 whitespace-nowrap">POINTS FINISH</span>
                 </div>
-                <div className="border border-zinc-800/80 p-2.5 text-center bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors flex flex-col items-center justify-between rounded-xs">
-                  <span className="bg-[#ff2a2a] text-white text-[9.5px] font-mono px-1.5 py-0.5 rounded-xs font-bold select-none">P3</span>
+                <div className="border border-zinc-800/80 p-2.5 text-center bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors flex flex-col items-center justify-between rounded">
+                  <span className="bg-red-600 text-white text-xs font-mono px-1.5 py-0.5 rounded font-bold select-none">P3</span>
                   <span className="text-lg font-mono font-bold tracking-tight text-white mt-1">₹300</span>
-                  <span className="text-[8.5px] font-mono text-zinc-500 uppercase tracking-wider block mt-1 whitespace-nowrap">PODIUM</span>
+                  <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider block mt-1 whitespace-nowrap">PODIUM</span>
                 </div>
-                <div className="border border-zinc-800/80 p-2.5 text-center bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors flex flex-col items-center justify-between rounded-xs">
-                  <span className="bg-amber-500 text-white text-[9.5px] font-mono px-1.5 py-0.5 rounded-xs font-bold select-none">P1</span>
+                <div className="border border-zinc-800/80 p-2.5 text-center bg-zinc-900/30 hover:bg-zinc-900/60 transition-colors flex flex-col items-center justify-between rounded">
+                  <span className="bg-amber-500 text-white text-xs font-mono px-1.5 py-0.5 rounded font-bold select-none">P1</span>
                   <span className="text-lg font-mono font-bold tracking-tight text-white mt-1">₹500</span>
-                  <span className="text-[8.5px] font-mono text-zinc-500 uppercase tracking-wider block mt-1 whitespace-nowrap">RACE WINNER</span>
+                  <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider block mt-1 whitespace-nowrap">RACE WINNER</span>
                 </div>
               </div>
 
               {/* Payments Area */}
-              <div className="flex flex-col sm:flex-row gap-4 items-center bg-black/40 border border-zinc-800/80 p-4 rounded-xs pt-1.5 mt-1.5">
+              <div className="flex flex-col sm:flex-row gap-4 items-center bg-black/40 border border-zinc-800/80 p-4 rounded pt-1.5 mt-1.5">
                 {/* QR Code (First) */}
-                <div className="w-24 h-24 bg-white p-1 rounded-xs flex items-center justify-center shrink-0 border border-zinc-800">
+                <div className="w-24 h-24 bg-white p-1 rounded flex items-center justify-center shrink-0 border border-zinc-800">
                   <img
                     src="/qr-code.jpeg"
                     alt="UPI QR Code"
@@ -161,10 +161,10 @@ export function SystemLogBar() {
                 {/* UPI Details (Next) */}
                 <div className="flex-1 space-y-1.5 text-center sm:text-left">
                   <div>
-                    <span className="text-[9.5px] font-mono text-[#ff2a2a] block tracking-wider uppercase font-bold">UPI PAYMENT · SCAN OR SEND</span>
+                    <span className="text-xs font-mono text-red-500 block tracking-wider uppercase font-bold">UPI PAYMENT · SCAN OR SEND</span>
                     <span className="text-sm font-bold font-mono tracking-tight block mt-0.5 text-zinc-100">mukulsharmams007-1@oksbi</span>
                   </div>
-                  <p className="text-[10px] font-mono text-zinc-500 leading-normal">
+                  <p className="text-xs font-mono text-zinc-400 leading-relaxed">
                     Scan QR code with any UPI app (PhonePe, GPay, Paytm, BHIM) or send directly to the ID.
                   </p>
                 </div>
