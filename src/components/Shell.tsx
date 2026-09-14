@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { Download } from "lucide-react";
+import { Download, Menu, X } from "lucide-react";
 import { systemLogger } from "@/lib/system-logger";
 import { MStripe } from "./MStripe";
 
 export function TopNav({ onEdit }: { onEdit: () => void }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <>
-      <nav className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-strong text-white h-16 flex items-center px-6 sm:px-10">
+      <nav className="sticky top-0 z-40 bg-canvas/90 backdrop-blur-md border-b border-hairline-strong text-white h-16 flex items-center px-4 sm:px-10">
         <div className="mx-auto max-w-6xl w-full flex items-center justify-between">
           <a href="#" className="flex items-center gap-3">
             <span className="inline-flex items-center gap-[2px]" aria-hidden>
@@ -16,7 +18,7 @@ export function TopNav({ onEdit }: { onEdit: () => void }) {
             </span>
             <span className="font-bold uppercase tracking-[0.15em] text-sm">ApexF1</span>
           </a>
-          <div className="hidden md:flex items-center gap-8 text-xs font-mono text-zinc-400">
+          <div className="hidden md:flex items-center gap-4 lg:gap-8 text-xs font-mono text-zinc-400">
             <a href="#next" className="hover:text-white transition-colors">
               Next Race
             </a>
@@ -40,17 +42,94 @@ export function TopNav({ onEdit }: { onEdit: () => void }) {
               Driver
             </a>
           </div>
-          <button
-            onClick={onEdit}
-            className="px-3 py-1 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-300 hover:text-white rounded inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
-            <span>Edit</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onEdit}
+              className="px-3 py-1 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-300 hover:text-white rounded inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+              <span>Edit</span>
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-zinc-400 hover:text-white rounded-md border border-zinc-800 bg-zinc-900 cursor-pointer"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </nav>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-x-0 top-16 z-30 bg-zinc-950/95 border-b border-hairline-strong backdrop-blur-xl p-6 animate-in slide-in-from-top-2 duration-200">
+          <div className="flex flex-col gap-4 text-sm font-mono text-zinc-300">
+            <a
+              href="#next"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between border-b border-zinc-900"
+            >
+              <span>Next Race</span>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+            <a
+              href="#sessions"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between border-b border-zinc-900 text-white font-bold"
+            >
+              <span>Sessions Hub</span>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+            <a
+              href="#standings"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between border-b border-zinc-900"
+            >
+              <span>Standings</span>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+            <a
+              href="#telemetry"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between border-b border-zinc-900"
+            >
+              <div className="flex items-center gap-2">
+                <span>Telemetry</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              </div>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+            <a
+              href="#calendar"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between border-b border-zinc-900"
+            >
+              <span>Calendar</span>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+            <a
+              href="#recap"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between border-b border-zinc-900"
+            >
+              <span>Recap</span>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+            <a
+              href="#driver"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded hover:bg-zinc-900 hover:text-white flex items-center justify-between"
+            >
+              <span>Driver Profile</span>
+              <span className="text-xs text-red-500 font-bold">▸</span>
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Marquee ticker */}
       <div className="bg-canvas border-b border-hairline-strong overflow-hidden">
         <div className="marquee py-2 text-xs font-mono text-zinc-400">

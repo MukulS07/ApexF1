@@ -21,14 +21,14 @@ function greet() {
 
 function TimeBlock({ label, value, glow }: { label: string; value: number; glow?: boolean }) {
   return (
-    <div className="flex flex-col items-start border-l border-hairline pl-4 sm:pl-6">
+    <div className="flex flex-col items-start border-l border-hairline pl-2 sm:pl-6">
       <div
-        className={`tabular text-5xl sm:text-6xl font-bold tracking-tight ${glow ? "glow-pulse" : ""}`}
+        className={`tabular text-3xl sm:text-6xl font-bold tracking-tight ${glow ? "glow-pulse" : ""}`}
         style={{ color: "white" }}
       >
         {value.toString().padStart(2, "0")}
       </div>
-      <div className="mt-1 text-xs uppercase tracking-[0.2em] text-ink-muted">{label}</div>
+      <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] text-ink-muted">{label}</div>
     </div>
   );
 }

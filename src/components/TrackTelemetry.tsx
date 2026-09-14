@@ -245,27 +245,27 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
 
           {/* Gauges */}
           <div className="bg-surface-card p-6 sm:p-8 flex flex-col gap-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <div className="text-eyebrow text-ink-muted">Speed</div>
                 <div className="flex items-baseline gap-2 mt-2">
-                  <div ref={speedRef} className="tabular text-6xl font-bold text-white">0</div>
+                  <div ref={speedRef} className="tabular text-4xl sm:text-6xl font-bold text-white">0</div>
                   <div className="text-xs text-ink-muted">KM/H</div>
                 </div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">Gear</div>
-                <div ref={gearRef} className="tabular text-6xl font-bold mt-2" style={{ color }}>1</div>
+                <div ref={gearRef} className="tabular text-4xl sm:text-6xl font-bold mt-2" style={{ color }}>1</div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">RPM</div>
-                <div ref={rpmRef} className="tabular text-2xl text-white mt-2">6,000</div>
+                <div ref={rpmRef} className="tabular text-xl sm:text-2xl text-white mt-2">6,000</div>
               </div>
               <div>
                 <div className="text-eyebrow text-ink-muted">DRS</div>
                 <div
                   ref={drsRef}
-                  className="tabular text-2xl mt-2 font-bold transition-colors"
+                  className="tabular text-xl sm:text-2xl mt-2 font-bold transition-colors"
                   style={{ color: "var(--ink-muted)" }}
                 >
                   CLOSED
@@ -303,7 +303,7 @@ export function TrackTelemetry({ profile }: { profile: Profile }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 pt-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
               {(["FL", "FR", "RL", "RR"] as const).map((t, i) => (
                 <div key={t} className="border border-hairline p-2">
                   <div className="text-[10px] uppercase tracking-widest text-ink-muted">{t} tyre</div>

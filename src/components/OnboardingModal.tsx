@@ -84,16 +84,16 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
   const selectedTeam = selectedDriver ? getTeam(selectedDriver.teamId) : null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl px-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-4xl bg-canvas border border-hairline-strong shadow-2xl overflow-hidden rise relative min-h-[500px] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-3 sm:p-4 animate-in fade-in duration-200 overflow-y-auto">
+      <div className="w-full max-w-4xl bg-canvas border border-hairline-strong shadow-2xl overflow-hidden rise relative max-h-[92vh] flex flex-col my-auto">
         <MStripe />
 
         {step === 1 && (
-          <div className="p-10 sm:p-14 flex-1 flex flex-col justify-between">
+          <div className="p-6 sm:p-12 flex-1 flex flex-col justify-between">
             <div>
               <div className="text-eyebrow text-ink-muted mb-4">// Welcome to ApexF1</div>
               <h2 className="text-display text-white mb-4">Driver name.</h2>
-              <p className="text-lead text-body mb-10">
+              <p className="text-lead text-body mb-6 sm:mb-10">
                 Your season, your name in the timing tower.
               </p>
               <input
@@ -101,11 +101,11 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="ENTER YOUR NAME"
-                className="w-full text-3xl font-bold uppercase tracking-tight bg-surface-card text-white px-6 py-6 outline-none border border-hairline focus:border-white transition placeholder:text-ink-muted"
+                className="w-full text-xl sm:text-3xl font-bold uppercase tracking-tight bg-surface-card text-white px-4 sm:px-6 py-4 sm:py-6 outline-none border border-hairline focus:border-white transition placeholder:text-ink-muted"
                 onKeyDown={(e) => e.key === "Enter" && name.trim() && setStep(2)}
               />
             </div>
-            <div className="mt-10 flex items-center justify-between">
+            <div className="mt-8 flex items-center justify-between">
               {onClose ? (
                 <button onClick={onClose} className="btn-m-ghost">
                   Cancel
@@ -125,7 +125,7 @@ export function OnboardingModal({ open, onComplete, onClose, initial }: Props) {
         )}
 
         {step === 2 && (
-          <div className="p-10 sm:p-14 flex-1 flex flex-col justify-between">
+          <div className="p-6 sm:p-12 flex-1 flex flex-col justify-between">
             <div>
               <div className="text-eyebrow text-ink-muted mb-4">// Step 2 of 3</div>
               <h2 className="text-display text-white mb-2">Pick your driver.</h2>

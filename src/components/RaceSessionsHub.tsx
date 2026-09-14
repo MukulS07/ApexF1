@@ -580,54 +580,56 @@ export function RaceSessionsHub({ profile }: { profile?: Profile }) {
 
                   {/* RESULTS LIST BASED ON ACTIVE QUALI PHASE */}
                   {activeQualiPhase === "Q3" && (
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-[40px_1fr_120px_140px] text-[10px] font-mono text-ink-muted uppercase tracking-widest pb-2 border-b border-hairline px-2">
-                        <span>POS</span>
-                        <span>DRIVER & TEAM</span>
-                        <span className="text-right">Q3 TIME</span>
-                        <span className="text-right">SECTOR SPLITS</span>
-                      </div>
-                      {[
-                        { code: "NOR", time: racePrevious.poleTime || "1:25.819", gap: "POLE", s1: "27.102", s2: "34.215", s3: "24.502" },
-                        { code: "PIA", time: "1:26.041", gap: "+0.222s", s1: "27.180", s2: "34.310", s3: "24.551" },
-                        { code: "HAM", time: "1:26.115", gap: "+0.296s", s1: "27.205", s2: "34.350", s3: "24.560" },
-                        { code: "VER", time: "1:26.208", gap: "+0.389s", s1: "27.240", s2: "34.390", s3: "24.578" },
-                        { code: "LEC", time: "1:26.290", gap: "+0.471s", s1: "27.270", s2: "34.420", s3: "24.600" },
-                        { code: "RUS", time: "1:26.350", gap: "+0.531s", s1: "27.310", s2: "34.450", s3: "24.590" },
-                        { code: "ANT", time: "1:26.440", gap: "+0.621s", s1: "27.350", s2: "34.490", s3: "24.600" },
-                        { code: "TSU", time: "1:26.530", gap: "+0.711s", s1: "27.390", s2: "34.520", s3: "24.620" },
-                        { code: "ALO", time: "1:26.610", gap: "+0.791s", s1: "27.420", s2: "34.560", s3: "24.630" },
-                        { code: "GAS", time: "1:26.720", gap: "+0.901s", s1: "27.480", s2: "34.610", s3: "24.630" },
-                      ].map((item, idx) => {
-                        const d = getDriverOrFallback(item.code);
-                        const t = getTeamOrFallback(d.teamId);
-                        return (
-                          <div
-                            key={item.code}
-                            className={`grid grid-cols-[40px_1fr_120px_140px] items-center p-3 text-sm transition-colors border-b border-hairline/60 ${
-                              idx === 0 ? "bg-emerald-950/30 border-l-4 border-l-emerald-400" : "hover:bg-surface-soft"
-                            }`}
-                          >
-                            <span className="tabular font-bold font-mono text-ink-muted">
-                              {idx === 0 ? "P1" : `P${idx + 1}`}
-                            </span>
-                            <div className="flex items-center gap-3">
-                              <span className="h-5 w-1" style={{ background: t.color }} />
-                              <div>
-                                <span className="font-bold text-white uppercase">{d.firstName} {d.lastName}</span>
-                                <span className="text-xs text-ink-muted ml-2">#{d.number} · {t.name}</span>
+                    <div className="space-y-3 overflow-x-auto">
+                      <div className="min-w-[540px]">
+                        <div className="grid grid-cols-[40px_1fr_120px_140px] text-[10px] font-mono text-ink-muted uppercase tracking-widest pb-2 border-b border-hairline px-2">
+                          <span>POS</span>
+                          <span>DRIVER & TEAM</span>
+                          <span className="text-right">Q3 TIME</span>
+                          <span className="text-right">SECTOR SPLITS</span>
+                        </div>
+                        {[
+                          { code: "NOR", time: racePrevious.poleTime || "1:25.819", gap: "POLE", s1: "27.102", s2: "34.215", s3: "24.502" },
+                          { code: "PIA", time: "1:26.041", gap: "+0.222s", s1: "27.180", s2: "34.310", s3: "24.551" },
+                          { code: "HAM", time: "1:26.115", gap: "+0.296s", s1: "27.205", s2: "34.350", s3: "24.560" },
+                          { code: "VER", time: "1:26.208", gap: "+0.389s", s1: "27.240", s2: "34.390", s3: "24.578" },
+                          { code: "LEC", time: "1:26.290", gap: "+0.471s", s1: "27.270", s2: "34.420", s3: "24.600" },
+                          { code: "RUS", time: "1:26.350", gap: "+0.531s", s1: "27.310", s2: "34.450", s3: "24.590" },
+                          { code: "ANT", time: "1:26.440", gap: "+0.621s", s1: "27.350", s2: "34.490", s3: "24.600" },
+                          { code: "TSU", time: "1:26.530", gap: "+0.711s", s1: "27.390", s2: "34.520", s3: "24.620" },
+                          { code: "ALO", time: "1:26.610", gap: "+0.791s", s1: "27.420", s2: "34.560", s3: "24.630" },
+                          { code: "GAS", time: "1:26.720", gap: "+0.901s", s1: "27.480", s2: "34.610", s3: "24.630" },
+                        ].map((item, idx) => {
+                          const d = getDriverOrFallback(item.code);
+                          const t = getTeamOrFallback(d.teamId);
+                          return (
+                            <div
+                              key={item.code}
+                              className={`grid grid-cols-[40px_1fr_120px_140px] items-center p-3 text-sm transition-colors border-b border-hairline/60 ${
+                                idx === 0 ? "bg-emerald-950/30 border-l-4 border-l-emerald-400" : "hover:bg-surface-soft"
+                              }`}
+                            >
+                              <span className="tabular font-bold font-mono text-ink-muted">
+                                {idx === 0 ? "P1" : `P${idx + 1}`}
+                              </span>
+                              <div className="flex items-center gap-3">
+                                <span className="h-5 w-1" style={{ background: t.color }} />
+                                <div>
+                                  <span className="font-bold text-white uppercase">{d.firstName} {d.lastName}</span>
+                                  <span className="text-xs text-ink-muted ml-2">#{d.number} · {t.name}</span>
+                                </div>
+                              </div>
+                              <div className="text-right font-mono">
+                                <div className="font-bold text-white">{item.time}</div>
+                                <div className="text-[10px] text-ink-muted">{item.gap}</div>
+                              </div>
+                              <div className="text-right font-mono text-xs text-ink-muted">
+                                {item.s1} / {item.s2} / {item.s3}
                               </div>
                             </div>
-                            <div className="text-right font-mono">
-                              <div className="font-bold text-white">{item.time}</div>
-                              <div className="text-[10px] text-ink-muted">{item.gap}</div>
-                            </div>
-                            <div className="text-right font-mono text-xs text-ink-muted">
-                              {item.s1} / {item.s2} / {item.s3}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
 

@@ -115,7 +115,7 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                     key={row.driverId || i}
                     // key on flash re-triggers the highlight animation
                     data-mine={mine ? "true" : undefined}
-                    className={`group grid grid-cols-[40px_1fr_auto] sm:grid-cols-[50px_60px_1fr_180px_130px] items-center gap-4 py-5 px-2 speed-line transition-colors hover:bg-surface-soft relative ${
+                    className={`group grid grid-cols-[36px_1fr_auto] sm:grid-cols-[50px_60px_1fr_180px_130px] items-center gap-2 sm:gap-4 py-4 sm:py-5 px-2 speed-line transition-colors hover:bg-surface-soft relative ${
                       mine ? "row-flash" : ""
                     }`}
                     style={
@@ -134,7 +134,7 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                         style={{ background: t.color }}
                       />
                     )}
-                    <span className="tabular text-2xl font-bold text-ink-muted">
+                    <span className="tabular text-lg sm:text-2xl font-bold text-ink-muted">
                       {(i + 1).toString().padStart(2, "0")}
                     </span>
                     <span
@@ -144,7 +144,7 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                       {d.number}
                     </span>
                     <div>
-                      <div className="text-lg font-bold uppercase tracking-tight flex items-center gap-3 text-white">
+                      <div className="text-base sm:text-lg font-bold uppercase tracking-tight flex items-center gap-2 sm:gap-3 text-white flex-wrap">
                         <span className="text-white/60">{d.firstName}</span>
                         <span>{d.lastName}</span>
                         {mine && (
@@ -157,7 +157,7 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-ink-muted uppercase tracking-wider mt-1">
+                      <div className="text-[11px] sm:text-xs text-ink-muted uppercase tracking-wider mt-0.5 sm:mt-1">
                         {t.name}
                       </div>
                     </div>
@@ -169,9 +169,9 @@ export function Standings({ favoriteDriverId }: { favoriteDriverId?: string }) {
                         />
                       </div>
                     </div>
-                    <div className="tabular text-3xl font-bold text-right text-white">
+                    <div className="tabular text-xl sm:text-3xl font-bold text-right text-white">
                       {row.points}
-                      <span className="text-xs text-ink-muted ml-2 font-normal">PTS</span>
+                      <span className="text-[10px] sm:text-xs text-ink-muted ml-1.5 sm:ml-2 font-normal">PTS</span>
                     </div>
                   </li>
                 );
